@@ -47,6 +47,7 @@ module.exports = {
 
 ## Development
 
+- clone the repository from **DEVELOP** branch
 - run SERVER and CLIENT (in the future but it does NOT matter now).
 
 ```
