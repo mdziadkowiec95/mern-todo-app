@@ -1,0 +1,30 @@
+{
+  "name": "mern-todo-app",
+  "version": "1.0.0",
+  "description": "MERN stack TO-DO App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": [
+    "MERN",
+    "React",
+    "MongoDB",
+    "Node.js",
+    "Express.js"
+  ],
+  "author": "M. Dziadkowiec",
+  "license": "MIT",
+  "dependencies": {
+    "config": "^3.2.3",
+    "express": "^4.17.1",
+    "mongoose": "^5.7.3"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.0",
+    "nodemon": "^1.19.3"
+  }
+}
