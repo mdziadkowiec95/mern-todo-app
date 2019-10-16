@@ -7,6 +7,12 @@ const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
+/**
+ * @route POST api/users
+ * @desc Register user and get JWT
+ * @access Public
+ */
+
 router.post(
   '/',
   [
@@ -42,7 +48,7 @@ router.post(
       });
     }
     try {
-      const user = await User.findOne({ email });
+      let user = await User.findOne({ email });
 
       if (user) {
         return res.status(400).json({
@@ -55,30 +61,27 @@ router.post(
         d: 'mm' // Default avatar. 'mm' will give you default user avatar
       });
 
-      const newUser = new User({
+      user = new User({
         email,
         name,
         avatar
       });
-      console.log(newUser);
 
       const salt = await bcrypt.genSaltSync(10);
-      newUser.password = await bcrypt.hashSync(password, salt);
+      user.password = await bcrypt.hashSync(password, salt);
 
-      await newUser.save();
+      await user.save();
 
       const jwtPayload = {
-        newUser: {
+        user: {
           is: newUser.id
         }
       };
 
-      const hoursToSeconds = h => h * 3600;
-
       jwt.sign(
         jwtPayload,
         config.get('mySecretJwt'),
-        { expiresIn: hoursToSeconds(12) },
+        { expiresIn: 12 * 3600 },
         (err, token) => {
           if (err) throw err;
 
