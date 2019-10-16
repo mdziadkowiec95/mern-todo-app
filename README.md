@@ -1,8 +1,8 @@
 # TO-DO App
 
-CRUD Full stack TODO app built with MERN stack.
+Status: **IN PROGRESS** (develop branch)
 
-Status: **IN PROGRESS**
+CRUD Full stack TODO app built with MERN stack.
 
 ## Built With
 
