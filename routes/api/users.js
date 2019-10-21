@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../../models/User');
+const Task = require('../../models/Task');
 const { check, validationResult } = require('express-validator');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
+const authMiddleware = require('../middleware/auth');
 
 /**
  * @route POST api/users
@@ -93,5 +95,78 @@ router.post(
     }
   }
 );
+
+/**
+ * @route PUT api/users/labels
+ * @desc Add label to user private labels
+ * @access Private
+ */
+
+router.put('/labels', authMiddleware, async (req, res) => {
+  try {
+    const label = req.body.label;
+
+    const user = await User.findById(req.user.id);
+
+    if (!user)
+      return res.status(404).json({ errors: [{ msg: 'User not found!' }] });
+
+    if (user.labels.length >= 10)
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'You can create up to 10 labels!' }] });
+
+    if (user.labels.map(label => label.name).includes(label.name))
+      return res
+        .status(400)
+        .json({ errors: [{ msg: `Label '${label.name}' already exist!` }] });
+
+    user.labels.push(label);
+
+    await user.save();
+
+    res.json(user.labels);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).send('Server error!');
+  }
+});
+
+/**
+ * @route DELETE api/users/labels/:label_id
+ * @desc Remove label from user private labels
+ * @access Private
+ */
+
+router.delete('/labels/:label_id', authMiddleware, async (req, res) => {
+  try {
+    const labelId = req.params.label_id;
+
+    const userTasks = await Task.find({
+      user: req.user.id,
+      labels: { $all: ['g'] }
+    });
+
+    console.log(userTasks);
+
+    return res.json(userTasks);
+
+    const user = await User.findById(req.user.id);
+
+    if (!user)
+      return res.status(404).json({ errors: [{ msg: 'User not found!' }] });
+
+    user.labels = user.labels.filter(label => label.id !== labelId);
+
+    await user.save();
+
+    res.json(user.labels);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).send('Server error!');
+  }
+});
 
 module.exports = router;
