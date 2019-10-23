@@ -47,4 +47,13 @@ const UserSchema = new Schema({
   }
 });
 
+// Validators
+UserSchema.path('labels').validate(function(labels) {
+  return labels.length <= 10;
+}, 'User can create up to 10 labels!');
+
+UserSchema.path('projects').validate(function(projects) {
+  return projects.length <= 10;
+}, 'User can create up to 10 projects!');
+
 module.exports = User = mongoose.model('user', UserSchema);

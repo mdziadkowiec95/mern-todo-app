@@ -10,7 +10,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 
 // Routes
-app.use('/api/task', tasks);
+app.use('/api/tasks', tasks);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 
