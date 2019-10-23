@@ -13,17 +13,23 @@ const TaskSchema = new Schema({
   date: {
     type: Date
   },
-  labels: {
-    type: [String],
-    validate: {
-      validator: function(l) {
-        return l.length <= 3;
+  labels: [
+    {
+      name: {
+        type: String
       },
-      message: 'Single task can have max 3 labels!'
+      color: {
+        type: String
+      }
     }
-  },
+  ],
   project: {
-    type: String
+    name: {
+      type: String
+    },
+    color: {
+      type: String
+    }
   },
   priority: {
     type: String,
@@ -35,6 +41,9 @@ const TaskSchema = new Schema({
   }
 });
 
-// TaskSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+// Validators
+TaskSchema.path('labels').validate(function(labels) {
+  return labels.length <= 3;
+}, 'Single task can be associated with up to 3 labels!');
 
 module.exports = Task = mongoose.model('task', TaskSchema);

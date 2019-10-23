@@ -76,7 +76,7 @@ router.post(
 
       const jwtPayload = {
         user: {
-          is: newUser.id
+          id: user.id
         }
       };
 
@@ -91,7 +91,9 @@ router.post(
         }
       );
     } catch (error) {
-      return res.status(500).send('Server error!');
+      console.log(error);
+
+      res.status(500).send('Server error!');
     }
   }
 );
@@ -127,7 +129,7 @@ router.put('/labels', authMiddleware, async (req, res) => {
 
     res.json(user.labels);
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
 
     res.status(500).send('Server error!');
   }
@@ -143,25 +145,44 @@ router.delete('/labels/:label_id', authMiddleware, async (req, res) => {
   try {
     const labelId = req.params.label_id;
 
-    const userTasks = await Task.find({
-      user: req.user.id,
-      labels: { $all: ['g'] }
-    });
-
-    console.log(userTasks);
-
-    return res.json(userTasks);
-
     const user = await User.findById(req.user.id);
 
     if (!user)
       return res.status(404).json({ errors: [{ msg: 'User not found!' }] });
 
+    // TO VERIFY - Find targeted label from user labels
+    // Maybe there is some method/parameter in MongoDB to filter tasks directly in find() method
+    const label = user.labels.find(label => label.id === labelId);
+
+    // Find all User tasks where the label exists
+    const userTasks = await Task.find({
+      user: req.user.id,
+      labels: {
+        $all: [label]
+      }
+    });
+
+    if (!userTasks)
+      return res.status(404).json({
+        errors: [{ msg: 'There are no tasks associated with this label!' }]
+      });
+
+    // Remove the label from User labels
     user.labels = user.labels.filter(label => label.id !== labelId);
 
     await user.save();
 
-    res.json(user.labels);
+    // Remove the label from from these tasks
+    userTasks.forEach(async task => {
+      task.labels = task.labels.filter(label => label.id !== labelId);
+
+      await task.save();
+    });
+
+    res.json({
+      removedLabelId: labelId,
+      userLabels: user.labels
+    });
   } catch (error) {
     console.error(error);
 

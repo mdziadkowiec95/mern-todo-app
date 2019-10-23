@@ -4,9 +4,20 @@ const Task = require('../../models/Task');
 const User = require('../../models/User');
 const authMiddleware = require('../middleware/auth');
 
-router.get('/', async (req, res) => {
+/**
+ * @route GET api/tasks
+ * @desc Get all tasks for specific User
+ * @access Private
+ */
+
+router.get('/', authMiddleware, async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await Task.find({ user: req.user.id });
+
+    if (!tasks)
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'Tasks list list empty!' }] });
 
     res.json(tasks);
   } catch (error) {
@@ -16,9 +27,15 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @route POST api/tasks
+ * @desc Add new task for User
+ * @access Private
+ */
+
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    const { title, date, labels, project, priority, status } = req.body;
+    const { title, date, labelsIDs, project, priority, status } = req.body;
 
     const newTask = new Task({
       user: req.user.id,
@@ -30,14 +47,15 @@ router.post('/', authMiddleware, async (req, res) => {
     if (priority) newTask.priority = priority;
     if (status) newTask.status = status;
 
-    // if (labels && labels.length > 0) newTask.labels = labels;
+    if (labelsIDs) {
+      const userLabels = await User.findById(req.user.id).select('labels');
 
-    /** TODO */
+      const selectedLabels = userLabels.labels.filter(label =>
+        labelsIDs.includes(label.id) ? label : false
+      );
 
-    /** const labels = await User.findById(req.user.id).select('labels'); */
-
-    // 1.  Recieve labels IDs and populate newTask with labels from User labels preferences.
-    // 2. Same behaviour will be according to projects
+      if (selectedLabels) newTask.labels = selectedLabels;
+    }
 
     await newTask.save();
 
@@ -49,24 +67,37 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
-// router.put('/:task_id', async (req, res) => {
-//   try {
-//     const taskID = req.params.task_id;
-//     const task = await Task.findById(taskID);
+/**
+ * @route DELETE api/tasks
+ * @desc Delete single task from User tasks
+ * @access Private
+ */
 
-//     if (task) {
-//       task.expireAt = undefined;
-//       await task.save();
+router.delete('/:task_id', authMiddleware, async (req, res) => {
+  const taskId = req.params.task_id;
 
-//       return res.json(task);
-//     }
+  try {
+    const task = await Task.findById(taskId);
 
-//     return res.json({ msg: 'Task not found!' });
-//   } catch (error) {
-//     console.log(error.message);
+    if (!task)
+      return res.status(404).json({ erorrs: [{ msg: 'Task not found!' }] });
 
-//     res.status(500).send('Server error!');
-//   }
-// });
+    if (task.user.toString() !== req.user.id)
+      return res
+        .status(401)
+        .json({ errors: [{ msg: 'User is not an author of the task!' }] });
+
+    await task.remove();
+
+    res.json({ errors: [{ msg: 'Task has been removed!' }] });
+  } catch (error) {
+    console.error(error.message);
+
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
+
+    res.status(500).send('Server error!');
+  }
+});
 
 module.exports = router;
