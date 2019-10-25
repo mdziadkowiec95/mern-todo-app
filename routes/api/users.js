@@ -7,7 +7,7 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
-const authMiddleware = require('../middleware/auth');
+const authMiddleware = require('../../middleware/auth');
 
 /**
  * @route POST api/users

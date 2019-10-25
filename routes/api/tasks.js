@@ -2,22 +2,51 @@ const express = require('express');
 const router = express.Router();
 const Task = require('../../models/Task');
 const User = require('../../models/User');
-const authMiddleware = require('../middleware/auth');
+const authMiddleware = require('../../middleware/auth');
 
 /**
- * @route GET api/tasks
- * @desc Get all tasks for specific User
+ * @route GET api/tasks/
+ * @desc Get tasks for specific User (optional - query params based filters)
  * @access Private
  */
 
 router.get('/', authMiddleware, async (req, res) => {
+  const { status, sevenDays, project, labelId } = req.query;
+
+  const filters = {
+    user: req.user.id
+  };
+
+  // Build filters object
+  if (status) filters.status = status;
+  if (project) filters.project = project;
+
+  if (labelId) {
+    const userLabels = await User.findById(req.user.id).select('labels');
+
+    const selectedLabel = userLabels.labels.find(label => label.id === labelId);
+
+    if (selectedLabel) {
+      filters.labels = {
+        $all: [selectedLabel]
+      };
+    }
+  }
+
+  /** TODO */
+  // 1. Try to handle filter for only today or last 7 days
+
   try {
-    const tasks = await Task.find({ user: req.user.id });
+    const tasks = await Task.find(filters);
 
     if (!tasks)
-      return res
-        .status(400)
-        .json({ errors: [{ msg: 'Tasks list list empty!' }] });
+      return res.status(400).json({
+        errors: [
+          {
+            msg: 'Tasks list list empty!'
+          }
+        ]
+      });
 
     res.json(tasks);
   } catch (error) {
@@ -42,10 +71,11 @@ router.post('/', authMiddleware, async (req, res) => {
       title
     });
 
-    if (date) newTask.date = date;
     if (project) newTask.project = project;
     if (priority) newTask.priority = priority;
     if (status) newTask.status = status;
+
+    if (date && status === 'active') newTask.date = date;
 
     if (labelsIDs) {
       const userLabels = await User.findById(req.user.id).select('labels');
