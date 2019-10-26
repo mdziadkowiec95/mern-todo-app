@@ -4,10 +4,13 @@ const tasks = require('./routes/api/tasks');
 const users = require('./routes/api/users');
 const auth = require('./routes/api/auth');
 const connectDB = require('./config/db');
+const cors = require('cors');
 
 connectDB();
 
 app.use(express.json({ extended: false }));
+
+app.use(cors()); // WARNING --- Just temporary for experimenting
 
 // Routes
 app.use('/api/tasks', tasks);

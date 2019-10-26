@@ -3,6 +3,52 @@ const router = express.Router();
 const Task = require('../../models/Task');
 const User = require('../../models/User');
 const authMiddleware = require('../../middleware/auth');
+const calcTime = require('../../utils/calcTime');
+
+router.delete('/clear-all', (req, res) => {
+  Task.deleteMany({}, err => {
+    console.log(err);
+    console.log('Tasks collection removed');
+    res.send('Tasks collection removed');
+  });
+});
+
+/**
+ * @route GET api/tasks/serach/serachQuery=TITLE_QUERY
+ * @desc Search for task by title (return titles for autosugestion);
+ * @access Private
+ */
+
+router.get('/search', authMiddleware, async (req, res) => {
+  try {
+    const titleQuery = req.query.searchQuery;
+
+    if (!titleQuery)
+      return res.status(404).json({
+        errors: [
+          {
+            msg: 'You have not provided any title'
+          }
+        ]
+      });
+
+    const regex = new RegExp(`.*${titleQuery}.*`, 'i');
+
+    const titles = await Task.find({
+      user: req.user.id,
+      title: regex
+    }).select('title');
+
+    if (titles.length === 0)
+      return res.status(404).json({ erorrs: [{ msg: 'No tasks found!' }] });
+
+    res.json(titles);
+  } catch (error) {
+    console.error(error.message);
+
+    res.status(500).send('Server erorr!');
+  }
+});
 
 /**
  * @route GET api/tasks/
@@ -11,13 +57,23 @@ const authMiddleware = require('../../middleware/auth');
  */
 
 router.get('/', authMiddleware, async (req, res) => {
-  const { status, sevenDays, project, labelId } = req.query;
+  const { status, timePeriod, project, labelId } = req.query;
 
   const filters = {
     user: req.user.id
   };
 
-  // Build filters object
+  // Construct filters object
+  if (timePeriod) {
+    filters.date = {
+      $gte: new Date(
+        new Date() - timePeriod === 'today'
+          ? calcTime.getDays(1)
+          : calcTime.getDays(7)
+      )
+    };
+  }
+
   if (status) filters.status = status;
   if (project) filters.project = project;
 
@@ -26,15 +82,16 @@ router.get('/', authMiddleware, async (req, res) => {
 
     const selectedLabel = userLabels.labels.find(label => label.id === labelId);
 
-    if (selectedLabel) {
-      filters.labels = {
-        $all: [selectedLabel]
-      };
+    if (!selectedLabel) {
+      return res
+        .status(404)
+        .json({ errors: [{ msg: 'No tasks found with provided label!' }] });
     }
-  }
 
-  /** TODO */
-  // 1. Try to handle filter for only today or last 7 days
+    filters.labels = {
+      $all: [selectedLabel]
+    };
+  }
 
   try {
     const tasks = await Task.find(filters);
