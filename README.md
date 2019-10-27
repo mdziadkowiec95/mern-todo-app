@@ -54,9 +54,10 @@ module.exports = {
 npm run dev
 ```
 
-## Running the tests
+## Testing
 
---- **IN PROGRESS** ---
+- `npm run test` (it runs JEST testing library)
+- All server side tests are in root directory inside ****TESTS**** directory
 
 ## Deployment
 
