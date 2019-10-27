@@ -99,6 +99,74 @@ router.post(
 );
 
 /**
+ * @route POST api/users/change-password
+ * @desc Change User's password
+ * @access Private
+ */
+
+router.put(
+  '/change-password',
+  [
+    authMiddleware,
+    check(
+      'oldPassword',
+      'Password must be at least 8 characters long!'
+    ).isLength({ min: 8 }),
+    check('newPasswordConfirm')
+      .isLength({ min: 8 })
+      .withMessage('Passwords must be at least 8 characters long!')
+      .custom((value, { req }) => value === req.body.newPassword)
+      .withMessage(
+        'Password and Password confirmation must be exactly the same!'
+      ),
+    check('newPassword', 'New password must be different than old one!').custom(
+      (value, { req }) => value !== req.body.oldPassword
+    )
+  ],
+  async (req, res) => {
+    const { oldPassword, newPassword, newPasswordConfirm } = req.body;
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array()
+      });
+    }
+
+    try {
+      const user = await User.findById(req.user.id);
+
+      if (!user)
+        return res.status(404).json({ errors: [{ msg: 'User not found!' }] });
+
+      const oldPasswordMatch = bcrypt.compareSync(oldPassword, user.password);
+
+      if (!oldPasswordMatch)
+        return res.status(401).json({
+          errors: [{ msg: `Old password does not match User's passowrd` }]
+        });
+
+      const salt = await bcrypt.genSaltSync(10);
+      user.password = await bcrypt.hashSync(newPassword, salt);
+
+      await user.save();
+
+      res.json({ msg: 'Password has been changed!' });
+    } catch (error) {
+      console.error(error.message);
+
+      res.status(500).send('Server error!');
+    }
+
+    try {
+    } catch (error) {
+      console.error();
+    }
+  }
+);
+
+/**
  * @route PUT api/users/labels
  * @desc Add label to user private labels
  * @access Private
@@ -136,15 +204,16 @@ router.put('/labels', authMiddleware, async (req, res) => {
 });
 
 /**
- * @route DELETE api/users/labels/:label_id
+ * @route DELETE api/users/labels/:labelId
  * @desc Remove label from user private labels
  * @access Private
  */
 
-router.delete('/labels/:label_id', authMiddleware, async (req, res) => {
+router.delete('/labels/:labelId', authMiddleware, async (req, res) => {
   try {
-    const labelId = req.params.label_id;
+    const labelId = req.params.labelId;
 
+    // Maybe it would work with selecting only 'labels' ??
     const user = await User.findById(req.user.id);
 
     if (!user)

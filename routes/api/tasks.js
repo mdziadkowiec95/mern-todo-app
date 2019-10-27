@@ -5,14 +5,6 @@ const User = require('../../models/User');
 const authMiddleware = require('../../middleware/auth');
 const calcTime = require('../../utils/calcTime');
 
-router.delete('/clear-all', (req, res) => {
-  Task.deleteMany({}, err => {
-    console.log(err);
-    console.log('Tasks collection removed');
-    res.send('Tasks collection removed');
-  });
-});
-
 /**
  * @route GET api/tasks/serach/serachQuery=TITLE_QUERY
  * @desc Search for task by title (return titles for autosugestion);
@@ -67,7 +59,7 @@ router.get('/', authMiddleware, async (req, res) => {
   if (timePeriod) {
     filters.date = {
       $gte: new Date(
-        new Date() - timePeriod === 'today'
+        new Date() + timePeriod === 'today'
           ? calcTime.getDays(1)
           : calcTime.getDays(7)
       )
@@ -114,26 +106,62 @@ router.get('/', authMiddleware, async (req, res) => {
 });
 
 /**
+ * @route GET api/tasks/:taskId
+ * @desc Get specific Task by ID
+ * @access Private
+ */
+
+router.get('/:taskId', authMiddleware, async (req, res) => {
+  const taskId = req.params.taskId;
+  try {
+    const task = await Task.findOne({
+      user: req.user.id,
+      _id: taskId
+    });
+
+    if (!task)
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
+
+    res.json(task);
+  } catch (error) {
+    console.error(error.message);
+
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
+
+    res.status(500).send('Server error!');
+  }
+});
+
+/**
  * @route POST api/tasks
- * @desc Add new task for User
+ * @desc Create or update task for User (if taskId is provided then try to update existing task)
  * @access Private
  */
 
 router.post('/', authMiddleware, async (req, res) => {
+  const {
+    taskId,
+    title,
+    date,
+    labelsIDs,
+    project,
+    priority,
+    status
+  } = req.body;
+
+  const taskFields = {
+    user: req.user.id
+  };
+
+  if (title) taskFields.title = title;
+  if (project) taskFields.project = project;
+  if (priority) taskFields.priority = priority;
+  if (status) taskFields.status = status;
+
+  if (date && status === 'active') taskFields.date = date;
+
   try {
-    const { title, date, labelsIDs, project, priority, status } = req.body;
-
-    const newTask = new Task({
-      user: req.user.id,
-      title
-    });
-
-    if (project) newTask.project = project;
-    if (priority) newTask.priority = priority;
-    if (status) newTask.status = status;
-
-    if (date && status === 'active') newTask.date = date;
-
     if (labelsIDs) {
       const userLabels = await User.findById(req.user.id).select('labels');
 
@@ -141,8 +169,24 @@ router.post('/', authMiddleware, async (req, res) => {
         labelsIDs.includes(label.id) ? label : false
       );
 
-      if (selectedLabels) newTask.labels = selectedLabels;
+      if (selectedLabels) taskFields.labels = selectedLabels;
     }
+
+    let task;
+
+    if (taskId) task = await Task.findOne({ user: req.user.id, _id: taskId });
+
+    if (task) {
+      task = await Task.findOneAndUpdate(
+        { user: req.user.id },
+        { $set: taskFields },
+        { new: true }
+      );
+
+      return res.json(task);
+    }
+
+    const newTask = new Task(taskFields);
 
     await newTask.save();
 
@@ -155,13 +199,13 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 /**
- * @route DELETE api/tasks
- * @desc Delete single task from User tasks
+ * @route DELETE api/tasks/:taskId
+ * @desc Delete single task from User tasks by ID
  * @access Private
  */
 
-router.delete('/:task_id', authMiddleware, async (req, res) => {
-  const taskId = req.params.task_id;
+router.delete('/:taskId', authMiddleware, async (req, res) => {
+  const taskId = req.params.taskId;
 
   try {
     const task = await Task.findById(taskId);
@@ -170,13 +214,13 @@ router.delete('/:task_id', authMiddleware, async (req, res) => {
       return res.status(404).json({ erorrs: [{ msg: 'Task not found!' }] });
 
     if (task.user.toString() !== req.user.id)
-      return res
-        .status(401)
-        .json({ errors: [{ msg: 'User is not an author of the task!' }] });
+      return res.status(401).json({
+        errors: [{ msg: 'You are NOT authorized to delete this task!' }]
+      });
 
     await task.remove();
 
-    res.json({ errors: [{ msg: 'Task has been removed!' }] });
+    res.json({ msg: 'Task has been removed!' });
   } catch (error) {
     console.error(error.message);
 
