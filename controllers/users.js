@@ -13,7 +13,6 @@ exports.registerUser = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    console.log(errors.array());
     return res.status(400).json({
       errors: errors.array()
     });
@@ -95,7 +94,7 @@ exports.changePassword = async (req, res) => {
 
     if (!oldPasswordMatch)
       return res.status(401).json({
-        errors: [{ msg: `Old password does not match User's passowrd` }]
+        errors: [{ msg: `Old password does not match User's passowrd!` }]
       });
 
     const salt = await bcrypt.genSaltSync(10);
@@ -103,16 +102,13 @@ exports.changePassword = async (req, res) => {
 
     await user.save();
 
-    res.json({ msg: 'Password has been changed!' });
+    res.status(200).json({ msg: 'Password has been changed!' });
+
+    return;
   } catch (error) {
     console.error(error.message);
 
     res.status(500).send('Server error!');
-  }
-
-  try {
-  } catch (error) {
-    console.error();
   }
 };
 

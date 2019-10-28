@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const jwt = require('jsonwebtoken');
-const config = require('config');
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const UsersController = require('../controllers/users');
 
@@ -15,7 +15,11 @@ const opts = {
   useFindAndModify: false
 };
 
+// Fake user data
 const fakeUserId = '5db48b795dd65f0609cc7e72';
+const fakeUserPassword = '123123123';
+const salt = bcrypt.genSaltSync(10);
+const fakeUserBcryptedPassword = bcrypt.hashSync(fakeUserPassword, salt);
 
 beforeAll(async () => {
   mongoServer = new MongoMemoryServer();
@@ -26,14 +30,11 @@ beforeAll(async () => {
     const user = new User({
       _id: fakeUserId,
       email: 'user@test.pl',
-      password: '123123123',
-      passwordConfirm: '123123123',
+      password: fakeUserBcryptedPassword,
       name: 'Test User'
     });
 
-    const savedUser = user.save();
-
-    return savedUser;
+    return user.save();
   });
 });
 
@@ -42,36 +43,114 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
-describe('UserController tests', () => {
-  it('Register user correctly and returns valid JWT', done => {
-    const req = {
-      body: {
-        email: 'anotheruser@test.pl',
-        password: '123123123',
-        passwordConfirm: '123123123',
-        name: 'Another Test User'
-      }
-    };
-    const res = {
-      statusCode: 500,
-      token: null,
-      status: function(code) {
-        this.statusCode = code;
-        return this;
-      },
-      json: function(data) {
-        this.token = data.token;
-      }
-    };
+describe('UserController functions', () => {
+  describe('registerUser', () => {
+    it('should register user correctly and return valid JWT', done => {
+      const req = {
+        body: {
+          email: 'test1@test.pl',
+          password: '123123123',
+          passwordConfirm: '123123123',
+          name: 'Another Test User'
+        }
+      };
 
-    UsersController.registerUser(req, res).then(() => {
-      const { token, statusCode } = res;
-      const decodedJwt = jwt.verify(token, config.get('mySecretJwt'));
+      const res = {
+        statusCode: 500,
+        token: null,
+        status: function(code) {
+          this.statusCode = code;
+          return this;
+        },
+        json: function(data) {
+          this.token = data.token;
+        }
+      };
 
-      expect(decodedJwt.hasOwnProperty('user')).toBe(true);
-      expect(statusCode).toBe(200);
+      const mockJwtSign = jest.spyOn(jwt, 'sign');
+      jwt.sign = function() {
+        const fakeToken = 'token123';
+        return fakeToken;
+      };
 
-      done();
+      UsersController.registerUser(req, res).then(() => {
+        const { token, statusCode } = res;
+
+        expect(token).toBe('token123');
+        expect(statusCode).toBe(200);
+        mockJwtSign.mockRestore();
+        done();
+      });
+    });
+
+    it('should return errors array and 400 statusCode if user already exists', done => {
+      const req = {
+        body: {
+          email: 'test1@test.pl',
+          password: '123123123',
+          passwordConfirm: '123123123',
+          name: 'Another Test User'
+        }
+      };
+
+      const res = {
+        statusCode: 500,
+        errors: [],
+        status: function(code) {
+          this.statusCode = code;
+          return this;
+        },
+        json: function(data) {
+          this.errors = data.errors;
+        }
+      };
+
+      UsersController.registerUser(req, res).then(() => {
+        const { errors, statusCode } = res;
+        const errorObj = {
+          msg: 'User with this email already exists!'
+        };
+
+        expect(errors).toContainEqual(errorObj);
+        expect(statusCode).toBe(400);
+        done();
+      });
+    });
+  });
+
+  describe('changePassword', () => {
+    it('should return success msg when password is changed', done => {
+      const req = {
+        body: {
+          oldPassword: fakeUserPassword,
+          newPassword: '1231231234',
+          newPasswordConfirm: '1231231234',
+          name: 'Another Test User'
+        },
+        user: {
+          id: fakeUserId
+        }
+      };
+
+      const res = {
+        statusCode: 500,
+        msg: null,
+        status: function(code) {
+          this.statusCode = code;
+          return this;
+        },
+        json: function(data) {
+          this.msg = data.msg;
+        }
+      };
+
+      UsersController.changePassword(req, res).then(() => {
+        const { msg, statusCode } = res;
+
+        expect(statusCode).toBe(200);
+        expect(msg).toBe('Password has been changed!');
+        done();
+      });
     });
   });
 });
