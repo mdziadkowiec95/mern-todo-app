@@ -24,6 +24,9 @@ const TaskSchema = new Schema({
     }
   ],
   project: {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId
+    },
     name: {
       type: String
     },

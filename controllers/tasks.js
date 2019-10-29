@@ -10,7 +10,7 @@ exports.searchTask = async (req, res) => {
       return res.status(404).json({
         errors: [
           {
-            msg: 'You have not provided any title'
+            msg: 'You have not provided any title!'
           }
         ]
       });
@@ -23,9 +23,10 @@ exports.searchTask = async (req, res) => {
     }).select('title');
 
     if (titles.length === 0)
-      return res.status(404).json({ erorrs: [{ msg: 'No tasks found!' }] });
+      return res.status(404).json({ errors: [{ msg: 'No tasks found!' }] });
 
     res.json(titles);
+    return;
   } catch (error) {
     console.error(error.message);
 
@@ -118,7 +119,7 @@ exports.createOrUpdateTask = async (req, res) => {
     title,
     date,
     labelsIDs,
-    project,
+    projectId,
     priority,
     status
   } = req.body;
@@ -128,21 +129,40 @@ exports.createOrUpdateTask = async (req, res) => {
   };
 
   if (title) taskFields.title = title;
-  if (project) taskFields.project = project;
   if (priority) taskFields.priority = priority;
   if (status) taskFields.status = status;
-
   if (date && status === 'active') taskFields.date = date;
 
   try {
-    if (labelsIDs) {
-      const userLabels = await User.findById(req.user.id).select('labels');
+    let user;
 
-      const selectedLabels = userLabels.labels.filter(label =>
-        labelsIDs.includes(label.id) ? label : false
-      );
+    if (projectId || labelsIDs) {
+      const fieledTypes = [];
 
-      if (selectedLabels) taskFields.labels = selectedLabels;
+      if (projectId) fieledTypes.push('projects');
+      if (labelsIDs) fieledTypes.push('labels');
+
+      user = await User.findById(req.user.id).select(fieledTypes);
+
+      if (user.labels) {
+        const selectedLabels = user.labels.filter(label =>
+          labelsIDs.includes(label.id) ? label : false
+        );
+
+        if (selectedLabels) taskFields.labels = selectedLabels;
+      }
+
+      if (user.projects) {
+        const selectedProject = user.projects.find(
+          project => project.id === projectId
+        );
+
+        taskFields.project = {
+          _id: projectId,
+          name: selectedProject.name,
+          color: selectedProject.color
+        };
+      }
     }
 
     let task;
@@ -164,21 +184,28 @@ exports.createOrUpdateTask = async (req, res) => {
     await newTask.save();
 
     res.json(newTask);
+    return;
   } catch (error) {
     console.error(error);
 
     res.status(500).send('Server error!');
+    return error;
   }
 };
 
 exports.deleteTask = async (req, res) => {
   const taskId = req.params.taskId;
 
+  if (!taskId)
+    return res
+      .status(400)
+      .json({ errors: [{ msg: 'You need to pass task ID to delete it!' }] });
+
   try {
     const task = await Task.findById(taskId);
 
     if (!task)
-      return res.status(404).json({ erorrs: [{ msg: 'Task not found!' }] });
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
 
     if (task.user.toString() !== req.user.id)
       return res.status(401).json({
@@ -187,7 +214,8 @@ exports.deleteTask = async (req, res) => {
 
     await task.remove();
 
-    res.json({ msg: 'Task has been removed!' });
+    res.status(200).json({ msg: 'Task has been removed!' });
+    return;
   } catch (error) {
     console.error(error.message);
 
@@ -195,5 +223,6 @@ exports.deleteTask = async (req, res) => {
       return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
 
     res.status(500).send('Server error!');
+    return error;
   }
 };

@@ -112,10 +112,20 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-exports.addLabel = async (req, res) => {
-  try {
-    const label = req.body.label;
+/** --------- User labels controllers --------- */
 
+exports.addLabel = async (req, res) => {
+  const label = req.body.label;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    });
+  }
+
+  try {
     const user = await User.findById(req.user.id);
 
     if (!user)
@@ -135,11 +145,14 @@ exports.addLabel = async (req, res) => {
 
     await user.save();
 
-    res.json(user.labels);
+    res.status(201).json(user.labels);
+
+    return;
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
 
     res.status(500).send('Server error!');
+    return error;
   }
 };
 
@@ -148,47 +161,239 @@ exports.removeLabel = async (req, res) => {
     const labelId = req.params.labelId;
 
     // Maybe it would work with selecting only 'labels' ??
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id).select('labels');
 
     if (!user)
       return res.status(404).json({ errors: [{ msg: 'User not found!' }] });
 
-    // TO VERIFY - Find targeted label from user labels
-    // Maybe there is some method/parameter in MongoDB to filter tasks directly in find() method
-    const label = user.labels.find(label => label.id === labelId);
+    // TODO --> Try to simplify it
+    const labelIndex = user.labels.findIndex(label => label.id === labelId);
+
+    if (labelIndex === -1)
+      return res.status(404).json({ errors: [{ msg: 'Label not found!' }] });
 
     // Find all User tasks where the label exists
     const userTasks = await Task.find({
       user: req.user.id,
       labels: {
-        $all: [label]
+        $all: [user.labels[labelIndex]]
       }
     });
 
-    if (!userTasks)
-      return res.status(404).json({
-        errors: [{ msg: 'There are no tasks associated with this label!' }]
-      });
-
     // Remove the label from User labels
-    user.labels = user.labels.filter(label => label.id !== labelId);
-
+    user.labels.splice(labelIndex, 1);
     await user.save();
 
-    // Remove the label from from these tasks
-    userTasks.forEach(async task => {
-      task.labels = task.labels.filter(label => label.id !== labelId);
+    if (userTasks) {
+      // Remove the label from from these tasks
+      userTasks.forEach(async task => {
+        task.labels = task.labels.filter(label => label.id !== labelId);
 
-      await task.save();
-    });
+        await task.save();
+      });
+    }
 
-    res.json({
+    res.status(200).json({
       removedLabelId: labelId,
       userLabels: user.labels
     });
+    return;
+  } catch (error) {
+    console.error(error);
+
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Label not found!' }] });
+
+    res.status(500).send('Server error!');
+    return error;
+  }
+};
+
+exports.updateLabel = async (req, res) => {
+  const labelId = req.params.labelId;
+  const updatedLabel = req.body.label;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    });
+  }
+
+  if (!labelId)
+    return res
+      .status(400)
+      .json({ errors: [{ msg: 'You need to pass label ID to delete it!' }] });
+  try {
+    const userLabels = await User.findOneAndUpdate(
+      { _id: req.user.id, 'labels._id': labelId },
+      {
+        $set: {
+          'labels.$.name': updatedLabel.name,
+          'labels.$.color': updatedLabel.color
+        }
+      },
+      { new: true }
+    ).select('labels');
+
+    if (!userLabels)
+      return res.status(404).json({ errors: [{ msg: 'Label not found!' }] });
+
+    const modifiedLabel = userLabels.labels.find(l => l.id === labelId);
+
+    res.status(200).json(modifiedLabel);
+
+    return;
+  } catch (error) {
+    console.error(error.message);
+
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Label not found!' }] });
+
+    res.status(500).send('Server error!');
+    return error;
+  }
+};
+
+/** --------- User projects controllers --------- */
+
+exports.addProject = async (req, res) => {
+  const project = req.body.project;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    });
+  }
+
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user)
+      return res.status(404).json({ errors: [{ msg: 'User not found!' }] });
+
+    if (user.projects.length >= 10)
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'You can create up to 10 projects!' }] });
+
+    if (user.projects.map(p => p.name).includes(project.name))
+      return res.status(400).json({
+        errors: [{ msg: `Project '${project.name}' already exist!` }]
+      });
+
+    const projectsLength = user.projects.push(project);
+    const createdProject = user.projects[projectsLength - 1];
+
+    await user.save();
+
+    res.status(201).json(createdProject);
+
+    return;
   } catch (error) {
     console.error(error);
 
     res.status(500).send('Server error!');
+    return error;
+  }
+};
+
+exports.removeProject = async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+
+    // Maybe it would work with selecting only 'labels' ??
+    const user = await User.findById(req.user.id).select('projects');
+
+    if (!user)
+      return res.status(404).json({ errors: [{ msg: 'User not found!' }] });
+
+    // TODO --> Try to simplify it
+    const projectIndex = user.projects.findIndex(p => p.id === projectId);
+
+    if (projectIndex === -1)
+      return res.status(404).json({ errors: [{ msg: 'Project not found!' }] });
+
+    // Find all User tasks where the label exists
+    const userTasks = await Task.find({
+      user: req.user.id,
+      'project._id': projectId
+    });
+
+    // Remove the label from User labels
+    user.projects.splice(projectIndex, 1);
+    await user.save();
+
+    if (userTasks) {
+      // Remove the label from from these tasks
+      userTasks.forEach(async task => {
+        task.project = undefined;
+
+        await task.save();
+      });
+    }
+
+    res.status(200).json({
+      removedProjectId: projectId,
+      userProjects: user.projects
+    });
+    return userTasks;
+  } catch (error) {
+    console.error(error);
+
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Project not found!' }] });
+
+    res.status(500).send('Server error!');
+    return error;
+  }
+};
+
+exports.updateProject = async (req, res) => {
+  const projectId = req.params.projectId;
+  const updatedProject = req.body.project;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    });
+  }
+
+  if (!projectId)
+    return res
+      .status(400)
+      .json({ errors: [{ msg: 'You need to pass project ID to delete it!' }] });
+  try {
+    const userProjects = await User.findOneAndUpdate(
+      { _id: req.user.id, 'projects._id': projectId },
+      {
+        $set: {
+          'projects.$.name': updatedProject.name,
+          'projects.$.color': updatedProject.color
+        }
+      },
+      { new: true }
+    ).select('projects');
+
+    if (!userProjects)
+      return res.status(404).json({ errors: [{ msg: 'Project not found!' }] });
+
+    const modifiedProject = userProjects.projects.find(p => p.id === projectId);
+
+    res.status(200).json(modifiedProject);
+
+    return;
+  } catch (error) {
+    console.error(error.message);
+
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Project not found!' }] });
+
+    res.status(500).send('Server error!');
+    return error;
   }
 };
