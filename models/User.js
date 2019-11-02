@@ -42,7 +42,15 @@ const UserSchema = new Schema({
       type: String
     },
     defaultView: {
-      type: String
+      type: String,
+      enum: ['inbox', 'today', 'week'],
+      default: 'today'
+    },
+    dailyGoal: {
+      type: Number
+    },
+    weeklyGoal: {
+      type: Number
     }
   }
 });

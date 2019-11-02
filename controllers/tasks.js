@@ -1,6 +1,7 @@
+const calcTime = require('../utils/calcTime');
 const Task = require('../models/Task');
 const User = require('../models/User');
-const calcTime = require('../utils/calcTime');
+const Dashboard = require('../models/Dashboard');
 
 exports.searchTask = async (req, res) => {
   try {
@@ -114,15 +115,7 @@ exports.getSingleTask = async (req, res) => {
 };
 
 exports.createOrUpdateTask = async (req, res) => {
-  const {
-    taskId,
-    title,
-    date,
-    labelsIDs,
-    projectId,
-    priority,
-    status
-  } = req.body;
+  const { taskId, title, date, labelsIDs, projectId, priority } = req.body;
 
   const taskFields = {
     user: req.user.id
@@ -130,8 +123,13 @@ exports.createOrUpdateTask = async (req, res) => {
 
   if (title) taskFields.title = title;
   if (priority) taskFields.priority = priority;
-  if (status) taskFields.status = status;
-  if (date && status === 'active') taskFields.date = date;
+
+  if (date) {
+    taskFields.status = 'active';
+    taskFields.date = date;
+  } else {
+    taskFields.status = 'inbox';
+  }
 
   try {
     let user;
@@ -157,11 +155,13 @@ exports.createOrUpdateTask = async (req, res) => {
           project => project.id === projectId
         );
 
-        taskFields.project = {
-          _id: projectId,
-          name: selectedProject.name,
-          color: selectedProject.color
-        };
+        if (selectedProject) {
+          taskFields.project = {
+            _id: projectId,
+            name: selectedProject.name,
+            color: selectedProject.color
+          };
+        }
       }
     }
 
@@ -193,8 +193,9 @@ exports.createOrUpdateTask = async (req, res) => {
   }
 };
 
-exports.deleteTask = async (req, res) => {
+exports.removeTask = async (req, res) => {
   const taskId = req.params.taskId;
+  const destroyTask = req.query.destroy;
 
   if (!taskId)
     return res
@@ -213,6 +214,17 @@ exports.deleteTask = async (req, res) => {
       });
 
     await task.remove();
+
+    if (!destroyTask) {
+      const userDashboard = await Dashboard.findOne({ user: req.user.id });
+
+      if (userDashboard) {
+        // Push empty item with Date.now by default just to store info about whether task is done and when
+        userDashboard.tasksDoneList.push({});
+
+        await userDashboard.save();
+      }
+    }
 
     res.status(200).json({ msg: 'Task has been removed!' });
     return;

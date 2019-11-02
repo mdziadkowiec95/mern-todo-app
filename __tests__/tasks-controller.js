@@ -204,7 +204,7 @@ describe('TasksController functions tests', () => {
     });
   });
 
-  describe('deleteTask', () => {
+  describe('removeTask', () => {
     it('should return 404 error if task with ID does not exists', done => {
       const req = {
         user: {
@@ -212,12 +212,13 @@ describe('TasksController functions tests', () => {
         },
         params: {
           taskId: generateObjectId(7)
-        }
+        },
+        query: {}
       };
 
       const res = new ResponseWithErrorsArray();
 
-      TasksController.deleteTask(req, res).then(() => {
+      TasksController.removeTask(req, res).then(() => {
         expect(res.statusCode).toBe(404);
         expect(res.errors[0].msg).toBe('Task not found!');
         done();
@@ -231,12 +232,13 @@ describe('TasksController functions tests', () => {
         },
         params: {
           taskId: testUserFirstTaskId
-        }
+        },
+        query: {}
       };
 
       const res = new ResponseWithErrorsArray();
 
-      TasksController.deleteTask(req, res).then(() => {
+      TasksController.removeTask(req, res).then(() => {
         expect(res.statusCode).toBe(401);
         expect(res.errors[0].msg).toBe(
           'You are NOT authorized to delete this task!'
@@ -252,7 +254,8 @@ describe('TasksController functions tests', () => {
         },
         params: {
           taskId: testUserFirstTaskId
-        }
+        },
+        query: {}
       };
 
       const res = {
@@ -267,7 +270,7 @@ describe('TasksController functions tests', () => {
         }
       };
 
-      TasksController.deleteTask(req, res)
+      TasksController.removeTask(req, res)
         .then(() => Task.findById(testUserFirstTaskId))
         .then(deletedTask => {
           expect(deletedTask).toBeFalsy();
@@ -282,11 +285,12 @@ describe('TasksController functions tests', () => {
         user: {
           id: testUser.id
         },
-        params: {}
+        params: {},
+        query: {}
       };
       const res = new ResponseWithErrorsArray();
 
-      TasksController.deleteTask(req, res).then(() => {
+      TasksController.removeTask(req, res).then(() => {
         expect(res.statusCode).toBe(400);
         expect(res.errors[0].msg).toBe(
           'You need to pass task ID to delete it!'
