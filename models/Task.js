@@ -24,6 +24,9 @@ const TaskSchema = new Schema({
     }
   ],
   project: {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId
+    },
     name: {
       type: String
     },
@@ -33,11 +36,13 @@ const TaskSchema = new Schema({
   },
   priority: {
     type: String,
-    default: 'normal' // ['low', 'normal', 'high']
+    enum: ['low', 'normal', 'high'],
+    default: 'normal'
   },
   status: {
     type: String,
-    default: 'inbox' // ['inbox', 'active']
+    enum: ['inbox', 'active'],
+    default: 'inbox'
   }
 });
 
@@ -45,5 +50,15 @@ const TaskSchema = new Schema({
 TaskSchema.path('labels').validate(function(labels) {
   return labels.length <= 3;
 }, 'Single task can be associated with up to 3 labels!');
+
+TaskSchema.path('status').validate(function(status) {
+  if (status === 'inbox') {
+    return !this.date;
+  }
+
+  if (status === 'active') {
+    return this.date;
+  }
+}, `Inbox tasks can't have date. Active tasks should have date specified!`);
 
 module.exports = Task = mongoose.model('task', TaskSchema);

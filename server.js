@@ -3,6 +3,7 @@ const app = express();
 const tasks = require('./routes/api/tasks');
 const users = require('./routes/api/users');
 const auth = require('./routes/api/auth');
+const dashboards = require('./routes/api/dashboards');
 const connectDB = require('./config/db');
 const cors = require('cors');
 
@@ -16,6 +17,7 @@ app.use(cors()); // WARNING --- Just temporary for experimenting
 app.use('/api/tasks', tasks);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
+app.use('/api/dashboards', dashboards);
 
 const port = process.env.PORT || 5000;
 
