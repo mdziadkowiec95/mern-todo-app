@@ -7,9 +7,11 @@ CRUD Full stack TODO app built with MERN stack.
 ## Built With
 
 - [React](https://reactjs.org/) - Frontend framework
+- [Typescript](https://www.typescriptlang.org/) - Typescript for CLIENT (React App)
 - [Express](https://expressjs.com/) - used to create API
 - [Node.js](https://nodejs.org/en/) - used to create API
 - [MongoDB](https://www.mongodb.com/cloud/atlas) - database
+- [Storybook](https://storybook.js.org/) - storybook for react components
 
 ## Getting Started
 
@@ -57,7 +59,7 @@ npm run dev
 ## Testing
 
 - `npm run test` (it runs JEST testing library)
-- All server side tests are in root directory inside ****TESTS**** directory
+- All server side tests are in root directory inside \***\*TESTS\*\*** directory
 
 ## Deployment
 

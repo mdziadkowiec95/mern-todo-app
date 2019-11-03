@@ -9,10 +9,12 @@ exports.authUser = async (req, res) => {
     const user = await User.findById(req.user.id);
 
     res.json(user);
+    return;
   } catch (error) {
     console.error(error);
 
     res.status(500).send('Server error!');
+    return error;
   }
 };
 
@@ -29,7 +31,7 @@ exports.signIn = async (req, res) => {
     }
 
     if (!user) {
-      return res.status(404).json({ erorrs: [{ msg: 'User not found!' }] });
+      return res.status(404).json({ errors: [{ msg: 'User not found!' }] });
     }
 
     const passwordMatch = bcrypt.compareSync(password, user.password);
@@ -59,5 +61,7 @@ exports.signIn = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error!');
+
+    return error;
   }
 };

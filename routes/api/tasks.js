@@ -40,6 +40,6 @@ router.post('/', authMiddleware, TasksController.createOrUpdateTask);
  * @access Private
  */
 
-router.delete('/:taskId', authMiddleware, TasksController.deleteTask);
+router.delete('/:taskId', authMiddleware, TasksController.removeTask);
 
 module.exports = router;
