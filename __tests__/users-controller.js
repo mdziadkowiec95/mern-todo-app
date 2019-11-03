@@ -523,7 +523,7 @@ describe('UserController functions', () => {
       UsersController.removeProject(req, res).then(userTasks => {
         const isAnyTaskWithProject3 = userTasks.some(task =>
           task.project._id
-            ? task.project._id.toString() === generateObjectId(4)
+            ? task.project._id.toString() === generateObjectId(3)
             : false
         );
         expect(isAnyTaskWithProject3).toBe(false);
