@@ -1,17 +1,20 @@
-import React from 'react';
-import Button from './components/atoms/Button/Button';
+import React, { useState } from 'react';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import Navbar from './components/organisms/Navbar/Navbar';
+import Preferences from './components/views/Preferences/Preferences';
 
 const App: React.FC = () => {
-  let x: boolean = true;
-
-  x = false;
+  const [value, setValue] = useState('');
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>TODO App preparation</h1>
-        <Button></Button>
-      </header>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" exact render={() => <Redirect to="/app" />} />
+          <Route path="/app" component={Navbar} />
+          <Route path="/preferences" component={Preferences} />
+        </Switch>
+      </BrowserRouter>
     </div>
   );
 };
