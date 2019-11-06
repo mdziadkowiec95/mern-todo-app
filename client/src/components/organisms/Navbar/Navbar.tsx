@@ -1,11 +1,17 @@
 import React from 'react';
-import Button from '../../atoms/Button/Button';
+import { NavLink } from 'react-router-dom';
+import styles from './Navbar.module.scss';
 
 const Navbar: React.FC = props => {
   return (
-    <div>
-      <Button primary>Primary button</Button>
-    </div>
+    <nav>
+      <ul>
+        <li>
+          <NavLink to="/preferences">Preferences</NavLink>
+        </li>
+      </ul>
+      <hr />
+    </nav>
   );
 };
 

@@ -5,6 +5,11 @@ body {
   font-family: 'Courier New', Courier, monospace;
 }
 
+main {
+  max-width: 70%;
+  margin: 0 auto;
+}
+
 input {
   padding: 10px;
 }
