@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import styles from './Preferences.module.scss';
 import ContentTemplate from '../../templates/ContentTemplate/ContentTemplate';
 
 const Preferences: React.FC = () => {

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
 import TaskListTemplate from '../../../templates/TaskListTemplate/TaskListTemplate';
+import TaskCard from '../../../components/molecules/TaskCard/TaskCard';
 
 const TaskBoard: React.FC<RouteComponentProps> = ({ match }) => {
   useEffect(() => console.log(match.url), [match]);
@@ -9,11 +10,7 @@ const TaskBoard: React.FC<RouteComponentProps> = ({ match }) => {
     <div>
       <div>Test dynamic route. URL = {match.url}</div>;
       <TaskListTemplate>
-        <li>Task item</li>
-        <li>Task item</li>
-        <li>Task item</li>
-        <li>Task item</li>
-        <li>Task item</li>
+        <TaskCard />
       </TaskListTemplate>
       <button>Add Task</button>
     </div>
