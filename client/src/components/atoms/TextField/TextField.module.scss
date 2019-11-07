@@ -1,0 +1,7 @@
+@import 'src/scss/utils/utils';
+
+.input {
+  @include breakpoint-up(sm) {
+    background-color: $secondary;
+  }
+}
