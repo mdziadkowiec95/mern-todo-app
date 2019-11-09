@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './TaskCard.module.scss';
 import DatePicker from '../../atoms/DatePicker/DatePicker';
 import { isValidDate } from '../../../utils/dates';
+import { Link } from 'react-router-dom';
 
 interface TaskState {
   date: Date | null;
@@ -30,6 +31,10 @@ const TaskCard: React.FC = () => {
         setDate={setDate}
         placeholder="Test"
       />
+      <br />
+      <Link to={`/app/project/${345}/details`}>Preview project 345</Link>
+      <br />
+      <Link to={`/app/project/${678}/details`}>Preview project 678</Link>
     </div>
   );
 };
