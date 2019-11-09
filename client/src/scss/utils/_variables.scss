@@ -1,6 +1,20 @@
-$primary: blue;
-$secondary: yellow;
-
 $colors: (
-  primary: blue
+  primary: #00bfa5,
+  secondary: #2196f3,
+  tertiary: rgb(156, 39, 176),
+  white: #fff,
+  light: #ddd,
+  dark: #212121,
+  dark-100: #424242,
+  dark-200: #626262,
+  dark-300: #828282,
+  error-text: #d02424
+);
+
+$gradients: (
+  primary: linear-gradient(-45deg, #2196f3 0%, #2196f3 33%, #00bfa5 100%)
+);
+
+$easings: (
+  primary: cubic-bezier(0.4, 0, 0.2, 1)
 );

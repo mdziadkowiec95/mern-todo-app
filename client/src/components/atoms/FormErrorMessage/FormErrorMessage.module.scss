@@ -1,0 +1,7 @@
+@import 'utils/utils';
+
+.error {
+  margin: 0 0 1rem 1rem;
+  font-size: 1.3rem;
+  color: map-get($colors, error-text);
+}

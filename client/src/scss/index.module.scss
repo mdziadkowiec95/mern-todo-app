@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
+@import '~normalize.css';
+@import 'utils/utils';
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+button:focus,
+a:focus,
+input:focus {
+  outline: none;
+}
+
+html {
+  font-size: 62.5%;
+  font-weight: 400;
+  color: map-get($colors, dark);
+}
+
+body {
+  min-height: 100vh;
+  font-size: 1.4rem;
+  font-family: 'Open Sans', sans-serif;
+  background: map-get($gradients, primary) no-repeat center / cover;
+}
+
+main {
+  max-width: 70%;
+  margin: 0 auto;
+}
+
+input {
+  padding: 10px;
+}
+
+// Headings
+h2 {
+  font-size: 2.4rem;
+}
+
+// Form elements
+input {
+}

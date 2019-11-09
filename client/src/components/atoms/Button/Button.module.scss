@@ -1,11 +1,83 @@
+@import 'utils/utils';
+
 .btn {
+  position: relative;
+  padding: 1rem 2rem;
+  color: map-get($colors, white);
   border: 0;
+  border-radius: 2.5rem;
+  box-shadow: 0px 3px 3px -2px rgba(80, 80, 80, 0.2),
+    0px 4px 5px 1px rgba(80, 80, 80, 0.14),
+    0px 2px 7px 2px rgba(80, 80, 80, 0.12);
+
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 250ms map-get($easings, primary),
+    box-shadow 250ms map-get($easings, primary),
+    border 250ms map-get($easings, primary);
+
+  &:hover {
+    box-shadow: 0px 5px 5px -3px rgba(80, 80, 80, 0.2),
+      0px 8px 10px 1px rgba(80, 80, 80, 0.14),
+      0px 3px 14px 2px rgba(80, 80, 80, 0.12);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:active {
+    box-shadow: 0px 5px 5px -3px rgba(80, 80, 80, 0.2),
+      0px 8px 10px 1px rgba(80, 80, 80, 0.14),
+      0px 3px 14px 2px rgba(80, 80, 80, 0.12);
+
+    &::before {
+      animation: active-button 0.3s forwards;
+    }
+  }
+
+  &::before {
+    content: '';
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: block;
+    background: rgba(255, 255, 255, 0.2);
+    width: 0;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+  }
 
   &.primary {
-    background-color: #333;
+    background: map-get($colors, primary);
+
+    &:hover,
+    &:focus {
+      background: darken(map-get($colors, primary), 10%);
+    }
   }
 
   &.secondary {
-    background-color: #962529;
+    background: map-get($colors, secondary);
+
+    &:hover,
+    &:focus {
+      background: darken(map-get($colors, secondary), 10%);
+    }
+  }
+
+  &.block {
+    width: 100%;
+  }
+}
+
+@keyframes active-button {
+  100% {
+    width: 100%;
   }
 }

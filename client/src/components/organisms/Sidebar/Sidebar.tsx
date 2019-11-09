@@ -7,10 +7,10 @@ const Sidebar: React.FC = props => {
       <h2>Sidebar</h2>
       <ul>
         <li>
-          <NavLink to="/app/label">Label</NavLink>
+          <NavLink to="/app/label/123">Label</NavLink>
         </li>
         <li>
-          <NavLink to="/app/project">Project</NavLink>
+          <NavLink to="/app/project/123">Project</NavLink>
         </li>
         <li>
           <NavLink to="/app/today">Today</NavLink>
