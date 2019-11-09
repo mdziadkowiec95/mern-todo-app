@@ -33,8 +33,8 @@ const App: React.FC<RouteComponentProps> = ({ match, children }) => {
         <Sidebar />
         <div className="test">
           <Switch>
-            <Route path={`${match.path}/label`} component={TaskBoard} />
-            <Route path={`${match.path}/project`} component={TaskBoard} />
+            <Route path={`${match.path}/label/:labelIds`} component={TaskBoard} />
+            <Route path={`${match.path}/project/:projectId`} component={TaskBoard} />
             <Route path={`${match.path}/today`} component={TaskBoard} />
           </Switch>
         </div>

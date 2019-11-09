@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './scss/index.scss';
+import './scss/index.module.scss';
 import Root from './Root';
 import { setAuthTokenHeader } from './utils/API';
 

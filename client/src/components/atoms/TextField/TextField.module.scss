@@ -1,7 +1,62 @@
-@import 'src/scss/utils/utils';
+@import 'utils/utils';
+
+.wrapper {
+  margin-bottom: 1rem;
+  background-color: rgba(map-get($colors, white), 0.2);
+  border-radius: 4rem;
+
+  &.isFlex {
+    display: inline-block;
+
+    .input {
+      transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      width: 100px;
+
+      &:focus {
+        width: 400px;
+      }
+    }
+  }
+
+  &.noMargin {
+    margin-bottom: 0;
+  }
+
+  &.solid {
+    background-color: rgba(map-get($colors, white), 0.9);
+
+    .input {
+      border: 1px solid map-get($colors, secondary);
+      color: map-get($colors, dark);
+
+      &:focus {
+        border: 1px solid map-get($colors, primary);
+      }
+
+      &::placeholder {
+        color: map-get($colors, dark-300);
+      }
+    }
+  }
+}
 
 .input {
-  @include breakpoint-up(sm) {
-    background-color: $secondary;
+  width: 100%;
+  padding: 1.3rem;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  color: map-get($colors, white);
+
+  &:focus {
+    border: 1px solid rgba(map-get($colors, white), 0.4);
+  }
+
+  &::placeholder {
+    color: map-get($colors, light);
+  }
+
+  &::selection {
+    color: map-get($colors, dark);
   }
 }
