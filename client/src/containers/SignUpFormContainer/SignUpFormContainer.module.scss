@@ -6,6 +6,8 @@
   padding: 2rem;
   background: map-get($colors, white);
   border-radius: 2rem;
+
+  @extend %shadow-100;
 }
 
 .field {

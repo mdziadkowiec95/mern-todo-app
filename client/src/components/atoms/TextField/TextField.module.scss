@@ -38,25 +38,29 @@
       }
     }
   }
-}
 
-.input {
-  width: 100%;
-  padding: 1.3rem;
-  background: none;
-  border: 1px solid transparent;
-  border-radius: inherit;
-  color: map-get($colors, white);
+  .input {
+    width: 100%;
+    padding: 1.3rem;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: inherit;
+    color: map-get($colors, white);
 
-  &:focus {
-    border: 1px solid rgba(map-get($colors, white), 0.4);
-  }
+    &.error {
+      border: 1px solid map-get($colors, error-text);
+    }
 
-  &::placeholder {
-    color: map-get($colors, light);
-  }
+    &:focus {
+      border: 1px solid rgba(map-get($colors, white), 0.4);
+    }
 
-  &::selection {
-    color: map-get($colors, dark);
+    &::placeholder {
+      color: map-get($colors, light);
+    }
+
+    &::selection {
+      color: map-get($colors, dark);
+    }
   }
 }
