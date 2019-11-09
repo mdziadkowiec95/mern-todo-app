@@ -3,20 +3,24 @@ import styles from './TextField.module.scss';
 import cn from 'classnames';
 
 type TextFieldProps = {
+  onChangeFn: Function;
+  onBlurFn: Function;
+  inputValue: string;
+  name: string;
+  isError: boolean | '' | undefined;
   isSolid?: boolean;
   isFlex?: boolean;
   noMargin?: boolean;
-  onChangeFn: Function;
-  inputValue: string;
-  name: string;
-  placeholder?: string;
+  placeholder: string;
 };
 
 const TextField: React.FC<TextFieldProps> = ({
+  isError = false,
   isSolid = false,
   isFlex = false,
   noMargin = false,
   onChangeFn,
+  onBlurFn,
   inputValue,
   name,
   placeholder = 'Enter some text...'
@@ -27,15 +31,22 @@ const TextField: React.FC<TextFieldProps> = ({
     [styles.isFlex]: isFlex
   });
 
+  const InputClassNames = cn(styles.input, {
+    [styles.error]: isError
+  });
+
+  console.log(isError);
+
   return (
     <div className={TextFieldClassNames}>
       <input
         type="text"
         name={name}
         value={inputValue}
-        className={styles.input}
+        className={InputClassNames}
         placeholder={placeholder}
         onChange={e => onChangeFn(e)}
+        onBlur={e => onBlurFn(e)}
       />
     </div>
   );
