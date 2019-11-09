@@ -7,11 +7,7 @@ export default { title: 'atoms/Inputs' };
 const ParentComponent: React.FC = () => {
   const [value, setInputValue] = useState('');
 
-  return (
-    <div>
-      <TextField onChangeFn={setInputValue} inputValue={value} />
-    </div>
-  );
+  return <div></div>;
 };
 
 export const textFieldControlledByParent: React.FC = () => <ParentComponent />;

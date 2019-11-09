@@ -2,18 +2,31 @@ import React from 'react';
 import cn from 'classnames';
 import styles from './Button.module.scss';
 
-interface ButtonProps {
+type ButtonProps = {
+  isSubmit?: boolean;
+  isBlock?: boolean;
   primary?: boolean;
   secondary?: boolean;
-}
+};
 
-const Button: React.FC<ButtonProps> = ({ primary, secondary, children }) => {
-  const buttonClassName = cn(styles.btn, {
+const Button: React.FC<ButtonProps> = ({
+  isSubmit = false,
+  isBlock,
+  primary,
+  secondary,
+  children
+}) => {
+  const ButtonClassName = cn(styles.btn, {
     [styles.primary]: primary,
-    [styles.secondary]: secondary
+    [styles.secondary]: secondary,
+    [styles.block]: isBlock
   });
 
-  return <button className={buttonClassName}>{children}</button>;
+  return (
+    <button type={isSubmit ? 'submit' : 'button'} className={ButtonClassName}>
+      {children}
+    </button>
+  );
 };
 
 export default Button;
