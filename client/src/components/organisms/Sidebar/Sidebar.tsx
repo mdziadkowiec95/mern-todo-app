@@ -1,9 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import styles from './Sidebar.module.scss';
 
 const Sidebar: React.FC = props => {
   return (
-    <aside>
+    <aside className={styles.wrapper}>
       <h2>Sidebar</h2>
       <ul>
         <li>

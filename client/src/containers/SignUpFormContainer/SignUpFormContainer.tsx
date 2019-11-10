@@ -3,8 +3,8 @@ import { FormikProps, withFormik } from 'formik';
 import * as Yup from 'yup';
 import TextField from '../../components/atoms/TextField/TextField';
 import Button from '../../components/atoms/Button/Button';
-import styles from './SignUpFormContainer.module.scss';
 import FormErrorMessage from '../../components/atoms/FormErrorMessage/FormErrorMessage';
+import styles from './SignUpFormContainer.module.scss';
 
 type SignUpFormProps = {};
 
@@ -41,6 +41,7 @@ class SignUpFormInner extends Component<
 
     return (
       <form onSubmit={handleSubmit} className={styles.wrapper}>
+        <h2>Sign Up</h2>
         <TextField
           isError={errors.userName && touched.userName}
           isSolid

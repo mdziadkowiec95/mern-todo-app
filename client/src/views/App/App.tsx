@@ -28,13 +28,18 @@ const App: React.FC<RouteComponentProps> = ({ match, children }) => {
 
   return (
     <ContentTemplate>
-      <Navbar />
       <div className={styles.main}>
         <Sidebar />
         <div className="test">
           <Switch>
-            <Route path={`${match.path}/label/:labelIds`} component={TaskBoard} />
-            <Route path={`${match.path}/project/:projectId`} component={TaskBoard} />
+            <Route
+              path={`${match.path}/label/:labelIds`}
+              component={TaskBoard}
+            />
+            <Route
+              path={`${match.path}/project/:projectId`}
+              component={TaskBoard}
+            />
             <Route path={`${match.path}/today`} component={TaskBoard} />
           </Switch>
         </div>

@@ -1,0 +1,11 @@
+@import 'utils/utils';
+
+.wrapper {
+  position: fixed;
+  top: 0;
+  left: -400px;
+
+  @include breakpoint-up(md) {
+    position: static;
+  }
+}

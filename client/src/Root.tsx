@@ -5,11 +5,13 @@ import App from './views/App/App';
 import SignIn from './views/SignIn/SignIn';
 import SignUp from './views/SignUp/SignUp';
 import LandingPage from './views/App/LandingPage/LandingPage';
+import Navbar from './components/organisms/Navbar/Navbar';
 
 const Root: React.FC = () => {
   return (
     <>
       <BrowserRouter>
+        <Navbar />
         <Switch>
           <Route path="/" exact component={LandingPage} />
           <Route path="/sign-in" component={SignIn} />

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePickerComponent from 'react-datepicker';
 import { isTwelweHoursCountry } from '../../../utils/dates';
-
+import { debounce } from 'lodash';
 import 'react-datepicker/dist/react-datepicker.css';
+// DatePicker styles overrides
+import './DatePicker.scss';
 
 interface DatePickerProps {
   selectedDate: Date | null;
@@ -15,6 +17,22 @@ const DatePicker: React.FC<DatePickerProps> = ({
   setDate,
   placeholder
 }) => {
+  const [showAsModal, setShowAsModal] = useState(false);
+
+  useEffect(() => {
+    ['load', 'resize'].forEach(event => {
+      window.addEventListener(
+        event,
+        debounce(() => {
+          if (window.innerWidth >= 576) {
+            setShowAsModal(false);
+          } else {
+            setShowAsModal(true);
+          }
+        }, 500)
+      );
+    });
+  }, []);
   const timeFormat = isTwelweHoursCountry() ? 'h:mm aa' : 'HH:mm';
 
   return (
@@ -28,6 +46,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
       timeIntervals={15}
       timeCaption="time"
       dateFormat={`yyyy/MM/dd ${timeFormat}`}
+      withPortal={showAsModal}
     />
   );
 };
