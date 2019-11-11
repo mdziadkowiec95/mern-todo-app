@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 import 'react-datepicker/dist/react-datepicker.css';
 // DatePicker styles overrides
 import './DatePicker.scss';
+import config from '../../../config';
 
 interface DatePickerProps {
   selectedDate: Date | null;
@@ -24,7 +25,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
       window.addEventListener(
         event,
         debounce(() => {
-          if (window.innerWidth >= 576) {
+          if (window.innerWidth >= config.breakpoints.xs) {
             setShowAsModal(false);
           } else {
             setShowAsModal(true);

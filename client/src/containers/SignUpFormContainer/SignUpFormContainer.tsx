@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
+import { bindActionCreators, Dispatch, AnyAction } from 'redux';
+import { connect } from 'react-redux';
 import { FormikProps, withFormik } from 'formik';
 import * as Yup from 'yup';
 import TextField from '../../components/atoms/TextField/TextField';
 import Button from '../../components/atoms/Button/Button';
 import FormErrorMessage from '../../components/atoms/FormErrorMessage/FormErrorMessage';
 import styles from './SignUpFormContainer.module.scss';
+import { AppState } from '../../store/rootReducer';
+import { registerUser } from '../../store/auth/thunks';
+import Loader from '../../components/atoms/Loader/Loader';
 
-type SignUpFormProps = {};
+type SignUpFormProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>;
 
 type FormValues = {
   userName: string;
@@ -15,7 +21,8 @@ type FormValues = {
   passwordConfirm: string;
 };
 
-type FormProps = {};
+type FormProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps>;
 
 type SignUpFormState = {
   userEmail: string;
@@ -36,12 +43,14 @@ class SignUpFormInner extends Component<
       handleChange,
       handleBlur,
       handleSubmit,
-      isSubmitting
+      isSubmitting,
+      auth: { isLoading }
     } = this.props;
 
     return (
       <form onSubmit={handleSubmit} className={styles.wrapper}>
         <h2>Sign Up</h2>
+        {isLoading && <Loader />}
         <TextField
           isError={errors.userName && touched.userName}
           isSolid
@@ -107,14 +116,14 @@ const SignUpSchema = Yup.object().shape({
     .email('Email is not valid')
     .required('Email is required'),
   password: Yup.string()
-    .min(2, 'Password needs to be at least 8 characters long')
+    .min(8, 'Password needs to be at least 8 characters long')
     .required('Password is required'),
   passwordConfirm: Yup.string()
-    .min(2, 'Confirm Password needs to be at least 8 characters long')
+    .min(8, 'Confirm Password needs to be at least 8 characters long')
     .required('Confirm Password is required')
 });
 
-const SignUpFormContainer = withFormik<FormProps, FormValues>({
+const SignUpFormContainer = withFormik<SignUpFormProps, FormValues>({
   mapPropsToValues: props => ({
     userName: '',
     userEmail: '',
@@ -125,19 +134,39 @@ const SignUpFormContainer = withFormik<FormProps, FormValues>({
 
   handleSubmit(
     { userName, userEmail, password, passwordConfirm }: FormValues,
-    { props, setSubmitting, setErrors }
+    { props, setSubmitting, setErrors, resetForm, setFieldValue }
   ) {
-    setTimeout(() => {
-      alert(
-        JSON.stringify(
-          { userName, userEmail, password, passwordConfirm },
-          null,
-          2
-        )
-      );
-      setSubmitting(false);
-    }, 1000);
+    const userData = {
+      name: userName,
+      email: userEmail,
+      password: password,
+      passwordConfirm: passwordConfirm
+    };
+
+    // Run Redux action with onSucces and onError callbacks
+    props.registerUser(
+      userData,
+      () => {
+        resetForm();
+        setSubmitting(false);
+      },
+      () => {
+        setFieldValue('password', '');
+        setFieldValue('passwordConfirm', '');
+        setSubmitting(false);
+      }
+    );
   }
 })(SignUpFormInner);
 
-export default SignUpFormContainer;
+const mapStateToProps = (state: AppState) => ({
+  auth: state.auth
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
+  bindActionCreators({ registerUser }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignUpFormContainer);

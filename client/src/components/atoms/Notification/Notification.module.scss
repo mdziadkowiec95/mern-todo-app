@@ -1,0 +1,19 @@
+.wrapper {
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background-color: green;
+  color: #fff;
+  animation: show-notification 0.3s;
+}
+
+@keyframes show-notification {
+  from {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

@@ -35,8 +35,6 @@ const TextField: React.FC<TextFieldProps> = ({
     [styles.error]: isError
   });
 
-  console.log(isError);
-
   return (
     <div className={TextFieldClassNames}>
       <input

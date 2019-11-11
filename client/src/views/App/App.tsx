@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Navbar from '../../components/organisms/Navbar/Navbar';
 import Sidebar from '../../components/organisms/Sidebar/Sidebar';
 import styles from './App.module.scss';
 import { Switch, Route, RouteComponentProps } from 'react-router';
