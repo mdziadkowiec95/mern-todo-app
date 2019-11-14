@@ -11,8 +11,7 @@ import { AppState } from '../../store/rootReducer';
 import { registerUser } from '../../store/auth/thunks';
 import Loader from '../../components/atoms/Loader/Loader';
 
-type SignUpFormProps = ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>;
+type SignUpFormProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 type FormValues = {
   userName: string;
@@ -20,9 +19,6 @@ type FormValues = {
   password: string;
   passwordConfirm: string;
 };
-
-type FormProps = ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>;
 
 type SignUpFormState = {
   userEmail: string;
@@ -43,14 +39,14 @@ class SignUpFormInner extends Component<
       handleChange,
       handleBlur,
       handleSubmit,
-      isSubmitting,
-      auth: { isLoading }
+      // isSubmitting,
+      auth: { isLoading },
     } = this.props;
 
     return (
       <form onSubmit={handleSubmit} className={styles.wrapper}>
         <h2>Sign Up</h2>
-        {isLoading && <Loader />}
+        {isLoading && <Loader isLarge />}
         <TextField
           isError={errors.userName && touched.userName}
           isSolid
@@ -60,9 +56,7 @@ class SignUpFormInner extends Component<
           name="userName"
           placeholder="Your name"
         />
-        {errors.userName && touched.userName && (
-          <FormErrorMessage errors={errors.userName} />
-        )}
+        {errors.userName && touched.userName && <FormErrorMessage errors={errors.userName} />}
         <TextField
           isError={errors.userEmail && touched.userEmail}
           isSolid
@@ -72,9 +66,7 @@ class SignUpFormInner extends Component<
           name="userEmail"
           placeholder="Your email"
         />
-        {errors.userEmail && touched.userEmail && (
-          <FormErrorMessage errors={errors.userEmail} />
-        )}
+        {errors.userEmail && touched.userEmail && <FormErrorMessage errors={errors.userEmail} />}
         <TextField
           isError={errors.password && touched.password}
           isSolid
@@ -82,11 +74,10 @@ class SignUpFormInner extends Component<
           onBlurFn={handleBlur}
           inputValue={values.password}
           name="password"
+          type="password"
           placeholder="Password"
         />
-        {errors.password && touched.password && (
-          <FormErrorMessage errors={errors.password} />
-        )}
+        {errors.password && touched.password && <FormErrorMessage errors={errors.password} />}
         <TextField
           isError={errors.passwordConfirm && touched.passwordConfirm}
           isSolid
@@ -94,6 +85,7 @@ class SignUpFormInner extends Component<
           onBlurFn={handleBlur}
           inputValue={values.passwordConfirm}
           name="passwordConfirm"
+          type="password"
           placeholder="Confirm Password"
         />
         {errors.passwordConfirm && touched.passwordConfirm && (
@@ -120,7 +112,7 @@ const SignUpSchema = Yup.object().shape({
     .required('Password is required'),
   passwordConfirm: Yup.string()
     .min(8, 'Confirm Password needs to be at least 8 characters long')
-    .required('Confirm Password is required')
+    .required('Confirm Password is required'),
 });
 
 const SignUpFormContainer = withFormik<SignUpFormProps, FormValues>({
@@ -128,7 +120,7 @@ const SignUpFormContainer = withFormik<SignUpFormProps, FormValues>({
     userName: '',
     userEmail: '',
     password: '',
-    passwordConfirm: ''
+    passwordConfirm: '',
   }),
   validationSchema: SignUpSchema,
 
@@ -140,7 +132,7 @@ const SignUpFormContainer = withFormik<SignUpFormProps, FormValues>({
       name: userName,
       email: userEmail,
       password: password,
-      passwordConfirm: passwordConfirm
+      passwordConfirm: passwordConfirm,
     };
 
     // Run Redux action with onSucces and onError callbacks
@@ -156,17 +148,14 @@ const SignUpFormContainer = withFormik<SignUpFormProps, FormValues>({
         setSubmitting(false);
       }
     );
-  }
+  },
 })(SignUpFormInner);
 
 const mapStateToProps = (state: AppState) => ({
-  auth: state.auth
+  auth: state.auth,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators({ registerUser }, dispatch);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignUpFormContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpFormContainer);

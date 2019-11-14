@@ -7,6 +7,7 @@ type TextFieldProps = {
   onBlurFn: Function;
   inputValue: string;
   name: string;
+  type?: string;
   isError: boolean | '' | undefined;
   isSolid?: boolean;
   isFlex?: boolean;
@@ -23,22 +24,23 @@ const TextField: React.FC<TextFieldProps> = ({
   onBlurFn,
   inputValue,
   name,
-  placeholder = 'Enter some text...'
+  type = 'text',
+  placeholder = 'Enter some text...',
 }) => {
   const TextFieldClassNames = cn(styles.wrapper, {
     [styles.solid]: isSolid,
     [styles.noMargin]: noMargin,
-    [styles.isFlex]: isFlex
+    [styles.isFlex]: isFlex,
   });
 
   const InputClassNames = cn(styles.input, {
-    [styles.error]: isError
+    [styles.error]: isError,
   });
 
   return (
     <div className={TextFieldClassNames}>
       <input
-        type="text"
+        type={type}
         name={name}
         value={inputValue}
         className={InputClassNames}

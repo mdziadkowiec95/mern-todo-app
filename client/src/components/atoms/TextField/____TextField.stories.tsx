@@ -1,12 +1,8 @@
-import React, { useState } from 'react';
-import TextField from './TextField';
-import { DecoratorFn } from '@storybook/react';
+import React from 'react';
 
 export default { title: 'atoms/Inputs' };
 
 const ParentComponent: React.FC = () => {
-  const [value, setInputValue] = useState('');
-
   return <div></div>;
 };
 

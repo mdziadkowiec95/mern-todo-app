@@ -1,13 +1,8 @@
 export enum ENotificationsActionTypes {
   ADD_NOTIFICATION = 'ADD_NOTIFICATION',
-  REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION'
+  REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION',
 }
-
-interface IBaseNotificationActions {
-  type: ENotificationsActionTypes;
-}
-
-interface IAddNotificationAction extends IBaseNotificationActions {
+interface IAddNotificationAction {
   type: ENotificationsActionTypes.ADD_NOTIFICATION;
   payload: {
     id: string;
@@ -16,13 +11,11 @@ interface IAddNotificationAction extends IBaseNotificationActions {
   };
 }
 
-interface IRemoveNotificationAction extends IBaseNotificationActions {
+interface IRemoveNotificationAction {
   type: ENotificationsActionTypes.REMOVE_NOTIFICATION;
   payload: {
     id: string;
   };
 }
 
-export type TNotificationsActionTypes =
-  | IAddNotificationAction
-  | IRemoveNotificationAction;
+export type TNotificationsActionTypes = IAddNotificationAction | IRemoveNotificationAction;

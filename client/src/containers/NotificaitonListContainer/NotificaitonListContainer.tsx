@@ -3,19 +3,17 @@ import { connect } from 'react-redux';
 import { AppState } from '../../store/rootReducer';
 import { Dispatch, AnyAction, bindActionCreators } from 'redux';
 import NotificationList from '../../components/molecules/NotificationList/NotificationList';
-import { INotification } from '../../types/notifications';
+import { INotification } from '../../models/notifications';
 
 type NotificaitonListContainerProps = ReturnType<typeof mapStateToProps> &
   ReturnType<typeof mapDispatchToProps>;
 
-class NotificaitonListContainer extends Component<
-  NotificaitonListContainerProps
-> {
+class NotificaitonListContainer extends Component<NotificaitonListContainerProps> {
   render() {
     // const arr = [
-    //   { id: '1', msg: 'test msg 1' },
-    //   { id: '2', type: 'success', msg: 'test msg 2' },
-    //   { id: '3', type: 'success', msg: 'test msg 3' }
+    //   { id: '1', type: 'success', msg: 'Passwords must be the same' },
+    //   { id: '2', type: 'warning2', msg: 'Passwords must be the same' },
+    //   { id: '3', type: 'error', msg: 'tPasswords must be the same test' },
     // ];
 
     const notifications: INotification[] = this.props.notifications;
@@ -31,13 +29,9 @@ class NotificaitonListContainer extends Component<
 }
 
 const mapStateToProps = (state: AppState) => ({
-  notifications: state.notifications
+  notifications: state.notifications,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({}, dispatch);
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({}, dispatch);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NotificaitonListContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(NotificaitonListContainer);

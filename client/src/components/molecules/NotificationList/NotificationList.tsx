@@ -1,6 +1,6 @@
 import React from 'react';
 import Notification from '../../atoms/Notification/Notification';
-import { INotification } from '../../../types/notifications';
+import { INotification } from '../../../models/notifications';
 import styles from './NotificationList.module.scss';
 
 interface NotificationListProps {

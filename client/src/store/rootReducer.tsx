@@ -4,7 +4,7 @@ import notifications from './notifications/reducers';
 
 const rootReducer = combineReducers({
   auth,
-  notifications
+  notifications,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

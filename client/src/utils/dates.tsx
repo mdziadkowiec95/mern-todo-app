@@ -1,5 +1,6 @@
 export const isValidDate = (input: any) => {
   if (Object.prototype.toString.call(input) === '[object Date]') return true;
+
   return false;
 };
 

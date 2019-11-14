@@ -1,9 +1,23 @@
+@import 'utils/utils';
+
 .wrapper {
   padding: 2rem;
   border-radius: 0.5rem;
-  background-color: green;
-  color: #fff;
+  background-color: map-get($colors, dark-100);
+  color: map-get($colors, white);
   animation: show-notification 0.3s;
+
+  @extend %shadow-100;
+
+  &.success {
+    background-color: map-get($colors, success-bg);
+  }
+  &.warning {
+    background-color: map-get($colors, warning-bg);
+  }
+  &.error {
+    background-color: map-get($colors, error-bg);
+  }
 }
 
 @keyframes show-notification {

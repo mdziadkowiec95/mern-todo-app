@@ -1,16 +1,39 @@
-import { Action } from 'redux';
-import { AppState } from '../../store/rootReducer';
+import { Action, Dispatch, AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import axios from 'axios';
+import { AppState } from '../../store/rootReducer';
 import { RegisterUserPayload } from './types';
 import {
   registerUserBegin,
   registerUserSuccess,
-  registerUserError
+  registerUserError,
+  authenticateUserBegin,
+  authenticateUserSuccess,
+  authenticateUserError,
 } from './actions';
-
 import { notifyUser } from '../notifications/thunks';
-import { ErrorMessage } from '../types';
+import { setAuthTokenHeader } from '../../utils/API';
+import { IErrorMessage } from '../types';
+
+export const authenticateUser = (): ThunkAction<void, AppState, null, Action<string>> => async (
+  dispatch: Dispatch<AnyAction>
+) => {
+  const authToken: string | null = localStorage.getItem('token');
+
+  if (authToken) {
+    setAuthTokenHeader(authToken);
+  }
+
+  try {
+    dispatch(authenticateUserBegin());
+
+    const res = await axios.get('/api/auth');
+
+    dispatch(authenticateUserSuccess(res.data));
+  } catch (err) {
+    dispatch(authenticateUserError());
+  }
+};
 
 export const registerUser = (
   userData: RegisterUserPayload,
@@ -19,15 +42,16 @@ export const registerUser = (
 ): ThunkAction<void, AppState, null, Action<string>> => async dispatch => {
   try {
     dispatch(registerUserBegin());
+
     const res = await axios.post('/api/users', userData);
 
     dispatch(registerUserSuccess(res.data.token));
+    dispatch(authenticateUser());
+    onSuccess();
   } catch (error) {
-    const errors: ErrorMessage[] = error.response.data.errors;
+    const errors: IErrorMessage[] = error.response.data.errors;
 
-    errors.forEach((err: ErrorMessage) => {
-      console.log(err.msg);
-
+    errors.forEach((err: IErrorMessage) => {
       dispatch(notifyUser(err.msg, 'error'));
     });
 
