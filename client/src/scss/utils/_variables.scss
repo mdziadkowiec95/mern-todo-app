@@ -3,7 +3,8 @@ $colors: (
   secondary: #2196f3,
   tertiary: rgb(156, 39, 176),
   white: #fff,
-  light: #ddd,
+  light: #f9faff,
+  light-100: #ddd,
   dark: #212121,
   dark-100: #424242,
   dark-200: #626262,
@@ -11,13 +12,13 @@ $colors: (
   error-text: #d02424,
   error-bg: #e54d42,
   success-bg: #68cd86,
-  warning-bg: #ffb648
+  warning-bg: #ffb648,
 );
 
 $gradients: (
-  primary: linear-gradient(-45deg, #2196f3 0%, #2196f3 33%, #00bfa5 100%)
+  primary: linear-gradient(-45deg, #2196f3 0%, #2196f3 33%, #00bfa5 100%),
 );
 
 $easings: (
-  primary: cubic-bezier(0.4, 0, 0.2, 1)
+  primary: cubic-bezier(0.4, 0, 0.2, 1),
 );

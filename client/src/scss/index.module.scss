@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
-@import '~normalize.css';
+// @import '~normalize.css';
 @import 'utils/utils';
+
+* {
+  margin: 0;
+  padding: 0;
+}
 
 *,
 *::after,
@@ -24,17 +29,16 @@ body {
   min-height: 100vh;
   font-size: 1.4rem;
   font-family: 'Open Sans', sans-serif;
-  background: map-get($gradients, primary) no-repeat center / cover;
 }
 
-main {
-  max-width: 70%;
-  margin: 0 auto;
+a {
+  &:link,
+  &:visited,
+  &:active,
+  &:hover {
+    text-decoration: none;
+  }
 }
-
-input {
-}
-
 // Headings
 h2 {
   font-size: 2.4rem;

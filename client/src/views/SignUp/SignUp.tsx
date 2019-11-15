@@ -1,12 +1,12 @@
 import React from 'react';
 import SignUpFormContainer from '../../containers/SignUpFormContainer/SignUpFormContainer';
-import ContentTemplate from '../../templates/ContentTemplate/ContentTemplate';
+import MainTemplate from '../../templates/MainTemplate/MainTemplate';
 
 const SignUp: React.FC = () => {
   return (
-    <ContentTemplate>
+    <MainTemplate>
       <SignUpFormContainer />
-    </ContentTemplate>
+    </MainTemplate>
   );
 };
 

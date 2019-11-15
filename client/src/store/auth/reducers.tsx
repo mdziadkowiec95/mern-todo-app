@@ -3,33 +3,35 @@ import { IUser } from '../../models/user';
 import { AnyAction } from 'redux';
 
 export interface IAuthState {
-  token: string | null;
+  authToken: string | null;
   isAuth: boolean | null;
   isLoading: boolean;
   user: IUser | null;
 }
 
 const initialState: IAuthState = {
-  token: localStorage.getItem('token'),
+  authToken: localStorage.getItem('token'),
   isAuth: null,
   isLoading: true,
   user: null,
 };
 
-export default function(state: IAuthState = initialState, action: AnyAction) {
+export default function(state: IAuthState = initialState, action: AnyAction): IAuthState {
   const { type, payload } = action;
 
   switch (type) {
     case EAuthActionTypes.AUTHENTICATE_USER_BEGIN:
     case EAuthActionTypes.REGISTER_USER_BEGIN:
+    case EAuthActionTypes.LOGIN_USER_BEGIN:
       return {
         ...state,
         isLoading: true,
       };
     case EAuthActionTypes.REGISTER_USER_SUCCESS:
-      localStorage.setItem('token', payload.token);
+    case EAuthActionTypes.LOGIN_USER_SUCCESS:
+      localStorage.setItem('token', payload.authToken);
 
-      return { ...state, authToken: payload.token, isLoading: false };
+      return { ...state, authToken: payload.authToken, isLoading: false };
     case EAuthActionTypes.AUTHENTICATE_USER_SUCCESS:
       return {
         ...state,
@@ -38,13 +40,16 @@ export default function(state: IAuthState = initialState, action: AnyAction) {
         isLoading: false,
       };
     case EAuthActionTypes.REGISTER_USER_ERROR:
+    case EAuthActionTypes.LOGIN_USER_ERROR:
     case EAuthActionTypes.AUTHENTICATE_USER_ERROR:
+    case EAuthActionTypes.LOGOUT_USER:
       localStorage.removeItem('token');
 
       return {
         ...state,
-        token: null,
+        authToken: null,
         isAuth: null,
+        user: null,
         isLoading: false,
       };
     default:

@@ -7,9 +7,13 @@ export enum EAuthActionTypes {
   AUTHENTICATE_USER_BEGIN = 'AUTHENTICATE_USER_BEGIN',
   AUTHENTICATE_USER_SUCCESS = 'AUTHENTICATE_USER_SUCCESS',
   AUTHENTICATE_USER_ERROR = 'AUTHENTICATE_USER_ERROR',
+  LOGIN_USER_BEGIN = 'LOGIN_USER_BEGIN',
+  LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS',
+  LOGIN_USER_ERROR = 'LOGIN_USER_ERROR',
+  LOGOUT_USER = 'LOGOUT_USER',
 }
 
-// Register user
+// Register user (SignUp)
 interface IRegisterUserBeginAction {
   type: EAuthActionTypes.REGISTER_USER_BEGIN;
 }
@@ -17,7 +21,7 @@ interface IRegisterUserBeginAction {
 interface IRegisterUserSuccessAction {
   type: EAuthActionTypes.REGISTER_USER_SUCCESS;
   payload: {
-    token: string;
+    authToken: string;
   };
 }
 interface IRegisterUserErrorAction {
@@ -38,6 +42,27 @@ interface IAuthenticateUserError {
   type: EAuthActionTypes.AUTHENTICATE_USER_ERROR;
 }
 
+// Login User (SignIn)
+interface ILoginUserBegin {
+  type: EAuthActionTypes.LOGIN_USER_BEGIN;
+}
+
+interface ILoginUserSuccess {
+  type: EAuthActionTypes.LOGIN_USER_SUCCESS;
+  payload: {
+    authToken: string;
+  };
+}
+
+interface ILoginUserError {
+  type: EAuthActionTypes.LOGIN_USER_ERROR;
+}
+
+// Logout User
+interface ILogoutUser {
+  type: EAuthActionTypes.LOGOUT_USER;
+}
+
 // All Auth module actions
 export type TAuthActionTypes =
   | IRegisterUserBeginAction
@@ -45,7 +70,11 @@ export type TAuthActionTypes =
   | IRegisterUserErrorAction
   | IAuthenticateUserBegin
   | IAuthenticateUserSuccess
-  | IAuthenticateUserError;
+  | IAuthenticateUserError
+  | ILoginUserBegin
+  | ILoginUserSuccess
+  | ILoginUserError
+  | ILogoutUser;
 
 // Request data interfaces
 export interface RegisterUserPayload {
@@ -53,4 +82,9 @@ export interface RegisterUserPayload {
   email: string;
   password: string;
   passwordConfirm: string;
+}
+
+export interface LoginUserPayload {
+  email: string;
+  password: string;
 }

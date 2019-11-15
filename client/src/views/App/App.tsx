@@ -3,13 +3,13 @@ import Sidebar from '../../components/organisms/Sidebar/Sidebar';
 import styles from './App.module.scss';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import TaskBoard from './TaskBoard/TaskBoard';
-import ContentTemplate from '../../templates/ContentTemplate/ContentTemplate';
+import AppTemplate from '../../templates/AppTemplate/AppTemplate';
 
 const App: React.FC<RouteComponentProps> = ({ match, children }) => {
   useEffect(() => console.log(match), [match]);
 
   return (
-    <ContentTemplate>
+    <AppTemplate>
       <div className={styles.main}>
         <Sidebar />
         <div className="test">
@@ -20,7 +20,7 @@ const App: React.FC<RouteComponentProps> = ({ match, children }) => {
           </Switch>
         </div>
       </div>
-    </ContentTemplate>
+    </AppTemplate>
   );
 };
 

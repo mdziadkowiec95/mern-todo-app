@@ -2,24 +2,22 @@
 
 .btn {
   position: relative;
+  display: inline-block;
   padding: 1rem 2rem;
   color: map-get($colors, white);
   border: 0;
   border-radius: 2.5rem;
-  box-shadow: 0px 3px 3px -2px rgba(80, 80, 80, 0.2),
-    0px 4px 5px 1px rgba(80, 80, 80, 0.14),
+  box-shadow: 0px 3px 3px -2px rgba(80, 80, 80, 0.2), 0px 4px 5px 1px rgba(80, 80, 80, 0.14),
     0px 2px 7px 2px rgba(80, 80, 80, 0.12);
 
   font-size: 1.4rem;
   text-transform: uppercase;
   cursor: pointer;
-  transition: 250ms map-get($easings, primary),
-    box-shadow 250ms map-get($easings, primary),
+  transition: 250ms map-get($easings, primary), box-shadow 250ms map-get($easings, primary),
     border 250ms map-get($easings, primary);
 
   &:hover {
-    box-shadow: 0px 5px 5px -3px rgba(80, 80, 80, 0.2),
-      0px 8px 10px 1px rgba(80, 80, 80, 0.14),
+    box-shadow: 0px 5px 5px -3px rgba(80, 80, 80, 0.2), 0px 8px 10px 1px rgba(80, 80, 80, 0.14),
       0px 3px 14px 2px rgba(80, 80, 80, 0.12);
   }
 
@@ -28,8 +26,7 @@
   }
 
   &:active {
-    box-shadow: 0px 5px 5px -3px rgba(80, 80, 80, 0.2),
-      0px 8px 10px 1px rgba(80, 80, 80, 0.14),
+    box-shadow: 0px 5px 5px -3px rgba(80, 80, 80, 0.2), 0px 8px 10px 1px rgba(80, 80, 80, 0.14),
       0px 3px 14px 2px rgba(80, 80, 80, 0.12);
 
     &::before {

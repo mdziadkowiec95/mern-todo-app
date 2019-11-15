@@ -8,9 +8,7 @@ export const notifyUser = (
   msg: string,
   type: string,
   duration: number = 3000
-): ThunkAction<void, AppState, null, Action<string>> => (
-  dispatch: Dispatch
-) => {
+): ThunkAction<void, AppState, null, Action<string>> => (dispatch: Dispatch) => {
   const id = uuid.v4();
 
   dispatch(addNotification(id, type, msg));

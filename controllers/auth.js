@@ -37,7 +37,7 @@ exports.signIn = async (req, res) => {
     const passwordMatch = bcrypt.compareSync(password, user.password);
 
     if (!passwordMatch) {
-      return res.json({
+      return res.status(400).json({
         errors: [{ msg: 'Please, enter correct credientials!' }]
       });
     }

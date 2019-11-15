@@ -1,13 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import ContentTemplate from '../../templates/ContentTemplate/ContentTemplate';
+import MainTemplate from '../../templates/MainTemplate/MainTemplate';
 
 const Preferences: React.FC = () => {
   return (
-    <ContentTemplate>
+    <MainTemplate>
       <NavLink to="/app">Close</NavLink>
       <h2>Preferences View</h2>
-    </ContentTemplate>
+    </MainTemplate>
   );
 };
 

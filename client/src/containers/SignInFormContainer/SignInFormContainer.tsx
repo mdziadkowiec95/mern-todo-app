@@ -6,31 +6,26 @@ import * as Yup from 'yup';
 import TextField from '../../components/atoms/TextField/TextField';
 import Button from '../../components/atoms/Button/Button';
 import FormErrorMessage from '../../components/atoms/FormErrorMessage/FormErrorMessage';
-// import styles from './SignUpFormContainer.module.scss';
 import { AppState } from '../../store/rootReducer';
-import { registerUser } from '../../store/auth/thunks';
+import { loginUser } from '../../store/auth/thunks';
 import Loader from '../../components/atoms/Loader/Loader';
 import FormWrapper from '../../templates/FormWrapper/FormWrapper';
 
-type SignUpFormProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type SignInFormProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 type FormValues = {
-  userName: string;
   userEmail: string;
   password: string;
-  passwordConfirm: string;
 };
 
-type SignUpFormState = {
+type SignInFormState = {
   userEmail: string;
-  userName: string;
   password: string;
-  passwordConfirm: string;
 };
 
-class SignUpFormInner extends Component<
-  SignUpFormProps & FormikProps<FormValues>,
-  SignUpFormState
+class SignInFormInner extends Component<
+  SignInFormProps & FormikProps<FormValues>,
+  SignInFormState
 > {
   render() {
     const {
@@ -47,18 +42,8 @@ class SignUpFormInner extends Component<
     return (
       <FormWrapper>
         <form onSubmit={handleSubmit}>
-          <h2>Sign Up</h2>
-          {isLoading && <Loader isLarge />}
-          <TextField
-            isError={errors.userName && touched.userName}
-            isSolid
-            onChangeFn={handleChange}
-            onBlurFn={handleBlur}
-            inputValue={values.userName}
-            name="userName"
-            placeholder="Your name"
-          />
-          {errors.userName && touched.userName && <FormErrorMessage errors={errors.userName} />}
+          <h2>Sign In</h2>
+          {isLoading && <Loader isLarge fullScreen />}
           <TextField
             isError={errors.userEmail && touched.userEmail}
             isSolid
@@ -80,21 +65,8 @@ class SignUpFormInner extends Component<
             placeholder="Password"
           />
           {errors.password && touched.password && <FormErrorMessage errors={errors.password} />}
-          <TextField
-            isError={errors.passwordConfirm && touched.passwordConfirm}
-            isSolid
-            onChangeFn={handleChange}
-            onBlurFn={handleBlur}
-            inputValue={values.passwordConfirm}
-            name="passwordConfirm"
-            type="password"
-            placeholder="Confirm Password"
-          />
-          {errors.passwordConfirm && touched.passwordConfirm && (
-            <FormErrorMessage errors={errors.passwordConfirm} />
-          )}
           <Button isSubmit isBlock primary>
-            Sign Up
+            Sign In
           </Button>
         </form>
       </FormWrapper>
@@ -102,44 +74,32 @@ class SignUpFormInner extends Component<
   }
 }
 
-const SignUpSchema = Yup.object().shape({
-  userName: Yup.string()
-    .min(2, 'Name needs to be at least 2 characters long')
-    .max(25, 'Name can include at most 25 characters')
-    .required('Name is required'),
+const SignInSchema = Yup.object().shape({
   userEmail: Yup.string()
     .email('Email is not valid')
     .required('Email is required'),
   password: Yup.string()
     .min(8, 'Password needs to be at least 8 characters long')
     .required('Password is required'),
-  passwordConfirm: Yup.string()
-    .min(8, 'Confirm Password needs to be at least 8 characters long')
-    .required('Confirm Password is required'),
 });
 
-const SignUpFormContainer = withFormik<SignUpFormProps, FormValues>({
+const SignInFormContainer = withFormik<SignInFormProps, FormValues>({
   mapPropsToValues: props => ({
-    userName: '',
     userEmail: '',
     password: '',
-    passwordConfirm: '',
   }),
-  validationSchema: SignUpSchema,
+  validationSchema: SignInSchema,
 
   handleSubmit(
-    { userName, userEmail, password, passwordConfirm }: FormValues,
+    { userEmail, password }: FormValues,
     { props, setSubmitting, setErrors, resetForm, setFieldValue }
   ) {
     const userData = {
-      name: userName,
       email: userEmail,
       password: password,
-      passwordConfirm: passwordConfirm,
     };
-
     // Run Redux action with onSucces and onError callbacks
-    props.registerUser(
+    props.loginUser(
       userData,
       () => {
         resetForm();
@@ -147,18 +107,17 @@ const SignUpFormContainer = withFormik<SignUpFormProps, FormValues>({
       },
       () => {
         setFieldValue('password', '');
-        setFieldValue('passwordConfirm', '');
         setSubmitting(false);
       }
     );
   },
-})(SignUpFormInner);
+})(SignInFormInner);
 
 const mapStateToProps = (state: AppState) => ({
   auth: state.auth,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({ registerUser }, dispatch);
+  bindActionCreators({ loginUser }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpFormContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(SignInFormContainer);

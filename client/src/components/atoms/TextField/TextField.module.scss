@@ -56,7 +56,7 @@
     }
 
     &::placeholder {
-      color: map-get($colors, light);
+      color: map-get($colors, light-100);
     }
 
     &::selection {

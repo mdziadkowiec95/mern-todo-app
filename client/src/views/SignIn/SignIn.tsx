@@ -1,7 +1,13 @@
 import React from 'react';
+import SignInFormContainer from '../../containers/SignInFormContainer/SignInFormContainer';
+import MainTemplate from '../../templates/MainTemplate/MainTemplate';
 
 const SignIn: React.FC = () => {
-  return <div>Sign In view</div>;
+  return (
+    <MainTemplate>
+      <SignInFormContainer />
+    </MainTemplate>
+  );
 };
 
 export default SignIn;

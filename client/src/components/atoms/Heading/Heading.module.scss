@@ -1,0 +1,18 @@
+@import 'utils/utils';
+
+.primary {
+  color: map-get($colors, primary);
+}
+
+.secondary {
+  color: map-get($colors, secondary);
+}
+
+.tertiary {
+  color: map-get($colors, tertiary);
+}
+
+// Sizes
+h1 {
+  font-size: 5rem;
+}
