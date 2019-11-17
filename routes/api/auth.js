@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-const { check } = require('express-validator');
-const authMiddleware = require('../../middleware/auth');
-const AuthController = require('../../controllers/auth');
+const { check } = require('express-validator')
+const authMiddleware = require('../../middleware/auth')
+const AuthController = require('../../controllers/auth')
 
 /**
  * @route GET api/auth
@@ -11,7 +11,7 @@ const AuthController = require('../../controllers/auth');
  * @access Private
  */
 
-router.get('/', authMiddleware, AuthController.authUser);
+router.get('/', authMiddleware, AuthController.authUser)
 
 /**
  * @route POST api/auth
@@ -27,9 +27,9 @@ router.post(
       .withMessage('Please, enter correct email!'),
     check('password')
       .isLength({ min: 8 })
-      .withMessage('Password must be at least 8 characters long!')
+      .withMessage('Password must be at least 8 characters long!'),
   ],
-  AuthController.signIn
-);
+  AuthController.signIn,
+)
 
-module.exports = router;
+module.exports = router

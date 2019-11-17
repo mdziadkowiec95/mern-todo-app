@@ -10,7 +10,7 @@ exports.ResponseWithErrorsArray = class ResponseWithErrorsArray {
   }
 
   json(data) {
-    this.errors = data.errors;
+    this.errors = data.errors; 
   }
 };
 

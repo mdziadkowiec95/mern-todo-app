@@ -1,9 +1,7 @@
-const express = require('express');
-const router = express.Router();
-
-const { check } = require('express-validator');
-const authMiddleware = require('../../middleware/auth');
-const DashboardController = require('../../controllers/dashboards');
+const express = require('express')
+const router = express.Router()
+const authMiddleware = require('../../middleware/auth')
+const DashboardController = require('../../controllers/dashboards')
 
 /**
  * @route GET api/dashboards/stats/
@@ -11,6 +9,6 @@ const DashboardController = require('../../controllers/dashboards');
  * @access Private
  */
 
-router.get('/stats', authMiddleware, DashboardController.getStats);
+router.get('/stats', authMiddleware, DashboardController.getStats)
 
-module.exports = router;
+module.exports = router

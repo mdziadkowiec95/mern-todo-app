@@ -1,14 +1,14 @@
-const express = require('express');
-const router = express.Router();
-const authMiddleware = require('../../middleware/auth');
-const TasksController = require('../../controllers/tasks');
+const express = require('express')
+const router = express.Router()
+const authMiddleware = require('../../middleware/auth')
+const TasksController = require('../../controllers/tasks')
 /**
  * @route GET api/tasks/serach/serachQuery=TITLE_QUERY
  * @desc Search for task by title (return titles for autosugestion);
  * @access Private
  */
 
-router.get('/search', authMiddleware, TasksController.searchTask);
+router.get('/search', authMiddleware, TasksController.searchTask)
 
 /**
  * @route GET api/tasks/
@@ -16,7 +16,7 @@ router.get('/search', authMiddleware, TasksController.searchTask);
  * @access Private
  */
 
-router.get('/', authMiddleware, TasksController.getTasks);
+router.get('/', authMiddleware, TasksController.getTasks)
 
 /**
  * @route GET api/tasks/:taskId
@@ -24,7 +24,7 @@ router.get('/', authMiddleware, TasksController.getTasks);
  * @access Private
  */
 
-router.get('/:taskId', authMiddleware, TasksController.getSingleTask);
+router.get('/:taskId', authMiddleware, TasksController.getSingleTask)
 
 /**
  * @route POST api/tasks
@@ -32,7 +32,7 @@ router.get('/:taskId', authMiddleware, TasksController.getSingleTask);
  * @access Private
  */
 
-router.post('/', authMiddleware, TasksController.createOrUpdateTask);
+router.post('/', authMiddleware, TasksController.createOrUpdateTask)
 
 /**
  * @route DELETE api/tasks/:taskId
@@ -40,6 +40,6 @@ router.post('/', authMiddleware, TasksController.createOrUpdateTask);
  * @access Private
  */
 
-router.delete('/:taskId', authMiddleware, TasksController.removeTask);
+router.delete('/:taskId', authMiddleware, TasksController.removeTask)
 
-module.exports = router;
+module.exports = router

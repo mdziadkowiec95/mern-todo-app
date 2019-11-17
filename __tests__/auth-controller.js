@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
-const AuthController = require('../controllers/auth');
-const { ResponseWithErrorsArray, generateObjectId } = require('./__utils');
+const mongoose = require("mongoose");
+const { MongoMemoryServer } = require("mongodb-memory-server");
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
+const AuthController = require("../controllers/auth");
+const { ResponseWithErrorsArray, generateObjectId } = require("./__utils");
 // May require additional time for downloading MongoDB binaries
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 600000;
 
@@ -15,8 +15,8 @@ const opts = {
 };
 
 // Fake user data
-const testUserId = '5db48b795dd65f0609cc7e72';
-const testUserPasswordDecoded = '123123123';
+const testUserId = "5db48b795dd65f0609cc7e72";
+const testUserPasswordDecoded = "123123123";
 const salt = bcrypt.genSaltSync(10);
 const testUserPasswordEncoded = bcrypt.hashSync(testUserPasswordDecoded, salt);
 
@@ -30,9 +30,9 @@ beforeAll(async () => {
 
     testUser = new User({
       _id: testUserId,
-      email: 'user@test.pl',
+      email: "user@test.pl",
       password: testUserPasswordEncoded,
-      name: 'Test User'
+      name: "Test User"
     });
 
     return testUser.save();
@@ -44,9 +44,9 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
-describe('AuthController function tests', () => {
-  describe('authUser', () => {
-    it('should return created User object when user ID decoded from JWT', done => {
+describe("AuthController function tests", () => {
+  describe("authUser", () => {
+    it("should return created User object when user ID decoded from JWT", done => {
       const req = {
         user: {
           id: testUser.id
@@ -68,8 +68,8 @@ describe('AuthController function tests', () => {
         expect(res.user).toEqual(
           expect.objectContaining({
             id: testUser.id,
-            email: 'user@test.pl',
-            name: 'Test User'
+            email: "user@test.pl",
+            name: "Test User"
           })
         );
         done();
@@ -77,33 +77,33 @@ describe('AuthController function tests', () => {
     });
   });
 
-  describe('signIn', () => {
-    it('should return error if user does NOT exists', done => {
+  describe("signIn", () => {
+    it("should return error if user does NOT exists", done => {
       const req = {
         body: {
-          email: 'not_existing_user@test.pl',
+          email: "not_existing_user@test.pl",
           password: testUser.password
         }
       };
       const res = new ResponseWithErrorsArray();
 
       AuthController.signIn(req, res).then(() => {
-        expect(res.errors[0].msg).toBe('User not found!');
+        expect(res.errors[0].msg).toBe("User not found!");
         done();
       });
     });
 
-    it('should return error when invalid credentials', done => {
+    it("should return error when invalid credentials", done => {
       const req = {
         body: {
           email: testUser.email,
-          password: 'wrongPassword'
+          password: "wrongPassword"
         }
       };
       const res = new ResponseWithErrorsArray();
 
       AuthController.signIn(req, res).then(() => {
-        expect(res.errors[0].msg).toBe('Please, enter correct credientials!');
+        expect(res.errors[0].msg).toBe("Please, enter correct credientials!");
         done();
       });
     });
