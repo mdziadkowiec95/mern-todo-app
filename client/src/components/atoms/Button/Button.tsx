@@ -31,7 +31,7 @@ const Button: React.FC<ButtonProps> = ({
 
   if (asLink && goTo) {
     return (
-      <a href={goTo} target="_blank" className={ButtonClassName}>
+      <a href={goTo} target="_blank" rel="noopener noreferrer" className={ButtonClassName}>
         {children}
       </a>
     );

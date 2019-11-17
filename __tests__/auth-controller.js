@@ -69,7 +69,6 @@ describe('AuthController function tests', () => {
           expect.objectContaining({
             id: testUser.id,
             email: 'user@test.pl',
-            password: testUser.password,
             name: 'Test User'
           })
         );

@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@types/classnames": "^2.2.9",
-    "@types/jest": "24.0.21",
     "@types/lodash": "^4.14.146",
     "@types/node": "12.12.5",
     "@types/react": "16.9.11",
@@ -61,7 +60,11 @@
   },
   "devDependencies": {
     "@storybook/react": "^5.2.5",
+    "@testing-library/react": "^9.3.2",
+    "@types/jest": "^24.0.23",
+    "jest": "^24.9.0",
     "prettier": "^1.19.1",
+    "ts-jest": "^24.1.0",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",

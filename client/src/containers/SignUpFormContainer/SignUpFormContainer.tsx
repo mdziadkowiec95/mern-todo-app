@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import TextField from '../../components/atoms/TextField/TextField';
 import Button from '../../components/atoms/Button/Button';
 import FormErrorMessage from '../../components/atoms/FormErrorMessage/FormErrorMessage';
-// import styles from './SignUpFormContainer.module.scss';
 import { AppState } from '../../store/rootReducer';
 import { registerUser } from '../../store/auth/thunks';
 import Loader from '../../components/atoms/Loader/Loader';

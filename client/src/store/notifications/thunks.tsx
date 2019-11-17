@@ -3,6 +3,7 @@ import uuid from 'uuid';
 import { addNotification, removeNotification } from './actions';
 import { ThunkAction } from 'redux-thunk';
 import { AppState } from '../rootReducer';
+import { logoutUser } from '../auth/actions';
 
 export const notifyUser = (
   msg: string,
@@ -14,4 +15,6 @@ export const notifyUser = (
   dispatch(addNotification(id, type, msg));
 
   setTimeout(() => dispatch(removeNotification(id)), duration);
+
+  dispatch(logoutUser());
 };

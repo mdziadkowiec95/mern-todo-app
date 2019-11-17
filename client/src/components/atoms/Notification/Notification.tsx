@@ -12,7 +12,7 @@ const Notification: React.FC<INotificationProps> = ({ id, type, msg }) => {
   });
 
   return (
-    <div id={id} className={wrapperClass}>
+    <div id={id} className={wrapperClass} data-testid="notification-wrap">
       {msg}
     </div>
   );
