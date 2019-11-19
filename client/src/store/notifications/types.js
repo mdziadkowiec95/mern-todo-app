@@ -1,4 +1,4 @@
-export const NotificationsActionTypes = {
+export const types = {
   ADD_NOTIFICATION: 'ADD_NOTIFICATION',
   REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
 }
