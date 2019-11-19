@@ -4,14 +4,14 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import NotificationList from '../../components/molecules/NotificationList/NotificationList'
 
+const NOTIFICATION_MOCK = [
+  { id: '1', type: 'success', msg: 'Passwords must be the same' },
+  { id: '2', type: 'warning2', msg: 'Passwords must be the same' },
+  { id: '3', type: 'error', msg: 'tPasswords must be the same test' },
+]
+
 class NotificationListContainer extends Component {
   render() {
-    // const arr = [
-    //   { id: '1', type: 'success', msg: 'Passwords must be the same' },
-    //   { id: '2', type: 'warning2', msg: 'Passwords must be the same' },
-    //   { id: '3', type: 'error', msg: 'tPasswords must be the same test' },
-    // ];
-
     const notifications = this.props.notifications
 
     if (notifications.length === 0) return null
@@ -31,7 +31,7 @@ NotificationListContainer.propTypes = {
       type: PropTypes.string,
       msg: PropTypes.string,
     }),
-  ),
+  ).isRequired,
 }
 
 NotificationListContainer.defaultProps = {
