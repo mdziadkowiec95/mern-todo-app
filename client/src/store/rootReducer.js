@@ -4,7 +4,7 @@ import { notificationsReducer } from './notifications/reducers'
 
 const rootReducer = combineReducers({
   auth,
-  notificationsReducer,
+  notifications: notificationsReducer,
 })
 
 export default rootReducer
