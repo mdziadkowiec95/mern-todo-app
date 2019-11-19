@@ -1,6 +1,4 @@
 {
   "eslint._legacyModuleResolve": true,
-  "eslint.workingDirectories": [
-    "client"
-  ]
+  "eslint.workingDirectories": ["client"]
 }
