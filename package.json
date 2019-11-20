@@ -18,7 +18,7 @@
     "test:tasks": "npm test ./__tests__/tasks-controller.js"
   },
   "keywords": [
-    "MERN", 
+    "MERN",
     "React",
     "MongoDB",
     "Node.js",
@@ -41,7 +41,7 @@
     "concurrently": "^5.0.0",
     "jest": "^24.9.0",
     "mongodb-memory-server": "^6.0.1",
+    "node-fetch": "^2.6.0",
     "nodemon": "^1.19.3"
   }
 }
-  
