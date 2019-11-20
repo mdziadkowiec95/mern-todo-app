@@ -5,6 +5,7 @@ import styles from './App.module.scss'
 import { Switch, Route } from 'react-router'
 import TaskBoard from './TaskBoard/TaskBoard'
 import AppTemplate from '../../templates/AppTemplate/AppTemplate'
+import ProjectDetails from './ProjectDetails/ProjectDetails'
 const App = ({ match }) => {
   // eslint-disable-next-line no-console
   useEffect(() => console.log(match), [match])
@@ -16,7 +17,8 @@ const App = ({ match }) => {
         <div className="test">
           <Switch>
             <Route path={`${match.path}/label/:labelIds`} component={TaskBoard} />
-            <Route path={`${match.path}/project/:projectId`} component={TaskBoard} />
+            <Route exact path={`${match.path}/project/:projectId`} component={TaskBoard} />
+            <Route path={`${match.path}/project/:projectId/details`} component={ProjectDetails} />
             <Route path={`${match.path}/today`} component={TaskBoard} />
           </Switch>
         </div>
