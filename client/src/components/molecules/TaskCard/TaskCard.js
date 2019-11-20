@@ -4,34 +4,32 @@ import DatePicker from '../../atoms/DatePicker/DatePicker'
 import { isValidDate } from '../../../utils/dates'
 import { Link } from 'react-router-dom'
 
-const TaskCard = () => {
-  const [taskData, setTaskData] = useState({
-    date: null,
+const TaskCard = ({ date, project }) => {
+  const [state, setTaskState] = useState({
+    taskDate: date ? new Date(date) : null,
   })
 
-  const { date } = taskData
+  const { taskDate } = state
 
   const setDate = newDate => {
-    setTaskData({ ...taskData, date: newDate })
+    setTaskState({ ...state, taskDate: newDate })
   }
 
   useEffect(() => {
     // eslint-disable-next-line no-console
-    console.log(taskData)
-  })
+    console.log(new Date(taskDate))
+  }, [taskDate])
 
   return (
     <div className={styles.card}>
       <h2>Task Card</h2>
       <DatePicker
-        selectedDate={isValidDate(date) ? date : null}
+        selectedDate={isValidDate(taskDate) ? taskDate : null}
         setDate={setDate}
         placeholder="Test"
       />
       <br />
-      <Link to={`/app/project/${345}/details`}>Preview project 345</Link>
-      <br />
-      <Link to={`/app/project/${678}/details`}>Preview project 678</Link>
+      {project && <Link to={`/app/project/${project._id}/details`}>Project {project.name}</Link>}
     </div>
   )
 }
