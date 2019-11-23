@@ -1,15 +1,18 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import styles from './AppTemplate.module.scss'
 import Navbar from '../../components/organisms/Navbar/Navbar'
 import Container from '../Container/Container'
 import MainTemplate from '../MainTemplate/MainTemplate'
-import PropTypes from 'prop-types'
+import ButtonIcon from '../../components/atoms/ButtonIcon/ButtonIcon'
 
 const AppTemplate = ({ children }) => (
   <MainTemplate>
-    <Container>
-      <Navbar />
-      {children}
-    </Container>
+    <Navbar />
+    <Container>{children}</Container>
+    <div className={styles.addTaskBtn}>
+      <ButtonIcon name="plusBackground" size="big" reversed title="Add task" />
+    </div>
   </MainTemplate>
 )
 

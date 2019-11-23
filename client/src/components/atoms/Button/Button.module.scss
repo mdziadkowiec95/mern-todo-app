@@ -68,8 +68,40 @@
     }
   }
 
+  &.tertiary {
+    background: map-get($colors, tertiary);
+
+    &:hover,
+    &:focus {
+      background: darken(map-get($colors, tertiary), 10%);
+    }
+  }
+
+  &.accent {
+    background: map-get($colors, accent);
+
+    &:hover,
+    &:focus {
+      background: darken(map-get($colors, accent), 10%);
+    }
+  }
+
   &.block {
     width: 100%;
+  }
+
+  &.blockMobile {
+    width: 100%;
+
+    @include breakpoint-up(tablet) {
+      width: auto;
+    }
+  }
+
+  & + .btn {
+    @include breakpoint-up(tablet) {
+      margin-left: 1rem;
+    }
   }
 }
 

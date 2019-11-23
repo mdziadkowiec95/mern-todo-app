@@ -1,0 +1,48 @@
+@import 'utils/utils';
+
+.dropdownMenu {
+  .contentWrap {
+    position: relative;
+  }
+
+  .content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1rem 0 1rem 0;
+    overflow: hidden;
+    opacity: 0;
+    border-radius: map-get($radius, small);
+    background-color: map-get($colors, white);
+    transition: max-height 0.3s map-get($easings, primary), opacity 0.3s map-get($easings, primary);
+
+    @extend %shadow-100;
+  }
+
+  &.isOpen {
+    .content {
+      opacity: 1;
+    }
+  }
+
+  .list {
+    padding-left: 0;
+    border-radius: inherit;
+  }
+
+  .listItem {
+    display: flex;
+    align-items: center;
+    padding: 0 2rem 0 1rem;
+    cursor: pointer;
+    color: map-get($colors, primary);
+
+    button {
+      display: flex;
+    }
+
+    &:hover {
+      background-color: rgba(map-get($colors, primary), 0.2);
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { types } from '../types'
+import { types } from './types'
 
 export const getTasksBegin = () => ({
   type: types.GET_TASKS_BEGIN,
