@@ -1,7 +1,19 @@
 @import 'utils/utils';
 
-.wrapper {
-  padding-top: 2rem;
-  max-width: 75%;
+.container {
+  padding: 0 2rem 0 2rem;
+  max-width: 100%;
   margin: 0 auto;
+
+  @include breakpoint-up(tablet) {
+    max-width: 700px;
+  }
+
+  @include breakpoint-up(desktop) {
+    max-width: 940px;
+  }
+
+  @include breakpoint-up(widescreen) {
+    max-width: 1170px;
+  }
 }

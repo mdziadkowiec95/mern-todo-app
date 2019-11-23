@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { getTasksBegin, getTasksSuccess, getTasksError } from '../actions'
-import { handleErrorResponse } from '../../../helpers'
+import { getTasksBegin, getTasksSuccess, getTasksError } from './actions'
+import { handleErrorResponse } from '../../helpers'
 
 export const getTasks = () => async dispatch => {
   try {

@@ -1,9 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import TasksContainer from '../../../containers/TasksContainer/TasksContainer'
+import AppLayoutTemplate from '../../../templates/AppLayoutTemplate/AppLayoutTemplate'
 
 const TaskBoard = ({ match }) => {
-  return <TasksContainer match={match} />
+  return (
+    <>
+      <AppLayoutTemplate match={match}>
+        <TasksContainer match={match} />
+      </AppLayoutTemplate>
+    </>
+  )
 }
 
 TaskBoard.propTypes = {

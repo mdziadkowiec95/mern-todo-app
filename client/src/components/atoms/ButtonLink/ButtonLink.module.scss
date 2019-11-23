@@ -1,0 +1,10 @@
+@import 'utils/utils';
+
+.btnLink {
+  color: map-get($colors, dark);
+
+  &.active {
+    color: map-get($colors, tertiary);
+    font-weight: 700;
+  }
+}

@@ -1,0 +1,67 @@
+@import 'utils/utils';
+
+.btnIcon {
+  position: relative;
+  padding: 1rem;
+  border-radius: 50%;
+  background-color: transparent;
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    transform: scale(0.3);
+    opacity: 0;
+    background-color: rgba(map-get($colors, primary), 0.1);
+    transition: 0.3s map-get($easings, primary);
+  }
+
+  &.reversed {
+    &::before {
+      opacity: 1;
+      background-color: rgba(map-get($colors, white), 0.6);
+    }
+  }
+
+  &:hover {
+    &::before {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .mask {
+      opacity: 0;
+    }
+  }
+
+  &:active {
+    &::before {
+      animation: active-button-icon 0.3s forwards;
+    }
+  }
+
+  &.small {
+    padding: 0.7rem;
+  }
+
+  .mask {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: inherit;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    transition: 0.3s map-get($easings, primary);
+  }
+}
+
+@keyframes active-button-icon {
+  100% {
+    transform: scale(0.85);
+  }
+}

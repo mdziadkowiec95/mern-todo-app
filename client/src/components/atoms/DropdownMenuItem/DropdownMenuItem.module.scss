@@ -1,0 +1,25 @@
+@import 'utils/utils';
+
+.button {
+  display: flex;
+  align-items: center;
+  padding: 0 2rem 0 1rem;
+  cursor: pointer;
+  width: 100%;
+  background: transparent;
+  font-size: 1.4rem;
+  color: map-get($colors, primary);
+  transition: background-color 0.3s map-get($easings, primary);
+
+  &:hover {
+    background-color: rgba(map-get($colors, primary), 0.2);
+  }
+
+  .link {
+    color: inherit;
+  }
+}
+
+.iconSVG {
+  margin: 0.7rem;
+}

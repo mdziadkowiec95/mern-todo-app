@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
-import { Route } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import TaskListTemplate from '../../templates/TaskListTemplate/TaskListTemplate'
 import TaskCard from '../../components/molecules/TaskCard/TaskCard'
-import ProjectDetails from '../../views/App/ProjectDetails/ProjectDetails'
+import { bindActionCreators } from 'redux'
 import { getTasks } from '../../store/tasks/async-actions'
-import { bindActionCreators } from '../../../../../../../Library/Caches/typescript/3.6/node_modules/redux'
 
 class TasksContainer extends Component {
   componentDidMount() {
-    this.props.getTasks()
+    // this.props.getTasks()
   }
   componentDidUpdate(prevProps) {
     if (prevProps.match.path !== this.props.match.path) {
@@ -18,16 +16,21 @@ class TasksContainer extends Component {
     }
   }
   render() {
-    const { tasks, match } = this.props
+    const { tasks } = this.props
 
     return (
       <div>
-        <div>Test dynamic route. URL = {match.url}</div>
         <TaskListTemplate>
-          {tasks && tasks.length > 0 && tasks.map(task => <TaskCard key={task._id} {...task} />)}
-          {/* <Route path={`${match.path}/details`} component={ProjectDetails} /> */}
+          {tasks && tasks.length > 0 ? (
+            tasks.map(task => (
+              <li key={task._id}>
+                <TaskCard {...task} />
+              </li>
+            ))
+          ) : (
+            <h3>No tasks found!</h3>
+          )}
         </TaskListTemplate>
-        <button>Add Task</button>
       </div>
     )
   }

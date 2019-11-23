@@ -1,4 +1,59 @@
+@import 'utils/utils';
+
 .card {
-  padding: 30px;
-  border: 1px solid blue;
+  padding: 1.5rem 1rem;
+  margin-bottom: 1rem;
+  background: map-get($colors, white);
+  border-radius: map-get($radius, normal);
+  transition: 0.3s map-get($easings, primary);
+
+  @extend %shadow-100;
+
+  &:hover:not(.editMode) {
+    opacity: 0.9;
+  }
+
+  .cardInner {
+    display: flex;
+  }
+
+  .cardDone {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  .cardContent {
+    flex: 100%;
+  }
+
+  .cardActions {
+    position: relative;
+    flex: 0 0 100px;
+  }
+
+  .editActions {
+    display: flex;
+    margin-top: 2rem;
+    padding: 1rem 0 0 1rem;
+    border-top: 1px solid map-get($colors, light-200);
+  }
+
+  .priorityFlag {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    &.low {
+      fill: map-get($colors, priority-low);
+    }
+
+    &.normal {
+      fill: map-get($colors, priority-normal);
+    }
+
+    &.high {
+      fill: map-get($colors, priority-high);
+    }
+  }
 }

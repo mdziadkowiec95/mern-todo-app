@@ -10,10 +10,18 @@
 
     .input {
       transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-      width: 100px;
+      width: 150px;
 
       &:focus {
-        width: 400px;
+        width: 180px;
+      }
+
+      @include breakpoint-up(tablet) {
+        width: 200px;
+
+        &:focus {
+          width: 400px;
+        }
       }
     }
   }
