@@ -6,23 +6,37 @@ import PropTypes from 'prop-types'
 
 const Button = ({
   isSubmit = false,
-  isBlock,
+  block,
+  blockMobile,
   primary,
   secondary,
+  tertiary,
+  accent,
   asRouterLink,
   asLink,
   goTo,
+  title,
+  onClickFn,
   children,
 }) => {
   const ButtonClassName = cn(styles.btn, {
     [styles.primary]: primary,
     [styles.secondary]: secondary,
-    [styles.block]: isBlock,
+    [styles.tertiary]: tertiary,
+    [styles.accent]: accent,
+    [styles.block]: block,
+    [styles.blockMobile]: blockMobile,
   })
 
   if (asLink && goTo) {
     return (
-      <a href={goTo} target="_blank" rel="noopener noreferrer" className={ButtonClassName}>
+      <a
+        href={goTo}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={ButtonClassName}
+        title={title}
+      >
         {children}
       </a>
     )
@@ -30,14 +44,21 @@ const Button = ({
 
   if (asRouterLink && goTo) {
     return (
-      <Link className={ButtonClassName} to={goTo}>
+      <Link className={ButtonClassName} to={goTo} title={title}>
         {children}
       </Link>
     )
   }
 
+  if (isSubmit)
+    return (
+      <button type="submit" className={ButtonClassName} title={title}>
+        {children}
+      </button>
+    )
+
   return (
-    <button type={isSubmit ? 'submit' : 'button'} className={ButtonClassName}>
+    <button onClick={e => onClickFn(e)} type="button" className={ButtonClassName} title={title}>
       {children}
     </button>
   )
@@ -46,12 +67,21 @@ const Button = ({
 Button.propTypes = {
   children: PropTypes.string.isRequired,
   isSubmit: PropTypes.bool,
-  isBlock: PropTypes.bool,
+  block: PropTypes.bool,
+  blockMobile: PropTypes.bool,
   primary: PropTypes.bool,
   secondary: PropTypes.bool,
+  tertiary: PropTypes.bool,
+  accent: PropTypes.bool,
   asRouterLink: PropTypes.bool,
   asLink: PropTypes.bool,
   goTo: PropTypes.string,
+  title: PropTypes.string,
+  onClickFn: PropTypes.func,
+}
+
+Button.defaultProps = {
+  title: '',
 }
 
 export default Button

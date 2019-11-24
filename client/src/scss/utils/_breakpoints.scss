@@ -1,15 +1,15 @@
 $breakpoints: (
-  xs: (
-    min-width: 576px,
+  tablet: (
+    min-width: 769px,
   ),
-  sm: (
-    min-width: 768px,
+  desktop: (
+    min-width: 1024px,
   ),
-  md: (
-    min-width: 992px,
+  widescreen: (
+    min-width: 1216px,
   ),
-  lg: (
-    min-width: 1200px,
+  fullhd: (
+    min-width: 1408px,
   ),
 ) !default;
 

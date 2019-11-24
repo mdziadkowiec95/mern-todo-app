@@ -1,0 +1,37 @@
+@import 'utils/utils';
+
+.accordion {
+  &.activeTab {
+    .btn {
+      background-color: rgba(map-get($colors, tertiary), 0.3);
+    }
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 1.4rem;
+    border-radius: 0 2.5rem 2.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: left;
+    transition: background-color 0.3s map-get($easings, primary);
+
+    &:hover {
+      background-color: rgba(map-get($colors, tertiary), 0.3);
+    }
+  }
+
+  .content {
+    padding: 0 2rem;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s map-get($easings, primary), opacity 0.3s map-get($easings, primary);
+  }
+
+  &.isActive {
+    .content {
+      opacity: 1;
+    }
+  }
+}
