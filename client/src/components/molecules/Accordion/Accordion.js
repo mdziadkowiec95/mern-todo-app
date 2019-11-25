@@ -2,8 +2,9 @@ import React, { useState, useRef } from 'react'
 import IconSVG from '../../atoms/IconSVG/IconSVG'
 import styles from './Accordion.module.scss'
 import cn from 'classnames'
+import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 
-const Accordion = ({ title, isActiveTab, children }) => {
+const Accordion = ({ title, isActiveTab, TabActionComponent, children }) => {
   const [isActive, setIsActive] = useState(false)
   const [contentHeight, setContentHeight] = useState('0px')
 
@@ -27,11 +28,14 @@ const Accordion = ({ title, isActiveTab, children }) => {
 
   return (
     <div className={wrapperClassName}>
-      <button className={buttonClassName} onClick={toggleAccordion}>
-        {title}
-      </button>
+      <div className={styles.btnWrap}>
+        <button className={buttonClassName} onClick={toggleAccordion}>
+          {title}
+        </button>
+        {TabActionComponent && TabActionComponent}
+      </div>
       <div ref={contentEl} style={{ maxHeight: `${contentHeight}` }} className={styles.content}>
-        <div style={{ padding: '10px' }}>{children}</div>
+        <div className={styles.contentInner}>{children}</div>
       </div>
     </div>
   )

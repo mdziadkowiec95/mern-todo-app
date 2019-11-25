@@ -1,0 +1,63 @@
+@import 'utils/utils';
+
+.wrapper {
+  position: fixed;
+  z-index: 400;
+  top: 5rem;
+  bottom: 1rem;
+  right: 50%;
+  width: 100%;
+  padding: 0 1rem;
+  max-width: 500px;
+  transform: translateX(50%);
+
+  @include breakpoint-up(desktop) {
+    top: 6rem;
+    bottom: 6rem;
+    right: 10rem;
+    transform: none;
+  }
+}
+
+.form {
+  position: relative;
+  margin-top: 1rem;
+  background-color: map-get($colors, white);
+  border-radius: map-get($radius, normal);
+
+  @extend %shadow-100;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5rem;
+}
+
+.content {
+  padding: 3rem;
+  height: 87vh;
+  overflow-y: scroll;
+}
+
+.doubleField {
+  @include breakpoint-up(tablet) {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.doubleFieldItem {
+  margin-bottom: 1rem;
+  width: 100%;
+
+  @include breakpoint-up(tablet) {
+    margin: 0 1rem 0 0;
+    flex: 1;
+  }
+}
+
+.radioButtons {
+  text-align: center;
+}

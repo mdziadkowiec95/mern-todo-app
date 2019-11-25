@@ -8,8 +8,8 @@
   width: 100%;
   background: transparent;
   font-size: 1.4rem;
-  color: map-get($colors, primary);
-  transition: background-color 0.3s map-get($easings, primary);
+  color: map-get($colors, secondary);
+  transition: background-color 0.3s map-get($easings, secondary);
 
   &:hover {
     background-color: rgba(map-get($colors, primary), 0.2);

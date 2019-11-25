@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './DropdownMenu.module.scss'
 import cn from 'classnames'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
@@ -13,8 +13,6 @@ const DropdownMenu = ({ iconName, iconColor, children }) => {
   useEffect(() => {
     return () => document.removeEventListener('click', handleDropdownClose)
   }, [])
-
-  const contentRef = useRef(null)
 
   const handleDropdownClose = () => {
     setIsOpen(false)
@@ -35,7 +33,7 @@ const DropdownMenu = ({ iconName, iconColor, children }) => {
     <div className={DropdownWrapClassName}>
       <ButtonIcon name={iconName} color={iconColor} onClickFn={() => handleDropdownOpen()} />
       <div className={styles.contentWrap}>
-        <div ref={contentRef} className={styles.content}>
+        <div className={styles.content}>
           <ul>
             {React.Children.map(children, child => {
               return child

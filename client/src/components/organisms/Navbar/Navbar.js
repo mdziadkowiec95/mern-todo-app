@@ -12,6 +12,8 @@ import { toggleSidebar } from '../../../store/ui/actions'
 import SearchFormContainer from '../../../containers/SerachFormContainer/SearchFormContainer'
 import NavbarTemplate from '../../../templates/NavbarTemplate/NavbarTemplate'
 import DropdownMenuItem from '../../atoms/DropdownMenuItem/DropdownMenuItem'
+import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
+import config from '../../../config'
 
 // eslint-disable-next-line no-unused-vars
 const Navbar = ({ auth: { isAuth }, logoutUser, openSidebar, history }) => {
@@ -25,7 +27,6 @@ const Navbar = ({ auth: { isAuth }, logoutUser, openSidebar, history }) => {
         <BurgerButton onClickFn={openSidebar} />
         <div className={styles.navItems}>
           <SearchFormContainer />
-
           <div className={styles.navActionIcons}>
             <DropdownMenu iconName="gear">
               <DropdownMenuItem
@@ -48,6 +49,7 @@ const Navbar = ({ auth: { isAuth }, logoutUser, openSidebar, history }) => {
 
 Navbar.propTypes = {
   auth: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
   logoutUser: PropTypes.func.isRequired,
   openSidebar: PropTypes.func.isRequired,
 }
@@ -57,8 +59,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  openSidebar: () => dispatch(toggleSidebar(true)),
   logoutUser: () => dispatch(logoutUser()),
+  openSidebar: () => dispatch(toggleSidebar(true)),
 })
 
 export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(Navbar)

@@ -38,7 +38,7 @@
       color: map-get($colors, dark);
 
       &:focus {
-        border: 1px solid map-get($colors, primary);
+        border: 1px solid map-get($colors, accent);
       }
 
       &::placeholder {
@@ -54,6 +54,11 @@
     border: 1px solid transparent;
     border-radius: inherit;
     color: map-get($colors, white);
+
+    &.textArea {
+      resize: vertical;
+      border-radius: 3rem;
+    }
 
     &.error {
       border: 1px solid map-get($colors, error-text);
