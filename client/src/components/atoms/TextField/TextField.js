@@ -23,7 +23,24 @@ const TextField = ({
 
   const InputClassNames = cn(styles.input, {
     [styles.error]: isError,
+    [styles.textArea]: type === 'textarea',
   })
+
+  if (type === 'textarea')
+    return (
+      <div className={TextFieldClassNames}>
+        <textarea
+          type={type}
+          name={name}
+          value={inputValue}
+          maxLength={100}
+          className={InputClassNames}
+          placeholder={placeholder}
+          onChange={e => onChangeFn(e)}
+          onBlur={e => onBlurFn(e)}
+        />
+      </div>
+    )
 
   return (
     <div className={TextFieldClassNames}>

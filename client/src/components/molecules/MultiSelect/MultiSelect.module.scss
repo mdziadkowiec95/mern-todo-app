@@ -1,0 +1,30 @@
+@import 'utils/utils';
+
+.wrapper {
+  margin-bottom: 1.5rem;
+
+  .chosenItems {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: 4rem;
+    border-bottom: 1px solid map-get($colors, light-300);
+  }
+
+  .listWrap {
+    padding: 0 2rem;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s map-get($easings, primary), opacity 0.3s map-get($easings, primary);
+  }
+
+  .listWrapInner {
+    padding: 1.5rem 0;
+  }
+
+  &.isOpen {
+    .listWrap {
+      opacity: 1;
+    }
+  }
+}

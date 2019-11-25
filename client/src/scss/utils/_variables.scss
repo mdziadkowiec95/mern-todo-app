@@ -1,12 +1,14 @@
 $colors: (
-  primary: rgb(156, 39, 176),
-  secondary: #2196f3,
+  // primary: rgb(156, 39, 176),
+    primary: #031b4d,
+  secondary: #0052ff,
   tertiary: rgb(0, 150, 136),
-  accent: rgb(236, 64, 122),
+  accent: #15cd72,
   white: #fff,
   light: #f9faff,
   light-100: #ddd,
   light-200: #ccc,
+  light-300: #acacac,
   dark: #212121,
   dark-100: #424242,
   dark-200: #626262,
@@ -17,7 +19,7 @@ $colors: (
   warning-bg: #ffb648,
   priority-low: #68cd86,
   priority-normal: #eb8909,
-  priority-high: #d1453b,
+  priority-high: #d1453b
 );
 
 $gradients: (

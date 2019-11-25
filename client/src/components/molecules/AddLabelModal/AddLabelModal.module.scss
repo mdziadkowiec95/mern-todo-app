@@ -1,0 +1,33 @@
+@import 'utils/utils';
+
+.wrapper {
+  position: fixed;
+  top: 50%;
+  left: 5rem;
+  transform: translateY(-50%);
+  width: 220px;
+
+  border-radius: map-get($radius, small);
+  background-color: map-get($colors, white);
+
+  @extend %shadow-100;
+}
+
+.form {
+  position: relative;
+  padding: 2rem 1rem 1rem 1rem;
+}
+
+.closeBtn {
+  position: absolute;
+  top: -2rem;
+  right: -2rem;
+}
+
+.addLabelBtnWrap {
+  text-align: center;
+}
+
+.label {
+  margin-bottom: 1rem;
+}

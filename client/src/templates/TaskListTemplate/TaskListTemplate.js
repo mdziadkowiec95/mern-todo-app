@@ -1,10 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styles from './TaskListTemplate.module.scss'
+import cn from 'classnames'
+import Loader from '../../components/atoms/Loader/Loader'
 
-const TaskListTemplate = ({ children }) => {
+const TaskListTemplate = ({ children, isLoading }) => {
+  const ListWrapperClassName = cn(styles.listWrapper, {
+    [styles.isLoading]: isLoading,
+  })
   return (
-    <div>
-      <ul>{children}</ul>
+    <div className={styles.wrapper}>
+      <ul className={ListWrapperClassName}>
+        {isLoading && <Loader isLarge inWrapper absoluteCenter />}
+        {children}
+      </ul>
     </div>
   )
 }

@@ -1,5 +1,17 @@
 @import 'utils/utils';
 
+// Custom Button styles
+
+.react-datepicker {
+  &__btn-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+}
+
+// External classes override
+
 .react-datepicker {
   font-size: 1.3rem !important;
 }
@@ -28,7 +40,7 @@
   border-radius: map-get($radius, normal);
 
   &:focus {
-    border: 1px solid map-get($colors, primary);
+    border: 1px solid map-get($colors, accent);
   }
 }
 
@@ -40,10 +52,10 @@ $dp-time-selector: '.react-datepicker__time-container .react-datepicker__time .r
 $dp-icon-selector: '.react-datepicker__close-icon::after';
 
 #{$dp-day-selector} #{$dp-time-selector} #{$dp-icon-selector} {
-  background-color: map-get($colors, primary);
-  transition: background-color 0.3s map-get($easings, primary);
+  background-color: map-get($colors, accent);
+  transition: background-color 0.3s map-get($easings, accent);
 
   &:hover {
-    background-color: rgba(map-get($colors, primary), 0.8);
+    background-color: rgba(map-get($colors, accent), 0.8);
   }
 }

@@ -51,11 +51,11 @@
   }
 
   &.primary {
-    background: map-get($colors, primary);
+    background: map-get($colors, accent);
 
     &:hover,
     &:focus {
-      background: darken(map-get($colors, primary), 10%);
+      background: darken(map-get($colors, accent), 10%);
     }
   }
 

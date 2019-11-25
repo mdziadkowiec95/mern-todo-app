@@ -22,7 +22,7 @@ DropdownMenuItem.propTypes = {
 }
 
 DropdownMenuItem.defaultProps = {
-  iconColor: config.colors.primary,
+  iconColor: config.colors.secondary,
 }
 
 export default DropdownMenuItem

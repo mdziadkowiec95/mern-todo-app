@@ -1,0 +1,71 @@
+@import 'utils/utils';
+
+.chip {
+  position: relative;
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  color: map-get($colors, white);
+  border-radius: 3rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  margin: 1rem 1rem 1rem 0;
+  transition: .3s map-get($easings, primary);
+
+  @extend %shadow-chip;
+
+  &:hover {
+    transform: translateY(-3px);
+    opacity: .85;
+  }
+
+  &.remove,
+  &.add {
+    padding: 0.7rem 3rem 0.7rem 1rem;
+  }
+
+  &.add {
+    .actionBtn .cross {
+      &::before {
+        transform: translateY(-50%);
+      }
+
+      &::after {
+        transform: translateY(-50%) rotate(90deg);
+      }
+    }
+  }
+}
+
+.actionBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 2.5rem;
+  background: transparent;
+
+  .cross {
+    // position: relative;
+    display: block;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 1.5rem;
+      background-color: map-get($colors, white);
+      width: 3px;
+      height: 1.2rem;
+    }
+
+    &::before {
+      transform: translateY(-50%) rotate(-45deg);
+    }
+
+    &::after {
+      transform: translateY(-50%) rotate(45deg);
+    }
+  }
+}
