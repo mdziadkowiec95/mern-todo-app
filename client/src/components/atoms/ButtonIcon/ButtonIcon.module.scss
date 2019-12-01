@@ -9,7 +9,6 @@
   &::before {
     content: '';
     position: absolute;
-    z-index: -1;
     top: 0;
     left: 0;
     height: 100%;
@@ -21,10 +20,11 @@
     transition: 0.3s map-get($easings, primary);
   }
 
-  &.reversed {
+  &.solid {
     &::before {
+      z-index: -1;
       opacity: 1;
-      background-color: rgba(map-get($colors, white), 0.6);
+      background-color: map-get($colors, white);
     }
   }
 
@@ -43,6 +43,10 @@
     &::before {
       animation: active-button-icon 0.3s forwards;
     }
+  }
+
+  &.tiny {
+    padding: 0.4rem;
   }
 
   &.small {

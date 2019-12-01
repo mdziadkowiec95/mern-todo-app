@@ -22,7 +22,7 @@ class SignUpFormInner extends Component {
             isError={errors.userName && touched.userName}
             isSolid
             onChangeFn={handleChange}
-            onBlurFn={handleBlur}
+            onBlurFn={handleBlur} 
             inputValue={values.userName}
             name="userName"
             placeholder="Your name"

@@ -2,24 +2,31 @@
 
 .accordion {
   &.activeTab {
-    .btn {
+    .btnWrap {
       background-color: rgba(map-get($colors, tertiary), 0.3);
     }
   }
 
-  .btn {
-    display: block;
+  .btnWrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    padding: 1.4rem;
+    padding: 0 1rem;
     border-radius: 0 2.5rem 2.5rem 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    text-align: left;
     transition: background-color 0.3s map-get($easings, primary);
 
     &:hover {
       background-color: rgba(map-get($colors, tertiary), 0.3);
     }
+  }
+
+  .btn {
+    padding: 1rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: left;
+    background: transparent;
   }
 
   .content {
@@ -33,5 +40,9 @@
     .content {
       opacity: 1;
     }
+  }
+
+  .contentInner {
+    padding-top: 5px;
   }
 }

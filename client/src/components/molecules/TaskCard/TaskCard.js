@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Moment from 'react-moment'
 import PropTypes from 'prop-types'
 import styles from './TaskCard.module.scss'
@@ -10,8 +10,11 @@ import Button from '../../atoms/Button/Button'
 import TextField from '../../atoms/TextField/TextField'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import IconSVG from '../../atoms/IconSVG/IconSVG'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { removeTask } from '../../../store/tasks/async-actions'
 
-const TaskCard = ({ _id, priority, status, title, labels, project, date }) => {
+const TaskCard = ({ _id, priority, status, title, labels, project, date, removeTask }) => {
   const [isEditMode, setEditMode] = useState(false)
 
   const [editState, setEditState] = useState({
@@ -56,7 +59,12 @@ const TaskCard = ({ _id, priority, status, title, labels, project, date }) => {
       >
         <div className={styles.cardInner}>
           <div className={styles.cardDone}>
-            <ButtonIcon name="check" maskContent title="Mark as done" />
+            <ButtonIcon
+              name="check"
+              maskContent
+              title="Mark as done"
+              onClickFn={() => removeTask(_id)}
+            />
           </div>
           <div className={styles.cardContent} role="presentation" onClick={() => setEditMode(true)}>
             {!isEditMode ? (
@@ -72,9 +80,9 @@ const TaskCard = ({ _id, priority, status, title, labels, project, date }) => {
             )}
             {date && (
               <>
-                <Moment format="dddd" date={date} />
+                <Moment format="dddd" date={updatedDate} />
                 <br />
-                <Moment format="MM-DD HH:mm" date={date} />
+                <Moment format="MM-DD HH:mm" date={updatedDate} />
               </>
             )}
 
@@ -97,6 +105,8 @@ const TaskCard = ({ _id, priority, status, title, labels, project, date }) => {
                 selectedDate={isValidDate(updatedDate) ? updatedDate : null}
                 setDate={setDate}
                 placeholder="Test"
+                withIcon
+                minDate={new Date()}
               />
             )}
           </div>
@@ -127,4 +137,6 @@ TaskCard.propTypes = {
   date: PropTypes.string,
 }
 
-export default TaskCard
+const mapDispatchToProps = dispatch => bindActionCreators({ removeTask }, dispatch)
+
+export default connect(null, mapDispatchToProps)(TaskCard)

@@ -1,8 +1,8 @@
 import React from 'react'
 import styles from './LandingPage.module.scss'
-import Heading from '../../../components/atoms/Heading/Heading'
-import Button from '../../../components/atoms/Button/Button'
-import Container from '../../../templates/Container/Container'
+import Heading from '../../components/atoms/Heading/Heading'
+import Button from '../../components/atoms/Button/Button'
+import Container from '../../templates/Container/Container'
 
 const LandingPage = () => {
   return (

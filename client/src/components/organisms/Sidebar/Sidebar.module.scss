@@ -6,6 +6,7 @@
   top: 0;
   left: 0;
   transform: translateX(-400px);
+  min-width: 290px;
   height: 100vh;
   padding: 4rem 3rem 4rem 0;
   background-color: map-get($colors, white);
@@ -32,7 +33,7 @@
 .tab {
   display: block;
   width: 100%;
-  padding: 1.4rem;
+  padding: 1rem;
   border-radius: 0 2.5rem 2.5rem 0;
   color: map-get($colors, dark);
   font-weight: 600;

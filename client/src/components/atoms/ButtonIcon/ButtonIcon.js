@@ -8,19 +8,36 @@ import { NAMES } from '../IconSVG/names'
 
 const { colors } = config
 
-const ButtonIcon = ({ name, size, title, color, maskContent, reversed, onClickFn }) => {
+const ButtonIcon = ({
+  name,
+  type,
+  size,
+  title,
+  color,
+  maskContent,
+  solid,
+  onClickFn,
+  className,
+  children,
+}) => {
   const iconsToMask = ['check']
-  const ButtonIconClassNames = cn(styles.btnIcon, {
-    [styles[size]]: size !== 'normal',
-    [styles.reversed]: reversed,
-  })
+  const ButtonIconClassNames = cn(
+    styles.btnIcon,
+    styles[size],
+    {
+      [styles.solid]: solid,
+    },
+    className,
+  )
 
   const iconSizes = {
+    tiny: '15px',
     small: '20px',
     normal: '24px',
     big: '34px',
   }
   const maskSize = {
+    tiny: parseInt(iconSizes.tiny) - 5 + 'px',
     small: parseInt(iconSizes.small) - 6 + 'px',
     normal: parseInt(iconSizes.normal) - 7 + 'px',
     big: parseInt(iconSizes.big) - 10 + 'px',
@@ -30,7 +47,8 @@ const ButtonIcon = ({ name, size, title, color, maskContent, reversed, onClickFn
     height: maskSize[size],
   }
   return (
-    <button className={ButtonIconClassNames} title={title} onClick={onClickFn}>
+    <button type={type} className={ButtonIconClassNames} title={title} onClick={onClickFn}>
+      {children}
       <IconSVG name={name} size={iconSizes[size]} fill={color} />
       {maskContent && iconsToMask.includes(name) && (
         <span style={maskStyles} className={styles.mask}></span>
@@ -41,20 +59,26 @@ const ButtonIcon = ({ name, size, title, color, maskContent, reversed, onClickFn
 
 ButtonIcon.propTypes = {
   name: PropTypes.oneOf(NAMES).isRequired,
+  type: PropTypes.string,
   size: PropTypes.oneOf(['small', 'normal', 'big']),
   title: PropTypes.string,
   color: PropTypes.string,
   maskContent: PropTypes.bool,
-  reversed: PropTypes.bool,
+  solid: PropTypes.bool,
   onClickFn: PropTypes.func,
+  className: PropTypes.string,
+  children: PropTypes.node,
 }
 
 ButtonIcon.defaultProps = {
   title: '',
+  type: 'button',
   size: 'normal',
-  color: colors.primary,
+  color: colors.secondary,
   maskContent: false,
-  reversed: false,
+  solid: false,
+  className: '',
+  children: null,
 }
 
 export default ButtonIcon

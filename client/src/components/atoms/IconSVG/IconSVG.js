@@ -21,6 +21,8 @@ const getViewBox = name => {
       return '0 0 24 24'
     case 'flag':
       return '0 0 24 24'
+    case 'arrowDown':
+      return '0 0 24 24'
     default:
       return '0 0 24 24'
   }
@@ -34,6 +36,8 @@ const getPath = (name, props) => {
       return <path {...props} d={PATHS.plusBackground} />
     case 'plusBorder':
       return <path {...props} d={PATHS.plusBorder} />
+    case 'minusBorder':
+      return <path {...props} d={PATHS.minusBorder} />
     case 'serach':
       return <path {...props} d={PATHS.search} />
     case 'gear':
@@ -46,8 +50,12 @@ const getPath = (name, props) => {
       return <path {...props} d={PATHS.checkBackground} />
     case 'flag':
       return <path {...props} d={PATHS.flag} />
-    case 'logout': 
+    case 'logout':
       return <path {...props} d={PATHS.logout} />
+    case 'arrowDown':
+      return <path {...props} d={PATHS.arrowDown} />
+    case 'closeBorder':
+      return <path {...props} d={PATHS.closeBorder} />
     default:
       return <path />
   }

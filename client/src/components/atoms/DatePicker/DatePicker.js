@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Component } from 'react'
 import PropTypes from 'prop-types'
 import DatePickerComponent from 'react-datepicker'
+import Moment from 'react-moment'
 import { isTwelweHoursCountry } from '../../../utils/dates'
 import { debounce } from 'lodash'
 
@@ -9,8 +10,23 @@ import 'react-datepicker/dist/react-datepicker.css'
 // DatePicker styles overrides
 import './DatePicker.scss'
 import config from '../../../config'
+import ButtonIcon from '../ButtonIcon/ButtonIcon'
 
-const DatePicker = ({ selectedDate, setDate, placeholder }) => {
+// It has to be a class component (react-datepicker library requirement)
+class CalendarButton extends Component {
+  render() {
+    const { value, onClick } = this.props
+
+    return (
+      <div className="react-datepicker__btn-wrap">
+        <ButtonIcon title="Select date" reversed name="calendar" onClickFn={onClick} />
+        {value && <Moment format="dddd, MM-DD, HH:mm" date={value} />}
+      </div>
+    )
+  }
+}
+
+const DatePicker = ({ selectedDate, setDate, placeholder, withIcon, minDate }) => {
   const [showAsModal, setShowAsModal] = useState(false)
 
   useEffect(() => {
@@ -36,11 +52,12 @@ const DatePicker = ({ selectedDate, setDate, placeholder }) => {
       placeholderText={placeholder}
       showTimeSelect
       timeFormat={timeFormat}
-      isClearable
       timeIntervals={15}
       timeCaption="time"
+      minDate={minDate}
       dateFormat={`yyyy/MM/dd ${timeFormat}`}
       withPortal={showAsModal}
+      customInput={withIcon ? <CalendarButton /> : null}
     />
   )
 }
@@ -49,11 +66,15 @@ DatePicker.propTypes = {
   selectedDate: PropTypes.object,
   setDate: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  withIcon: PropTypes.bool,
+  minDate: PropTypes.object,
 }
 
 DatePicker.defaultProps = {
   selectedDate: null,
   placeholder: 'Select a date',
+  withIcon: false,
+  minDate: null,
 }
 
 export default DatePicker

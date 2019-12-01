@@ -6,17 +6,33 @@ import cn from 'classnames'
 import styles from './Sidebar.module.scss'
 import Accordion from '../../molecules/Accordion/Accordion'
 import ButtonLink from '../../atoms/ButtonLink/ButtonLink'
-import { getActiveTab } from '../../../helpers/getActiveTab'
-import { toggleSidebar } from '../../../store/ui/actions'
+import { toggleSidebar, toggleAddLabelModal } from '../../../store/ui/actions'
+import { compose } from 'redux'
+import withPageContext from '../../../hoc/withPageContext'
+import config from '../../../config'
+import ColorPicker from '../../molecules/ColorPicker/ColorPicker'
+import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
+import AddLabelModal from '../../molecules/AddLabelModal/AddLabelModal'
 
-const Sidebar = ({ isSidebarOpen, hideSidebar, match }) => {
-  const [activeTab, setActiveTab] = useState('')
+const Sidebar = ({
+  isSidebarOpen,
+  isAddLabelModalOpen,
+  toggleAddLabelModal,
+  hideSidebar,
+  pageContext,
+}) => {
+  const [activeTab, setActiveTab] = useState('inbox')
 
   useEffect(() => {
-    const activeTab = getActiveTab(match.url)
+    setActiveTab(pageContext.type)
+  }, [pageContext.type])
 
-    setActiveTab(activeTab ? activeTab : '')
-  }, [match])
+  // Fix closing sidebar (now it runs Redux action on every NavLink click)
+  // It would be better to detect what was clicked (watch DropdownMenu)
+
+  const handleSidebarClose = () => {
+    if (isSidebarOpen) hideSidebar()
+  }
 
   const SidebarWrapperClassName = cn(styles.wrapper, {
     [styles.isOpen]: isSidebarOpen,
@@ -28,7 +44,7 @@ const Sidebar = ({ isSidebarOpen, hideSidebar, match }) => {
           to="/app/inbox"
           className={styles.tab}
           activeClassName={styles.isActive}
-          onClick={hideSidebar}
+          onClick={handleSidebarClose}
         >
           Inbox
         </NavLink>
@@ -36,7 +52,7 @@ const Sidebar = ({ isSidebarOpen, hideSidebar, match }) => {
           to="/app/today"
           className={styles.tab}
           activeClassName={styles.isActive}
-          onClick={hideSidebar}
+          onClick={handleSidebarClose}
         >
           Today
         </NavLink>
@@ -44,7 +60,7 @@ const Sidebar = ({ isSidebarOpen, hideSidebar, match }) => {
           to="/app/next-week"
           className={styles.tab}
           activeClassName={styles.isActive}
-          onClick={hideSidebar}
+          onClick={handleSidebarClose}
         >
           Next week
         </NavLink>
@@ -52,25 +68,43 @@ const Sidebar = ({ isSidebarOpen, hideSidebar, match }) => {
         <hr />
         <br />
         <div className={styles.accordion}>
-          <Accordion title="Labels" isActiveTab={activeTab === 'label'}>
+          <Accordion
+            title="Labels"
+            isActiveTab={activeTab === 'label'}
+            TabActionComponent={
+              <ButtonIcon
+                name="plus"
+                size="tiny"
+                onClickFn={e => {
+                  e.stopPropagation()
+                  toggleAddLabelModal(true)
+                }}
+              />
+            }
+          >
             <ul>
               <li>
-                <ButtonLink href="/app/label/1" className={styles} asNavLink>
+                <ButtonLink
+                  href="/app/label/1"
+                  className={styles}
+                  asNavLink
+                  onClick={handleSidebarClose}
+                >
                   Label 1
                 </ButtonLink>
               </li>
               <li>
-                <ButtonLink href="/app/label/2" asNavLink>
+                <ButtonLink href="/app/label/2" asNavLink onClick={handleSidebarClose}>
                   Label 2
                 </ButtonLink>
               </li>
               <li>
-                <ButtonLink href="/app/label/3" asNavLink>
+                <ButtonLink href="/app/label/3" asNavLink onClick={handleSidebarClose}>
                   Label 3
                 </ButtonLink>
               </li>
               <li>
-                <ButtonLink href="/app/label/4" asNavLink>
+                <ButtonLink href="/app/label/4" asNavLink onClick={handleSidebarClose}>
                   Label 4
                 </ButtonLink>
               </li>
@@ -78,30 +112,44 @@ const Sidebar = ({ isSidebarOpen, hideSidebar, match }) => {
           </Accordion>
         </div>
         <div className={styles.accordion}>
-          <Accordion title="Projects" isActiveTab={activeTab === 'project'}>
+          <Accordion
+            title="Projects"
+            isActiveTab={activeTab === 'project'}
+            TabActionComponent={
+              <ButtonIcon
+                name="plus"
+                size="tiny"
+                onClickFn={e => {
+                  e.stopPropagation()
+                  alert('add project')
+                }}
+              />
+            }
+          >
             <ul>
               <li>
-                <ButtonLink href="/app/project/1" asNavLink>
+                <ButtonLink href="/app/project/1" asNavLink onClick={handleSidebarClose}>
                   Project 1
                 </ButtonLink>
               </li>
               <li>
-                <ButtonLink href="/app/project/2" asNavLink>
+                <ButtonLink href="/app/project/2" asNavLink onClick={handleSidebarClose}>
                   Project 2
                 </ButtonLink>
               </li>
               <li>
-                <ButtonLink href="/app/project/3" asNavLink>
+                <ButtonLink href="/app/project/3" asNavLink onClick={handleSidebarClose}>
                   Project 3
                 </ButtonLink>
               </li>
               <li>
-                <ButtonLink href="/app/project/4" asNavLink>
+                <ButtonLink href="/app/project/4" asNavLink onClick={handleSidebarClose}>
                   Project 4
                 </ButtonLink>
               </li>
             </ul>
           </Accordion>
+          {isAddLabelModalOpen && <AddLabelModal />}
         </div>
       </aside>
       {isSidebarOpen && (
@@ -114,15 +162,27 @@ const Sidebar = ({ isSidebarOpen, hideSidebar, match }) => {
 Sidebar.propTypes = {
   isSidebarOpen: PropTypes.bool,
   hideSidebar: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired,
+  pageContext: PropTypes.shape({
+    type: PropTypes.oneOf(config.pageTypes),
+    id: PropTypes.string,
+  }),
 }
 
-const mapStateToProps = state => ({
-  isSidebarOpen: state.ui.isSidebarOpen,
+Sidebar.defaultProps = {
+  pageContext: {
+    type: 'inbox',
+    id: '',
+  },
+}
+
+const mapStateToProps = ({ ui }) => ({
+  isSidebarOpen: ui.isSidebarOpen,
+  isAddLabelModalOpen: ui.isAddLabelModalOpen,
 })
 
 const mapDispatchToProps = dispatch => ({
   hideSidebar: () => dispatch(toggleSidebar(false)),
+  toggleAddLabelModal: isOpen => dispatch(toggleAddLabelModal(isOpen)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)
+export default compose(withPageContext, connect(mapStateToProps, mapDispatchToProps))(Sidebar)

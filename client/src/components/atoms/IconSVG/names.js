@@ -2,6 +2,7 @@ export const NAMES = [
   'plus',
   'plusBackground',
   'plusBorder',
+  'minusBorder',
   'search',
   'calendar',
   'check',
@@ -9,4 +10,6 @@ export const NAMES = [
   'gear',
   'flag',
   'logout',
+  'arrowDown',
+  'closeBorder'
 ]
