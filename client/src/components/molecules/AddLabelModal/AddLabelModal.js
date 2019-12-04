@@ -10,6 +10,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { toggleAddLabelModal } from '../../../store/ui/actions'
 import Label from '../../atoms/Label/Label'
+import { addLabel } from '../../../store/auth/thunks'
+import PropTypes from 'prop-types'
 
 const AddLabelModalBase = ({
   values,
@@ -19,8 +21,12 @@ const AddLabelModalBase = ({
   handleBlur,
   handleSubmit,
   setFieldValue,
+  modalType,
   toggleAddLabelModal,
 }) => {
+  const namePlaceholder = modalType === 'project' ? 'Enter project name' : 'Enter label name'
+  const colorPickerLabel = modalType === 'project' ? 'Pick project color' : 'Pick label color'
+
   return (
     <div className={styles.wrapper}>
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -32,7 +38,7 @@ const AddLabelModalBase = ({
         <TextField
           isError={errors.name && touched.name}
           name="name"
-          placeholder="Enter label name"
+          placeholder={namePlaceholder}
           onChangeFn={handleChange}
           onBlurFn={handleBlur}
           inputValue={values.name}
@@ -40,7 +46,7 @@ const AddLabelModalBase = ({
         />
         {errors.name && touched.name && <FormErrorMessage errors={errors.name} />}
         <Label center className={styles.label}>
-          Pick a color
+          {colorPickerLabel}
         </Label>
         {errors.color && touched.color && <FormErrorMessage errors={errors.color} />}
         <ColorPicker
@@ -73,7 +79,18 @@ const AddLabelModal = withFormik({
   validationSchema: AddTaskModalValidationSchema,
 
   handleSubmit: (values, { props, setSubmitting }) => {
-    alert(JSON.stringify(values, 2, null))
+    const { name, color } = values
+
+    const onSuccess = () => {
+      setSubmitting(false)
+    }
+    const onError = onSuccess
+
+    if (props.modalType === 'label') {
+      props.addLabel(name, color, onSuccess, onError)
+    } else {
+      alert('add project ')
+    }
 
     setSubmitting(false)
   },
@@ -81,10 +98,24 @@ const AddLabelModal = withFormik({
   displayName: 'AddLabelModal',
 })(AddLabelModalBase)
 
-const mapStateToProps = ({ ui: { isAddLabelModalOpen } }) => ({
-  isAddLabelModalOpen,
+AddLabelModalBase.propTypes = {
+  values: PropTypes.object.isRequired,
+  errors: PropTypes.object,
+  touched: PropTypes.object,
+  handleChange: PropTypes.func,
+  handleBlur: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  isSubmitting: PropTypes.bool,
+  setFieldValue: PropTypes.func,
+  modalType: PropTypes.string.isRequired,
+  toggleAddLabelModal: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = ({ ui }) => ({
+  modalType: ui.addLabelModalType,
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({ toggleAddLabelModal }, dispatch)
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ toggleAddLabelModal, addLabel }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddLabelModal)

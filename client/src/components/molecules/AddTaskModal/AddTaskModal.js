@@ -17,24 +17,6 @@ import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import { toggleAddTaskModal } from '../../../store/ui/actions'
 import RadioButtonField from '../../atoms/RadioButtonField/RadioButtonField'
 
-const MOCK_OPTIONS = [
-  {
-    _id: '1',
-    name: 'Chip 1',
-    color: 'purple',
-  },
-  {
-    _id: '2',
-    name: 'Chip 2',
-    color: '#412423',
-  },
-  {
-    _id: '3',
-    name: 'Chip 3',
-    color: 'green',
-  },
-]
-
 const TaskPriorityOptions = [
   {
     label: 'Low',
@@ -80,7 +62,7 @@ const AddTaskModalBase = props => {
     } else {
       setFieldValue('status', 'inbox')
     }
-  }, [values.date])
+  }, [values.date, setFieldValue])
 
   const handleLabelSelect = labelId => {
     const selectedLabel = user.labels.find(label => label._id === labelId)
@@ -218,10 +200,11 @@ const AddTaskModal = withFormik({
       setSubmitting(false)
     }
 
-    const onError = () => {}
+    const onError = () => {
+      setSubmitting(false)
+    }
 
     props.addTask(taskPayload, onSuccess, onError)
-    setSubmitting(false)
   },
 
   displayName: 'AddTaskForm',
@@ -244,6 +227,12 @@ AddTaskModalBase.propTypes = {
   }),
   errors: PropTypes.any,
   touched: PropTypes.any,
+  handleChange: PropTypes.func.isRequired,
+  handleBlur: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  setFieldValue: PropTypes.func.isRequired,
+  user: PropTypes.object,
+  toggleAddTaskModal: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = ({ auth: { user }, ui }) => ({
