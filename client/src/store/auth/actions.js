@@ -45,3 +45,17 @@ export const loginUserError = () => ({
 export const logoutUser = () => ({
   type: AuthActionTypes.LOGOUT_USER,
 })
+
+// Add new label
+export const addLabelBegin = () => ({
+  type: AuthActionTypes.ADD_LABEL_BEGIN,
+})
+export const addLabelSuccess = updatedLabels => ({
+  type: AuthActionTypes.ADD_LABEL_SUCCESS,
+  payload: {
+    updatedLabels,
+  },
+})
+export const addLabelError = () => ({
+  type: AuthActionTypes.ADD_LABEL_ERROR,
+})

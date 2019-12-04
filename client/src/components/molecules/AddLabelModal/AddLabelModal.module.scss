@@ -9,6 +9,8 @@
 
   border-radius: map-get($radius, small);
   background-color: map-get($colors, white);
+  transform-origin: 0 100%;
+  animation: add-label-modal-fade-in 0.3s map-get($easings, primary);
 
   @extend %shadow-100;
 }
@@ -30,4 +32,16 @@
 
 .label {
   margin-bottom: 1rem;
+}
+
+@keyframes add-label-modal-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
 }

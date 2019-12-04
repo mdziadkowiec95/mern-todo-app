@@ -4,6 +4,7 @@ export const initialState = {
   isSidebarOpen: false,
   isAddTaskModalOpen: false,
   isAddLabelModalOpen: false,
+  addLabelModalType: '',
 }
 
 export const uiReducer = (state = initialState, action) => {
@@ -23,7 +24,8 @@ export const uiReducer = (state = initialState, action) => {
     case types.TOGGLE_ADD_LABEL_MODAL:
       return {
         ...state,
-        isAddLabelModalOpen: payload,
+        isAddLabelModalOpen: payload.isOpen,
+        addLabelModalType: payload.type,
       }
     default:
       return state

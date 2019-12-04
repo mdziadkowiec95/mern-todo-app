@@ -60,7 +60,7 @@ const ButtonIcon = ({
 ButtonIcon.propTypes = {
   name: PropTypes.oneOf(NAMES).isRequired,
   type: PropTypes.string,
-  size: PropTypes.oneOf(['small', 'normal', 'big']),
+  size: PropTypes.oneOf(['tiny', 'small', 'normal', 'big']),
   title: PropTypes.string,
   color: PropTypes.string,
   maskContent: PropTypes.bool,

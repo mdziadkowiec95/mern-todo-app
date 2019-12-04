@@ -14,6 +14,7 @@ export default function(state = initialState, action) {
     case AuthActionTypes.AUTHENTICATE_USER_BEGIN:
     case AuthActionTypes.REGISTER_USER_BEGIN:
     case AuthActionTypes.LOGIN_USER_BEGIN:
+    case AuthActionTypes.ADD_LABEL_BEGIN:
       return {
         ...state,
         isLoading: true,
@@ -30,6 +31,14 @@ export default function(state = initialState, action) {
         isAuth: true,
         isLoading: false,
       }
+    case AuthActionTypes.ADD_LABEL_SUCCESS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          labels: payload.updatedLabels,
+        },
+      }
     case AuthActionTypes.REGISTER_USER_ERROR:
     case AuthActionTypes.LOGIN_USER_ERROR:
     case AuthActionTypes.AUTHENTICATE_USER_ERROR:
@@ -41,6 +50,11 @@ export default function(state = initialState, action) {
         authToken: null,
         isAuth: null,
         user: null,
+        isLoading: false,
+      }
+    case AuthActionTypes.ADD_LABEL_ERROR:
+      return {
+        ...state,
         isLoading: false,
       }
     default:

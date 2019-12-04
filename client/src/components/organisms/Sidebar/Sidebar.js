@@ -4,13 +4,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import cn from 'classnames'
 import styles from './Sidebar.module.scss'
-import Accordion from '../../molecules/Accordion/Accordion'
-import ButtonLink from '../../atoms/ButtonLink/ButtonLink'
+import AccordionMenu from '../../molecules/AccordionMenu/AccordionMenu'
 import { toggleSidebar, toggleAddLabelModal } from '../../../store/ui/actions'
 import { compose } from 'redux'
 import withPageContext from '../../../hoc/withPageContext'
 import config from '../../../config'
-import ColorPicker from '../../molecules/ColorPicker/ColorPicker'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import AddLabelModal from '../../molecules/AddLabelModal/AddLabelModal'
 
@@ -20,6 +18,7 @@ const Sidebar = ({
   toggleAddLabelModal,
   hideSidebar,
   pageContext,
+  labels,
 }) => {
   const [activeTab, setActiveTab] = useState('inbox')
 
@@ -68,89 +67,47 @@ const Sidebar = ({
         <hr />
         <br />
         <div className={styles.accordion}>
-          <Accordion
+          <AccordionMenu
             title="Labels"
             isActiveTab={activeTab === 'label'}
+            routerLinkBase="/app/label/"
+            items={labels}
+            noItemsPlaceholder="You don't have any labels"
+            onItemClick={handleSidebarClose}
             TabActionComponent={
               <ButtonIcon
                 name="plus"
                 size="tiny"
                 onClickFn={e => {
                   e.stopPropagation()
-                  toggleAddLabelModal(true)
+                  toggleAddLabelModal(true, 'label')
                 }}
               />
             }
-          >
-            <ul>
-              <li>
-                <ButtonLink
-                  href="/app/label/1"
-                  className={styles}
-                  asNavLink
-                  onClick={handleSidebarClose}
-                >
-                  Label 1
-                </ButtonLink>
-              </li>
-              <li>
-                <ButtonLink href="/app/label/2" asNavLink onClick={handleSidebarClose}>
-                  Label 2
-                </ButtonLink>
-              </li>
-              <li>
-                <ButtonLink href="/app/label/3" asNavLink onClick={handleSidebarClose}>
-                  Label 3
-                </ButtonLink>
-              </li>
-              <li>
-                <ButtonLink href="/app/label/4" asNavLink onClick={handleSidebarClose}>
-                  Label 4
-                </ButtonLink>
-              </li>
-            </ul>
-          </Accordion>
+          />
         </div>
+
         <div className={styles.accordion}>
-          <Accordion
+          <AccordionMenu
             title="Projects"
             isActiveTab={activeTab === 'project'}
+            routerLinkBase="/app/project/"
+            items={[]}
+            noItemsPlaceholder="You don't have any projects"
+            onItemClick={handleSidebarClose}
             TabActionComponent={
               <ButtonIcon
                 name="plus"
                 size="tiny"
                 onClickFn={e => {
                   e.stopPropagation()
-                  alert('add project')
+                  toggleAddLabelModal(true, 'project')
                 }}
               />
             }
-          >
-            <ul>
-              <li>
-                <ButtonLink href="/app/project/1" asNavLink onClick={handleSidebarClose}>
-                  Project 1
-                </ButtonLink>
-              </li>
-              <li>
-                <ButtonLink href="/app/project/2" asNavLink onClick={handleSidebarClose}>
-                  Project 2
-                </ButtonLink>
-              </li>
-              <li>
-                <ButtonLink href="/app/project/3" asNavLink onClick={handleSidebarClose}>
-                  Project 3
-                </ButtonLink>
-              </li>
-              <li>
-                <ButtonLink href="/app/project/4" asNavLink onClick={handleSidebarClose}>
-                  Project 4
-                </ButtonLink>
-              </li>
-            </ul>
-          </Accordion>
-          {isAddLabelModalOpen && <AddLabelModal />}
+          />
         </div>
+        {isAddLabelModalOpen && <AddLabelModal />}
       </aside>
       {isSidebarOpen && (
         <div role="presentation" onClick={hideSidebar} className={styles.overlay}></div>
@@ -175,14 +132,15 @@ Sidebar.defaultProps = {
   },
 }
 
-const mapStateToProps = ({ ui }) => ({
+const mapStateToProps = ({ auth, ui }) => ({
   isSidebarOpen: ui.isSidebarOpen,
   isAddLabelModalOpen: ui.isAddLabelModalOpen,
+  labels: auth.user.labels,
 })
 
 const mapDispatchToProps = dispatch => ({
   hideSidebar: () => dispatch(toggleSidebar(false)),
-  toggleAddLabelModal: isOpen => dispatch(toggleAddLabelModal(isOpen)),
+  toggleAddLabelModal: (isOpen, type) => dispatch(toggleAddLabelModal(isOpen, type)),
 })
 
 export default compose(withPageContext, connect(mapStateToProps, mapDispatchToProps))(Sidebar)

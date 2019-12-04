@@ -10,12 +10,15 @@
   padding: 0 1rem;
   max-width: 500px;
   transform: translateX(50%);
+  transform-origin: 100% 100%;
+  animation: add-task-modal-fade-in-mobile 0.3s map-get($easings, primary);
 
   @include breakpoint-up(desktop) {
     top: 6rem;
     bottom: 6rem;
     right: 10rem;
     transform: none;
+    animation: add-task-modal-fade-in-desktop 0.3s map-get($easings, primary);
   }
 }
 
@@ -60,4 +63,28 @@
 
 .radioButtons {
   text-align: center;
+}
+
+@keyframes add-task-modal-fade-in-mobile {
+  0% {
+    opacity: 0;
+    transform: translateX(50%) scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(50%) scale(1);
+  }
+}
+
+@keyframes add-task-modal-fade-in-desktop {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
