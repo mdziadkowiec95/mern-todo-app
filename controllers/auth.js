@@ -1,19 +1,19 @@
-const config = require('config');
-const bcrypt = require('bcryptjs');
-const { validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const config = require("config");
+const bcrypt = require("bcryptjs");
+const { validationResult } = require("express-validator");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
 exports.authUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user.id).select("-password");
 
     res.json(user);
     return;
   } catch (error) {
     console.error(error);
 
-    res.status(500).send('Server error!');
+    res.status(500).send("Server error!");
     return error;
   }
 };
@@ -31,14 +31,14 @@ exports.signIn = async (req, res) => {
     }
 
     if (!user) {
-      return res.status(404).json({ errors: [{ msg: 'User not found!' }] });
+      return res.status(404).json({ errors: [{ msg: "User not found!" }] });
     }
 
     const passwordMatch = bcrypt.compareSync(password, user.password);
 
     if (!passwordMatch) {
       return res.status(400).json({
-        errors: [{ msg: 'Please, enter correct credientials!' }]
+        errors: [{ msg: "Please, enter correct credientials!" }]
       });
     }
 
@@ -50,7 +50,7 @@ exports.signIn = async (req, res) => {
 
     jwt.sign(
       payload,
-      config.get('mySecretJwt'),
+      config.get("mySecretJwt"),
       { expiresIn: 12 * 3600 },
       (err, token) => {
         if (err) throw err;
@@ -60,7 +60,7 @@ exports.signIn = async (req, res) => {
     );
   } catch (error) {
     console.error(error);
-    res.status(500).send('Server error!');
+    res.status(500).send("Server error!");
 
     return error;
   }

@@ -95,15 +95,6 @@ exports.getTasks = async (req, res) => {
   try {
     const tasks = await Task.find(filters).sort({ date: 1 });
 
-    if (tasks.length === 0)
-      return res.status(400).json({
-        errors: [
-          {
-            msg: "Tasks list list empty!"
-          }
-        ]
-      });
-
     res.json(tasks);
   } catch (error) {
     console.log(error.message);
@@ -187,14 +178,19 @@ exports.createOrUpdateTask = async (req, res) => {
 
     let task;
 
-    if (taskId) task = await Task.findOne({ user: req.user.id, _id: taskId });
+    // if (taskId) task = await Task.findOne({ user: req.user.id, _id: taskId });
 
-    if (task) {
-      task = await Task.findOneAndUpdate(
-        { user: req.user.id },
+    if (taskId) {
+      const task = await Task.findOneAndUpdate(
+        { user: req.user.id, _id: taskId },
         { $set: taskFields },
         { new: true }
       );
+
+      if (!task)
+        return res
+          .status(400)
+          .json({ errors: [{ msg: `Update error. Task not found!` }] });
 
       return res.status(200).json(task);
     }
@@ -207,6 +203,9 @@ exports.createOrUpdateTask = async (req, res) => {
     return;
   } catch (error) {
     console.error(error);
+
+    if (error.kind === "ObjectId")
+      return res.status(404).json({ errors: [{ msg: "Task not found!" }] });
 
     res.status(500).send("Server error!");
     return error;
