@@ -10,13 +10,18 @@
   font-weight: 700;
   white-space: nowrap;
   margin: 1rem 1rem 1rem 0;
-  transition: .3s map-get($easings, primary);
+  transition: 0.3s map-get($easings, primary);
 
   @extend %shadow-chip;
 
-  &:hover {
+  &:hover:not(.readonly) {
     transform: translateY(-3px);
-    opacity: .85;
+    opacity: 0.85;
+  }
+
+  &.small {
+    padding: 0.3rem 0.8rem;
+    font-size: 1rem;
   }
 
   &.remove,

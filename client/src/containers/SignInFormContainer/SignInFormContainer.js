@@ -12,7 +12,15 @@ import FormWrapper from '../../templates/FormWrapper/FormWrapper'
 
 class SignInFormInner extends Component {
   render() {
-    const { values, errors, touched, handleChange, handleBlur, handleSubmit } = this.props
+    const {
+      values,
+      errors,
+      touched,
+      handleChange,
+      handleBlur,
+      handleSubmit,
+      isSubmitting,
+    } = this.props
 
     return (
       <FormWrapper>
@@ -39,7 +47,7 @@ class SignInFormInner extends Component {
             placeholder="Password"
           />
           {errors.password && touched.password && <FormErrorMessage errors={errors.password} />}
-          <Button isSubmit isBlock primary>
+          <Button isSubmit isBlock primary disabled={isSubmitting}>
             Sign In
           </Button>
         </form>
@@ -64,23 +72,20 @@ const SignInFormContainer = withFormik({
   }),
   validationSchema: SignInSchema,
 
-  handleSubmit({ userEmail, password }, { props, setSubmitting, resetForm, setFieldValue }) {
+  async handleSubmit({ userEmail, password }, { props, resetForm, setFieldValue }) {
     const userData = {
       email: userEmail,
       password: password,
     }
-    // Run Redux action with onSucces and onError callbacks
-    props.loginUser(
-      userData,
-      () => {
-        resetForm()
-        setSubmitting(false)
-      },
-      () => {
-        setFieldValue('password', '')
-        setSubmitting(false)
-      },
-    )
+
+    const onSuccess = () => {
+      resetForm()
+    }
+    const onError = () => {
+      setFieldValue('password', '')
+    }
+
+    await props.loginUser(userData, onSuccess, onError)
   },
 })(SignInFormInner)
 
@@ -91,7 +96,7 @@ SignInFormInner.propTypes = {
   handleChange: PropTypes.func,
   handleBlur: PropTypes.func,
   handleSubmit: PropTypes.func,
-  isSubmitting: PropTypes.bool,
+  isSubmitting: PropTypes.bool.isRequired,
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({ loginUser }, dispatch)

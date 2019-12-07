@@ -16,13 +16,6 @@ const PreferencesSchema = new Schema({
         type: String
       }
     }
-  ],
-  projects: [
-    {
-      _id: { type: Schema.Types.ObjectId, required: true },
-      name: { type: String, required: true },
-      color: { type: String, required: true }
-    }
   ]
 });
 

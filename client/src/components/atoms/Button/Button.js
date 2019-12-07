@@ -11,6 +11,7 @@ const Button = ({
   primary,
   secondary,
   tertiary,
+  disabled,
   accent,
   asRouterLink,
   asLink,
@@ -52,7 +53,7 @@ const Button = ({
 
   if (isSubmit)
     return (
-      <button type="submit" className={ButtonClassName} title={title}>
+      <button type="submit" className={ButtonClassName} title={title} disabled={disabled}>
         {children}
       </button>
     )
@@ -73,6 +74,7 @@ Button.propTypes = {
   secondary: PropTypes.bool,
   tertiary: PropTypes.bool,
   accent: PropTypes.bool,
+  disabled: PropTypes.bool,
   asRouterLink: PropTypes.bool,
   asLink: PropTypes.bool,
   goTo: PropTypes.string,
@@ -82,6 +84,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
   title: '',
+  disabled: false,
 }
 
 export default Button
