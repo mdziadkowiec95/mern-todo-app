@@ -2,6 +2,9 @@ const calcTime = require("../utils/calcTime");
 const Task = require("../models/Task");
 const User = require("../models/User");
 const Dashboard = require("../models/Dashboard");
+const Preferences = require("../models/Preferences");
+const Project = require("../models/Project");
+const { validationResult } = require("express-validator");
 
 exports.searchTask = async (req, res) => {
   try {
@@ -128,6 +131,14 @@ exports.getSingleTask = async (req, res) => {
 exports.createOrUpdateTask = async (req, res) => {
   const { taskId, title, date, labelsIDs, projectId, priority } = req.body;
 
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array()
+    });
+  }
+
   const taskFields = {
     user: req.user.id
   };
@@ -143,26 +154,29 @@ exports.createOrUpdateTask = async (req, res) => {
   }
 
   try {
-    let user;
+    // Assign user labels to the task
+    if (labelsIDs) {
+      const userLabels = await Preferences.findOne({
+        user: req.user.id
+      }).select("labels");
 
-    if (projectId || labelsIDs) {
-      const fieledTypes = [];
-
-      if (projectId) fieledTypes.push("projects");
-      if (labelsIDs) fieledTypes.push("labels");
-
-      user = await User.findById(req.user.id).select(fieledTypes);
-
-      if (user.labels) {
-        const selectedLabels = user.labels.filter(label =>
-          labelsIDs.includes(label.id) ? true : false
+      if (userLabels.labels && userLabels.labels.length > 0) {
+        const selectedLabels = userLabels.labels.filter(label =>
+          labelsIDs.includes(label.id)
         );
 
         if (selectedLabels) taskFields.labels = selectedLabels;
       }
+    }
+    // Assign user project to the task
+    if (projectId) {
+      const userProjects = await Project.find({ user: req.user.id }).select([
+        "name",
+        "color"
+      ]);
 
-      if (user.projects) {
-        const selectedProject = user.projects.find(
+      if (userProjects && userProjects.length > 0) {
+        const selectedProject = userProjects.find(
           project => project.id === projectId
         );
 
@@ -175,8 +189,6 @@ exports.createOrUpdateTask = async (req, res) => {
         }
       }
     }
-
-    let task;
 
     // if (taskId) task = await Task.findOne({ user: req.user.id, _id: taskId });
 

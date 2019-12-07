@@ -8,18 +8,31 @@ exports.getPreferences = async (req, res) => {
   try {
     const userPreferences = await Preferences.findOne({
       user: req.user.id
-    });
+    }).select("-labels");
+
+    res.json(userPreferences);
+  } catch (error) {
+    console.log(error.message);
+
+    res.status(500).send("Server error!");
+  }
+};
+
+exports.getLabelsAndProjects = async (req, res) => {
+  try {
+    const userPreferences = await Preferences.findOne({
+      user: req.user.id
+    }).select("labels");
 
     const userProjects = await Project.find({ user: req.user.id }).select([
       "name",
       "color"
     ]);
 
-    userPreferences.projects = userProjects;
-
-    await userPreferences.save();
-
-    res.json(userPreferences);
+    res.json({
+      labels: userPreferences.labels,
+      projects: userProjects
+    });
   } catch (error) {
     console.log(error.message);
 

@@ -14,8 +14,6 @@ import { handleErrorResponse } from '../../helpers'
 import { toggleAddTaskModal } from '../ui/actions'
 
 export const getTasks = (params, pageContext) => async dispatch => {
-  console.log(pageContext)
-
   try {
     dispatch(getTasksBegin())
     const res = await axios.get('/api/tasks', {
@@ -45,7 +43,7 @@ export const addTask = (taskData, onSuccess, onError) => async dispatch => {
   } catch (error) {
     onError()
     dispatch(addTaskError())
-    handleErrorResponse(error)
+    handleErrorResponse(error, dispatch)
   }
 }
 

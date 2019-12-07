@@ -15,6 +15,18 @@ const { isValidColor } = require("../../utils/validators");
 router.get("/", authMiddleware, PreferencesController.getPreferences);
 
 /**
+ * @route GET api/preferences
+ * @desc Get user's preferences
+ * @access Private
+ */
+
+router.get(
+  "/labels-and-projects",
+  authMiddleware,
+  PreferencesController.getLabelsAndProjects
+);
+
+/**
  * @route PUT api/preferences/labels
  * @desc Add label to user private labels
  * @access Private

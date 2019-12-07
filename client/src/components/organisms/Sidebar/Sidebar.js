@@ -11,16 +11,23 @@ import withPageContext from '../../../hoc/withPageContext'
 import config from '../../../config'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import AddLabelModal from '../../molecules/AddLabelModal/AddLabelModal'
+import { getLabelsAndProjects } from '../../../store/preferences/async-actions'
 
 const Sidebar = ({
   isSidebarOpen,
   isAddLabelModalOpen,
   toggleAddLabelModal,
   hideSidebar,
+  getLabelsAndProjects,
   pageContext,
   labels,
+  projects,
 }) => {
   const [activeTab, setActiveTab] = useState('inbox')
+
+  useEffect(() => {
+    getLabelsAndProjects()
+  }, [])
 
   useEffect(() => {
     setActiveTab(pageContext.type)
@@ -28,7 +35,6 @@ const Sidebar = ({
 
   // Fix closing sidebar (now it runs Redux action on every NavLink click)
   // It would be better to detect what was clicked (watch DropdownMenu)
-
   const handleSidebarClose = () => {
     if (isSidebarOpen) hideSidebar()
   }
@@ -80,7 +86,7 @@ const Sidebar = ({
                 size="tiny"
                 onClickFn={e => {
                   e.stopPropagation()
-                  toggleAddLabelModal(true, 'label')
+                  toggleAddLabelModal(true)
                 }}
               />
             }
@@ -95,16 +101,6 @@ const Sidebar = ({
             items={[]}
             noItemsPlaceholder="You don't have any projects"
             onItemClick={handleSidebarClose}
-            TabActionComponent={
-              <ButtonIcon
-                name="plus"
-                size="tiny"
-                onClickFn={e => {
-                  e.stopPropagation()
-                  toggleAddLabelModal(true, 'project')
-                }}
-              />
-            }
           />
         </div>
         {isAddLabelModalOpen && <AddLabelModal />}
@@ -117,12 +113,17 @@ const Sidebar = ({
 }
 
 Sidebar.propTypes = {
-  isSidebarOpen: PropTypes.bool,
+  isSidebarOpen: PropTypes.bool.isRequired,
+  isAddLabelModalOpen: PropTypes.bool.isRequired,
   hideSidebar: PropTypes.func.isRequired,
+  toggleAddLabelModal: PropTypes.func.isRequired,
+  getLabelsAndProjects: PropTypes.func.isRequired,
   pageContext: PropTypes.shape({
     type: PropTypes.oneOf(config.pageTypes),
     id: PropTypes.string,
   }),
+  labels: PropTypes.array,
+  projects: PropTypes.array,
 }
 
 Sidebar.defaultProps = {
@@ -132,15 +133,17 @@ Sidebar.defaultProps = {
   },
 }
 
-const mapStateToProps = ({ auth, ui }) => ({
+const mapStateToProps = ({ auth, ui, preferences }) => ({
   isSidebarOpen: ui.isSidebarOpen,
   isAddLabelModalOpen: ui.isAddLabelModalOpen,
-  labels: auth.user.labels,
+  labels: preferences.labels,
+  projects: preferences.projects,
 })
 
 const mapDispatchToProps = dispatch => ({
   hideSidebar: () => dispatch(toggleSidebar(false)),
-  toggleAddLabelModal: (isOpen, type) => dispatch(toggleAddLabelModal(isOpen, type)),
+  toggleAddLabelModal: isOpen => dispatch(toggleAddLabelModal(isOpen)),
+  getLabelsAndProjects: () => dispatch(getLabelsAndProjects()),
 })
 
 export default compose(withPageContext, connect(mapStateToProps, mapDispatchToProps))(Sidebar)

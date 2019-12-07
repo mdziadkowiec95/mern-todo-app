@@ -53,6 +53,8 @@ const AddTaskModalBase = props => {
     handleSubmit,
     setFieldValue,
     user,
+    userLabels,
+    userProjects,
     toggleAddTaskModal,
   } = props
 
@@ -65,7 +67,7 @@ const AddTaskModalBase = props => {
   }, [values.date, setFieldValue])
 
   const handleLabelSelect = labelId => {
-    const selectedLabel = user.labels.find(label => label._id === labelId)
+    const selectedLabel = userLabels.find(label => label._id === labelId)
     setFieldValue('labels', [...values.labels, selectedLabel])
   }
 
@@ -113,7 +115,7 @@ const AddTaskModalBase = props => {
             name="projectId"
             defaultOption="Select a project"
             selectedValue={values.projectId}
-            options={user.projects}
+            options={userProjects}
             className={styles.doubleFieldItem}
             onChange={handleChange}
             onBlur={handleBlur}
@@ -152,7 +154,7 @@ const AddTaskModalBase = props => {
               allItemsSelected: 'All labels are selected',
               noItemsAvailable: `You don't have any labels`,
             }}
-            options={user.labels}
+            options={userLabels}
             selectedOptions={values.labels}
             onSelect={handleLabelSelect}
             onRemove={handleLabelRemove}
@@ -203,7 +205,7 @@ const AddTaskModal = withFormik({
     const onError = () => {
       setSubmitting(false)
     }
-
+    // alert(JSON.stringify(taskPayload, 2, null))
     props.addTask(taskPayload, onSuccess, onError)
   },
 
@@ -235,9 +237,11 @@ AddTaskModalBase.propTypes = {
   toggleAddTaskModal: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = ({ auth: { user }, ui }) => ({
+const mapStateToProps = ({ auth: { user }, preferences: { labels, projects }, ui }) => ({
   isAddTaskModalOpen: ui.isAddTaskModalOpen,
   user: user,
+  userLabels: labels,
+  userProjects: projects,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({ addTask, toggleAddTaskModal }, dispatch)

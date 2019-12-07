@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { toggleAddLabelModal } from '../../../store/ui/actions'
 import Label from '../../atoms/Label/Label'
-import { addLabel } from '../../../store/auth/thunks'
+import { addLabel } from '../../../store/preferences/async-actions'
 import PropTypes from 'prop-types'
 
 const AddLabelModalBase = ({
@@ -86,11 +86,7 @@ const AddLabelModal = withFormik({
     }
     const onError = onSuccess
 
-    if (props.modalType === 'label') {
-      props.addLabel(name, color, onSuccess, onError)
-    } else {
-      alert('add project ')
-    }
+    props.addLabel(name, color, onSuccess, onError)
 
     setSubmitting(false)
   },
@@ -107,15 +103,10 @@ AddLabelModalBase.propTypes = {
   handleSubmit: PropTypes.func,
   isSubmitting: PropTypes.bool,
   setFieldValue: PropTypes.func,
-  modalType: PropTypes.string.isRequired,
   toggleAddLabelModal: PropTypes.func.isRequired,
 }
-
-const mapStateToProps = ({ ui }) => ({
-  modalType: ui.addLabelModalType,
-})
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ toggleAddLabelModal, addLabel }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddLabelModal)
+export default connect(null, mapDispatchToProps)(AddLabelModal)
