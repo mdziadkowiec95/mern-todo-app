@@ -9,9 +9,13 @@ import {
   loginUserBegin,
   loginUserSuccess,
   loginUserError,
+  addLabelBegin,
+  addLabelSuccess,
+  addLabelError,
 } from './actions'
 import { setAuthTokenHeader } from '../../utils/API'
 import { handleErrorResponse } from '../../helpers'
+import { toggleAddTaskModal, toggleAddLabelModal } from '../ui/actions'
 
 export const authenticateUser = () => async dispatch => {
   const authToken = localStorage.getItem('token')

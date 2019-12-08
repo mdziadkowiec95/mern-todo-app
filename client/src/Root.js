@@ -33,7 +33,6 @@ const Root = () => {
             <RedirectAuthToApp path="/sign-in" component={SignIn} />
             <RedirectAuthToApp path="/sign-up" component={SignUp} />
             <AuthRoute path="/app" component={App} />
-            <AuthRoute path="/preferences" component={Preferences} />
           </Switch>
           <NotificationListContainer />
         </BrowserRouter>

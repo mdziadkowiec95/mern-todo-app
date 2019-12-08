@@ -103,6 +103,15 @@
       margin-left: 1rem;
     }
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: map-get($colors, dark-100);
+
+    &:hover {
+      background-color: map-get($colors, dark-100);
+    }
+  }
 }
 
 @keyframes active-button {

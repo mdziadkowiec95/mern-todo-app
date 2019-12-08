@@ -1,6 +1,6 @@
 @import 'utils/utils';
 
-.accordion {
+.wrapper {
   &.activeTab {
     .btnWrap {
       background-color: rgba(map-get($colors, tertiary), 0.3);

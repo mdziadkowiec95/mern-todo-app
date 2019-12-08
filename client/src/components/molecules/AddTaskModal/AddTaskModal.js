@@ -17,24 +17,6 @@ import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import { toggleAddTaskModal } from '../../../store/ui/actions'
 import RadioButtonField from '../../atoms/RadioButtonField/RadioButtonField'
 
-const MOCK_OPTIONS = [
-  {
-    _id: '1',
-    name: 'Chip 1',
-    color: 'purple',
-  },
-  {
-    _id: '2',
-    name: 'Chip 2',
-    color: '#412423',
-  },
-  {
-    _id: '3',
-    name: 'Chip 3',
-    color: 'green',
-  },
-]
-
 const TaskPriorityOptions = [
   {
     label: 'Low',
@@ -71,6 +53,8 @@ const AddTaskModalBase = props => {
     handleSubmit,
     setFieldValue,
     user,
+    userLabels,
+    userProjects,
     toggleAddTaskModal,
   } = props
 
@@ -80,10 +64,10 @@ const AddTaskModalBase = props => {
     } else {
       setFieldValue('status', 'inbox')
     }
-  }, [values.date])
+  }, [values.date, setFieldValue])
 
   const handleLabelSelect = labelId => {
-    const selectedLabel = user.labels.find(label => label._id === labelId)
+    const selectedLabel = userLabels.find(label => label._id === labelId)
     setFieldValue('labels', [...values.labels, selectedLabel])
   }
 
@@ -131,7 +115,7 @@ const AddTaskModalBase = props => {
             name="projectId"
             defaultOption="Select a project"
             selectedValue={values.projectId}
-            options={user.projects}
+            options={userProjects}
             className={styles.doubleFieldItem}
             onChange={handleChange}
             onBlur={handleBlur}
@@ -170,7 +154,7 @@ const AddTaskModalBase = props => {
               allItemsSelected: 'All labels are selected',
               noItemsAvailable: `You don't have any labels`,
             }}
-            options={user.labels}
+            options={userLabels}
             selectedOptions={values.labels}
             onSelect={handleLabelSelect}
             onRemove={handleLabelRemove}
@@ -218,10 +202,11 @@ const AddTaskModal = withFormik({
       setSubmitting(false)
     }
 
-    const onError = () => {}
-
+    const onError = () => {
+      setSubmitting(false)
+    }
+    // alert(JSON.stringify(taskPayload, 2, null))
     props.addTask(taskPayload, onSuccess, onError)
-    setSubmitting(false)
   },
 
   displayName: 'AddTaskForm',
@@ -244,11 +229,19 @@ AddTaskModalBase.propTypes = {
   }),
   errors: PropTypes.any,
   touched: PropTypes.any,
+  handleChange: PropTypes.func.isRequired,
+  handleBlur: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  setFieldValue: PropTypes.func.isRequired,
+  user: PropTypes.object,
+  toggleAddTaskModal: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = ({ auth: { user }, ui }) => ({
+const mapStateToProps = ({ auth: { user }, preferences: { labels, projects }, ui }) => ({
   isAddTaskModalOpen: ui.isAddTaskModalOpen,
   user: user,
+  userLabels: labels,
+  userProjects: projects,
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({ addTask, toggleAddTaskModal }, dispatch)

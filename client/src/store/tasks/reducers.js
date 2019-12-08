@@ -47,13 +47,13 @@ const checkTaskContext = (pageContext, status, date, labels, projectId) => {
     const dayEnd = new Date()
     dayEnd.setHours(23, 59, 59, 999)
 
-    const dayAfterWeek = new Date(+new Date() + 7 * 24 * 60 * 60 * 1000)
+    const dayAfterWeek = new Date(String(new Date() + 7 * 24 * 60 * 60 * 1000)) 
 
     const taskDate = new Date(date)
 
     const isTodayTask = dayStart < taskDate && taskDate < dayEnd
     const isNextWeekTask = dayStart < taskDate && taskDate < dayAfterWeek
-
+  
     if (pageContext.type === 'today' && isTodayTask) {
       return 'today'
     }

@@ -6,13 +6,18 @@ import cn from 'classnames'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 
 const MultiSelect = ({ labels, textOpen, options, selectedOptions, onSelect, onRemove }) => {
+  const [firstRender, setFirstRender] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
   const [listHeight, setListHeight] = useState('0px')
 
   useEffect(() => {
+    setFirstRender(false)
+  }, [])
+
+  useEffect(() => {
     if (isOpen && (selectedOptions.length === 0 || selectedOptions.length === options.length)) {
       toggleOptionList(false)
-    } else if (selectedOptions.length > 0) {
+    } else if (!firstRender && selectedOptions.length > 0) {
       toggleOptionList(true)
     }
   }, [selectedOptions, options])
@@ -46,16 +51,29 @@ const MultiSelect = ({ labels, textOpen, options, selectedOptions, onSelect, onR
             </Chip>
           ))}
         {!isOpen && (
-            <>
-              {selectedOptions.length === 0 && <span>{labels.add} </span>}
-              <ButtonIcon name="plusBorder" size="small" title="Add" onClickFn={() => toggleOptionList(true)} />
-        </> )}
+          <>
+            {selectedOptions.length === 0 && <span>{labels.add} </span>}
+            <ButtonIcon
+              name="plusBorder"
+              size="small"
+              title="Add"
+              onClickFn={() => toggleOptionList(true)}
+            />
+          </>
+        )}
       </div>
       <div ref={listWrapEl} className={styles.listWrap} style={{ maxHeight: listHeight }}>
         <div className={styles.listWrapInner}>
-          <ButtonIcon name="closeBorder" size="small" title="Close list" onClickFn={() => toggleOptionList(false)} />
+          <ButtonIcon
+            name="closeBorder"
+            size="small"
+            title="Close list"
+            onClickFn={() => toggleOptionList(false)}
+          />
           {selectedOptions.length < options.length && <p>{labels.textOpen}</p>}
-          {options.length > 0 && selectedOptions.length === options.length && <p>{labels.allItemsSelected}</p>}
+          {options.length > 0 && selectedOptions.length === options.length && (
+            <p>{labels.allItemsSelected}</p>
+          )}
           {options.length === 0 && <p>{labels.noItemsAvailable}</p>}
           <ul>
             {options.length > 0 &&
@@ -87,25 +105,28 @@ const MultiSelect = ({ labels, textOpen, options, selectedOptions, onSelect, onR
 
 MultiSelect.propTypes = {
   onSelect: PropTypes.func.isRequired,
-  options: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    color: PropTypes.string
-  })),
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      color: PropTypes.string,
+    }),
+  ),
   labels: PropTypes.shape({
     add: PropTypes.string,
     dontAdd: PropTypes.string,
     textOpen: PropTypes.string,
-  })
+  }),
 }
 
 MultiSelect.defaultProps = {
+  startAsClosed: false,
   labels: {
     add: 'Add options',
     dontAdd: `Don't add options`,
     textOpen: 'Choose option from the list',
   },
-  options: []
+  options: [],
 }
 
 export default MultiSelect

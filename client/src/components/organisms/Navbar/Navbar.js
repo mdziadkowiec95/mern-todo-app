@@ -12,10 +12,7 @@ import { toggleSidebar } from '../../../store/ui/actions'
 import SearchFormContainer from '../../../containers/SerachFormContainer/SearchFormContainer'
 import NavbarTemplate from '../../../templates/NavbarTemplate/NavbarTemplate'
 import DropdownMenuItem from '../../atoms/DropdownMenuItem/DropdownMenuItem'
-import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
-import config from '../../../config'
 
-// eslint-disable-next-line no-unused-vars
 const Navbar = ({ auth: { isAuth }, logoutUser, openSidebar, history }) => {
   const redirectToPath = path => {
     history.push(path)
@@ -31,8 +28,8 @@ const Navbar = ({ auth: { isAuth }, logoutUser, openSidebar, history }) => {
             <DropdownMenu iconName="gear">
               <DropdownMenuItem
                 iconName="gear"
-                href="/preferences"
-                onClickFn={() => redirectToPath('/preferences')}
+                href="/app/preferences"
+                onClickFn={() => redirectToPath('/app/preferences')}
               >
                 Settings
               </DropdownMenuItem>

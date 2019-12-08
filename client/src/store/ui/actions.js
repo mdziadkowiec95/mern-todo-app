@@ -10,6 +10,11 @@ export const toggleAddTaskModal = isOpen => ({
   payload: isOpen,
 })
 
+/**
+ * @param {Boolean} isOpen flag to toggle AddTaskModal
+ * @param {String} type (optional) 'label' or 'project' (it tells what item to add)
+ */
+
 export const toggleAddLabelModal = isOpen => ({
   type: types.TOGGLE_ADD_LABEL_MODAL,
   payload: isOpen,

@@ -1,7 +1,6 @@
 @import 'utils/utils';
 
 .card {
-  padding: 1.5rem 1rem;
   margin-bottom: 1rem;
   background: map-get($colors, white);
   border-radius: map-get($radius, normal);
@@ -13,8 +12,13 @@
     opacity: 0.9;
   }
 
-  .cardInner {
+  .cardHeader {
     display: flex;
+  }
+
+  .cardInner,
+  .editActions {
+    padding: 1.5rem 1rem;
   }
 
   .cardDone {
@@ -34,9 +38,9 @@
 
   .editActions {
     display: flex;
-    margin-top: 2rem;
-    padding: 1rem 0 0 1rem;
-    border-top: 1px solid map-get($colors, light-200);
+    // margin-top: 2rem;
+    // padding: 1rem 0 0 1rem;
+    // border-top: 1px solid map-get($colors, light-200);
   }
 
   .priorityFlag {
