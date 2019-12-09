@@ -24,7 +24,7 @@ const ButtonLink = ({ href, asNavLink, children }) => {
 }
 
 ButtonLink.propTypes = {
-  children: PropTypes.string.isRequired,
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   href: PropTypes.string.isRequired,
   asNavLink: PropTypes.bool,
 }

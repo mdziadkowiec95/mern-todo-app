@@ -5,62 +5,65 @@ import TaskListTemplate from '../../templates/TaskListTemplate/TaskListTemplate'
 import TaskCard from '../../components/molecules/TaskCard/TaskCard'
 import { bindActionCreators, compose } from 'redux'
 import { getTasks } from '../../store/tasks/async-actions'
-import withPageContext from '../../hoc/withPageContext'
 import config from '../../config'
+import { setPageContext } from '../../store/tasks/actions'
 
 class TasksContainer extends Component {
-  constructor() {
-    super()
-
-    this.state = {
-      lastPageContext: '',
-    }
-  }
   componentDidMount() {
+    console.log(`TaskContainer mounted ${this.props.pageType}`)
     this.fetchTasks()
   }
-
   componentDidUpdate(prevProps) {
-    if (prevProps.pageContext !== this.props.pageContext) {
+    const { pageType, match } = this.props
+    const pageTypeChanged = prevProps.pageType !== pageType
+    const idChanged = prevProps.match.params.id !== match.params.id
+
+    if (pageTypeChanged || idChanged) {
+      console.log(`TaskContainer updated ${pageType}`)
       this.fetchTasks()
     }
   }
-  fetchTasks() {
-    console.log(this.props)
 
-    if (this.props.pageContext.type) {
-      const {
-        pageContext,
-        match: { params },
-        getTasks,
-      } = this.props
+  fetchTasks() {
+    const {
+      pageType,
+      match: { params },
+      setPageContext,
+      getTasks,
+    } = this.props
+
+    if (pageType) {
+      const pageContext = {
+        type: pageType,
+        id: params.id,
+      }
+      setPageContext(pageContext)
 
       const reqParams = {}
 
-      if (pageContext.type === 'inbox') {
+      if (pageType === 'inbox') {
         reqParams.status = 'inbox'
-      } else if (pageContext.type === 'today') {
+      } else if (pageType === 'today') {
         reqParams.timePeriod = 'today'
-      } else if (pageContext.type === 'next-week') {
+      } else if (pageType === 'next-week') {
         reqParams.timePeriod = 'nextWeek'
-      } else if (pageContext.type === 'label') {
+      } else if (pageType === 'label') {
         reqParams.labelId = params.id
-      } else if (pageContext.type === 'project') {
+      } else if (pageType === 'project') {
         reqParams.projectId = params.id
       }
 
-      // console.log('Tasks request with params', params, pageContext, pageData)
-      getTasks(reqParams, pageContext)
+      getTasks(reqParams)
     }
   }
   render() {
-    const { pageContext, tasks, isLoading } = this.props
+    const { tasks, isLoading } = this.props
 
     return (
-      <>
+      <div>
         <TaskListTemplate isLoading={isLoading}>
-          {tasks.taskList && tasks.taskList.length > 0 ? (
-            tasks.taskList.map(task => (
+          {tasks && tasks.length > 0 ? (
+            tasks.map(task => (
               <li key={task._id}>
                 <TaskCard {...task} />
               </li>
@@ -69,44 +72,29 @@ class TasksContainer extends Component {
             <h3>No tasks found!</h3>
           )}
         </TaskListTemplate>
-      </>
+      </div>
     )
   }
 }
 
 TasksContainer.propTypes = {
   getTasks: PropTypes.func.isRequired,
-  pageContext: PropTypes.shape({
-    type: PropTypes.oneOf(config.pageTypes),
-    id: PropTypes.string,
-  }),
-  tasks: PropTypes.shape({
-    pageContext: PropTypes.shape({
-      type: PropTypes.string,
-      id: PropTypes.string,
-    }),
-    taskList: PropTypes.array,
-    isLoading: PropTypes.bool.isRequired,
-  }),
+  setPageContext: PropTypes.func.isRequired,
+  pageType: PropTypes.oneOf(config.pageTypes),
+  tasks: PropTypes.array,
   match: PropTypes.object.isRequired,
 }
 
 TasksContainer.defaultProps = {
-  pageContext: {
-    type: 'inbox',
-    id: '',
-  },
+  tasks: [],
   isLoading: PropTypes.bool.isRequired,
 }
 
 const mapStateToProps = ({ tasks }) => ({
-  tasks: tasks,
+  tasks: tasks.taskList,
   isLoading: tasks.isLoading,
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({ getTasks }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ getTasks, setPageContext }, dispatch)
 
-export default compose(
-  withPageContext,
-  connect(mapStateToProps, mapDispatchToProps),
-)(TasksContainer)
+export default compose(connect(mapStateToProps, mapDispatchToProps))(TasksContainer)

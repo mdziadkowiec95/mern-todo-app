@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { NavLink, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import cn from 'classnames'
@@ -7,31 +7,25 @@ import styles from './Sidebar.module.scss'
 import AccordionMenu from '../../molecules/AccordionMenu/AccordionMenu'
 import { toggleSidebar, toggleAddLabelModal } from '../../../store/ui/actions'
 import { compose } from 'redux'
-import withPageContext from '../../../hoc/withPageContext'
 import config from '../../../config'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import AddLabelModal from '../../molecules/AddLabelModal/AddLabelModal'
 import { getLabelsAndProjects } from '../../../store/preferences/async-actions'
 
 const Sidebar = ({
+  history,
   isSidebarOpen,
   isAddLabelModalOpen,
   toggleAddLabelModal,
   hideSidebar,
   getLabelsAndProjects,
-  pageContext,
-  labels,
-  projects,
+  activePageType,
+  userLabels,
+  userProjects,
 }) => {
-  const [activeTab, setActiveTab] = useState('inbox')
-
   useEffect(() => {
     getLabelsAndProjects()
   }, [])
-
-  useEffect(() => {
-    setActiveTab(pageContext.type)
-  }, [pageContext.type])
 
   // Fix closing sidebar (now it runs Redux action on every NavLink click)
   // It would be better to detect what was clicked (watch DropdownMenu)
@@ -75,9 +69,9 @@ const Sidebar = ({
         <div className={styles.accordion}>
           <AccordionMenu
             title="Labels"
-            isActiveTab={activeTab === 'label'}
+            isActiveTab={activePageType === 'label'}
             routerLinkBase="/app/label/"
-            items={labels}
+            items={userLabels}
             noItemsPlaceholder="You don't have any labels"
             onItemClick={handleSidebarClose}
             TabActionComponent={
@@ -96,11 +90,21 @@ const Sidebar = ({
         <div className={styles.accordion}>
           <AccordionMenu
             title="Projects"
-            isActiveTab={activeTab === 'project'}
+            isActiveTab={activePageType === 'project'}
             routerLinkBase="/app/project/"
-            items={[]}
+            items={userProjects}
             noItemsPlaceholder="You don't have any projects"
             onItemClick={handleSidebarClose}
+            TabActionComponent={
+              <ButtonIcon
+                name="plus"
+                size="tiny"
+                onClickFn={e => {
+                  e.stopPropagation()
+                  history.push('/app/create-project')
+                }}
+              />
+            }
           />
         </div>
         {isAddLabelModalOpen && <AddLabelModal />}
@@ -113,31 +117,28 @@ const Sidebar = ({
 }
 
 Sidebar.propTypes = {
+  history: PropTypes.object.isRequired,
   isSidebarOpen: PropTypes.bool.isRequired,
   isAddLabelModalOpen: PropTypes.bool.isRequired,
   hideSidebar: PropTypes.func.isRequired,
   toggleAddLabelModal: PropTypes.func.isRequired,
   getLabelsAndProjects: PropTypes.func.isRequired,
-  pageContext: PropTypes.shape({
-    type: PropTypes.oneOf(config.pageTypes),
-    id: PropTypes.string,
-  }),
-  labels: PropTypes.array,
-  projects: PropTypes.array,
+  activePageType: PropTypes.oneOf(config.pageTypes),
+  userLabels: PropTypes.array,
+  userProjects: PropTypes.array,
 }
 
 Sidebar.defaultProps = {
-  pageContext: {
-    type: 'inbox',
-    id: '',
-  },
+  userLabels: [],
+  userProjects: [],
 }
 
-const mapStateToProps = ({ auth, ui, preferences }) => ({
+const mapStateToProps = ({ ui, tasks: { pageContext }, preferences: { labels, projects } }) => ({
   isSidebarOpen: ui.isSidebarOpen,
   isAddLabelModalOpen: ui.isAddLabelModalOpen,
-  labels: preferences.labels,
-  projects: preferences.projects,
+  userLabels: labels,
+  userProjects: projects,
+  activePageType: pageContext.type,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -146,4 +147,4 @@ const mapDispatchToProps = dispatch => ({
   getLabelsAndProjects: () => dispatch(getLabelsAndProjects()),
 })
 
-export default compose(withPageContext, connect(mapStateToProps, mapDispatchToProps))(Sidebar)
+export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(Sidebar)

@@ -78,9 +78,13 @@ exports.getTasks = async (req, res) => {
   if (projectId) filters["project._id"] = projectId;
 
   if (labelId) {
-    const userLabels = await User.findById(req.user.id).select("labels");
+    const userPreferences = await Preferences.findOne({
+      user: req.user.id
+    }).select("labels");
 
-    const selectedLabel = userLabels.labels.find(label => label.id === labelId);
+    const selectedLabel = userPreferences.labels.find(
+      label => label.id === labelId
+    );
 
     if (!selectedLabel) {
       return res
@@ -93,14 +97,15 @@ exports.getTasks = async (req, res) => {
     };
   }
 
-  console.log(filters);
-
   try {
     const tasks = await Task.find(filters).sort({ date: 1 });
 
     res.json(tasks);
   } catch (error) {
     console.log(error.message);
+
+    if (error.kind === "ObjectId")
+      return res.status(404).json({ errors: [{ msg: "Task not found!" }] });
 
     res.status(500).send("Server error!");
   }
@@ -188,6 +193,8 @@ exports.createOrUpdateTask = async (req, res) => {
           };
         }
       }
+    } else {
+      taskFields.project = undefined;
     }
 
     // if (taskId) task = await Task.findOne({ user: req.user.id, _id: taskId });
