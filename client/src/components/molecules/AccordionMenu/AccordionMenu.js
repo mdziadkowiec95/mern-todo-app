@@ -76,6 +76,7 @@ AccordionMenu.propTypes = {
   routerLinkBase: PropTypes.string.isRequired,
   noItemsPlaceholder: PropTypes.string,
   TabActionComponent: PropTypes.element,
+  AddItemComponent: PropTypes.element,
 }
 
 AccordionMenu.defaultProps = {

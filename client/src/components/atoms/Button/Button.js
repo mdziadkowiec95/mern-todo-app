@@ -31,13 +31,7 @@ const Button = ({
 
   if (asLink && goTo) {
     return (
-      <a
-        href={goTo}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={ButtonClassName}
-        title={title}
-      >
+      <a href={goTo} rel="noopener noreferrer" className={ButtonClassName} title={title}>
         {children}
       </a>
     )

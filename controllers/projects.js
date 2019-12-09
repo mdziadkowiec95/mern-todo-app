@@ -13,6 +13,29 @@ exports.getProjects = async (req, res) => {
   }
 };
 
+exports.getSingleProject = async (req, res) => {
+  const projectId = req.params.projectId;
+
+  try {
+    const project = await Project.findOne({
+      user: req.user.id,
+      _id: projectId
+    });
+
+    if (!project)
+      return res.status(404).json({ errors: [{ msg: "Project not found!" }] });
+
+    res.json(project);
+  } catch (error) {
+    console.log(error.message);
+
+    if (error.kind === "ObjectId")
+      return res.status(404).json({ errors: [{ msg: "Project not found!" }] });
+
+    res.status(500).send("Server error!");
+  }
+};
+
 exports.createProject = async (req, res) => {
   const name = req.body.name.trim();
   let description = req.body.description;
@@ -54,7 +77,7 @@ exports.createProject = async (req, res) => {
     res.status(201).json(newProject);
     return;
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
 
     res.status(500).send("Server error!");
     return error;

@@ -28,12 +28,11 @@ const Root = () => {
     <>
       <Provider store={store}>
         <BrowserRouter>
-          <Switch>
-            <RedirectAuthToApp path="/" exact component={LandingPage} />
-            <RedirectAuthToApp path="/sign-in" component={SignIn} />
-            <RedirectAuthToApp path="/sign-up" component={SignUp} />
-            <AuthRoute path="/app" component={App} />
-          </Switch>
+          <RedirectAuthToApp eaxct path="/" exact component={LandingPage} />
+          <RedirectAuthToApp exact path="/sign-in" component={SignIn} />
+          <RedirectAuthToApp exact path="/sign-up" component={SignUp} />
+          <AuthRoute path="/app" component={App} />
+          <AuthRoute path="/preferences" component={Preferences} />
           <NotificationListContainer />
         </BrowserRouter>
       </Provider>

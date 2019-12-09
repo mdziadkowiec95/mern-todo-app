@@ -38,7 +38,7 @@ router.post(
   [
     authMiddleware,
     check("labelsIDs")
-      .custom(labels => labels.length <= 3)
+      .custom(labels => (labels ? labels.length <= 3 : true))
       .withMessage("Single task can be associated with up to 3 labels!"),
     check("status")
       .custom((status, { req }) => {
