@@ -15,6 +15,14 @@ const { isValidColor } = require("../../utils/validators");
 router.get("/", authMiddleware, ProjectsController.getProjects);
 
 /**
+ * @route GET api/projects/:projectId
+ * @desc Get single project
+ * @access Private
+ */
+
+router.get("/:projectId", authMiddleware, ProjectsController.getSingleProject);
+
+/**
  * @route POST api/projects
  * @desc Add project for user
  * @access Private

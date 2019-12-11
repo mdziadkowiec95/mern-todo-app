@@ -12,9 +12,11 @@ import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import IconSVG from '../../atoms/IconSVG/IconSVG'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { removeTask } from '../../../store/tasks/async-actions'
+import { removeTask, updateTask } from '../../../store/tasks/async-actions'
 import Chip from '../../atoms/Chip/Chip'
 import MultiSelect from '../MultiSelect/MultiSelect'
+import SelectDropdown from '../../atoms/SelectDropdown/SelectDropdown'
+import { LabelOrProjectType } from '../../../propTypes'
 
 const TaskCard = ({
   _id,
@@ -24,18 +26,21 @@ const TaskCard = ({
   labels,
   project,
   date,
-  removeTask,
   userLabels,
+  userProjects,
+  updateTask,
+  removeTask,
 }) => {
   const INITIAL_EDIT_STATE = {
     updatedDate: date ? new Date(date) : null,
     updatedTitle: title,
+    updatedProject: project,
     updatedLabels: labels,
   }
   const [isEditMode, setEditMode] = useState(false)
   const [editState, setEditState] = useState(INITIAL_EDIT_STATE)
 
-  const { updatedDate, updatedTitle, updatedLabels } = editState
+  const { updatedDate, updatedTitle, updatedProject, updatedLabels } = editState
 
   const markAsDoneEl = useRef(null)
 
@@ -59,6 +64,15 @@ const TaskCard = ({
     })
   }
 
+  const handleProjectChange = e => {
+    const selectedProject = userProjects.find(project => project._id === e.target.value)
+
+    setEditState({
+      ...editState,
+      updatedProject: selectedProject,
+    })
+  }
+
   const handleLabelSelect = labelId => {
     const selectedLabel = userLabels.find(label => label._id === labelId)
 
@@ -73,6 +87,26 @@ const TaskCard = ({
       ...editState,
       updatedLabels: updatedLabels.filter(label => label._id !== labelId),
     })
+  }
+
+  const handleUpdateProject = async () => {
+    const taskPayload = {
+      taskId: _id, // Necessary for update request
+    }
+
+    const labelsIDs = updatedLabels.map(l => l._id)
+    const areLabelsModified =
+      labelsIDs.length !== labels.length ||
+      labelsIDs.some((labelId, i) => labelId !== labels[i]._id)
+
+    if (areLabelsModified) taskPayload.labelsIDs = labelsIDs
+    if (title !== updatedTitle) taskPayload.title = updatedTitle
+    if (new Date(date).getTime() !== new Date(updatedDate).getTime()) taskPayload.date = updatedDate
+    if (updatedProject) taskPayload.projectId = updatedProject._id
+
+    await updateTask(_id, taskPayload)
+
+    setEditMode(false)
   }
 
   /** --- CSS classNames --- */
@@ -116,8 +150,10 @@ const TaskCard = ({
                   </>
                 )}
 
-                {project && (
-                  <Link to={`/app/project/${project._id}/details`}>Project {project.name}</Link>
+                {!isEditMode && project && (
+                  <p>
+                    Project: <Link to={`/app/project/${project._id}/details`}>{project.name}</Link>
+                  </p>
                 )}
               </div>
               <div className={styles.cardActions}>
@@ -125,6 +161,19 @@ const TaskCard = ({
               </div>
             </div>
             <div>
+              {isEditMode && (
+                <>
+                  <label htmlFor="updatedProject">Assigned project: </label>
+                  <SelectDropdown
+                    defaultOption="--- No project assigned ---"
+                    selectedValue={updatedProject ? updatedProject._id : ''}
+                    options={userProjects}
+                    name="updatedProject"
+                    onChange={handleProjectChange}
+                    onBlur={handleProjectChange}
+                  />
+                </>
+              )}
               {!isEditMode &&
                 labels.length > 0 &&
                 labels.map(label => (
@@ -152,7 +201,9 @@ const TaskCard = ({
 
         {isEditMode && (
           <div className={styles.editActions}>
-            <Button primary>Update task</Button>
+            <Button primary onClickFn={handleUpdateProject}>
+              Update task
+            </Button>
             <Button secondary onClickFn={handleOnCancel}>
               Cancel
             </Button>
@@ -177,19 +228,10 @@ TaskCard.propTypes = {
   priority: PropTypes.oneOf(['low', 'normal', 'high']),
   status: PropTypes.oneOf(['inbox', 'active']),
   title: PropTypes.string.isRequired,
-  labels: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      color: PropTypes.string.isRequired,
-    }),
-  ),
-  project: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    color: PropTypes.string.isRequired,
-  }),
-
+  userLabels: PropTypes.arrayOf(LabelOrProjectType),
+  userProjects: PropTypes.arrayOf(LabelOrProjectType),
+  labels: PropTypes.arrayOf(LabelOrProjectType),
+  project: LabelOrProjectType,
   date: PropTypes.string,
 }
 
@@ -197,10 +239,11 @@ TaskCard.defaultProps = {
   labels: [],
 }
 
-const mapStateToProps = ({ preferences: { labels } }) => ({
+const mapStateToProps = ({ preferences: { labels, projects } }) => ({
   userLabels: labels,
+  userProjects: projects,
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({ removeTask }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ updateTask, removeTask }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskCard)

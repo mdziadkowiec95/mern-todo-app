@@ -5,22 +5,56 @@ import styles from './App.module.scss'
 import { Switch, Route } from 'react-router'
 import TaskBoard from './TaskBoard/TaskBoard'
 import AppTemplate from '../../templates/AppTemplate/AppTemplate'
-import ProjectDetails from './ProjectDetails/ProjectDetails'
+import ProjectMain from './ProjectMain/ProjectMain'
 import Preferences from '../Preferences/Preferences'
+import CreateProject from './CreateProject/CreateProject'
+import AppLayoutTemplate from '../../templates/AppLayoutTemplate/AppLayoutTemplate'
+import ProjectTasks from './ProjectTasks/ProjectTasks'
 
 const App = ({ match }) => (
   <AppTemplate>
     <div className={styles.main}>
-      <Switch>
-        <Route path={`${match.path}/preferences`} component={Preferences} />
-        <Route exact path={match.path} component={() => <Redirect to={`${match.path}/today`} />} />
-        <Route path={`${match.path}/inbox`} component={TaskBoard} />
-        <Route path={`${match.path}/today`} component={TaskBoard} />
-        <Route path={`${match.path}/next-week`} component={TaskBoard} />
-        <Route path={`${match.path}/label/:id`} component={TaskBoard} />
-        <Route exact path={`${match.path}/project/:id`} component={TaskBoard} />
-        <Route path={`${match.path}/project/:id/details`} component={ProjectDetails} />
-      </Switch>
+      <Route path={`${match.path}/preferences`} component={Preferences} />
+      <AppLayoutTemplate match={match}>
+        <Switch>
+          <Route
+            exact
+            path={match.path}
+            component={() => <Redirect to={`${match.path}/today`} />}
+          />
+          <Route
+            exact
+            path={`${match.path}/inbox`}
+            render={props => <TaskBoard {...props} pageType="inbox" />}
+          />
+          <Route
+            exact
+            path={`${match.path}/today`}
+            render={props => <TaskBoard {...props} pageType="today" />}
+          />
+          <Route
+            exact
+            path={`${match.path}/next-week`}
+            render={props => <TaskBoard {...props} pageType="next-week" />}
+          />
+          <Route
+            exact
+            path={`${match.path}/label/:id`}
+            render={props => <TaskBoard {...props} pageType="label" />}
+          />
+          <Route
+            exact
+            path={`${match.path}/project/:id`}
+            render={props => <ProjectMain {...props} pageType="project" />}
+          />
+          <Route
+            exact
+            path={`${match.path}/project/:id/details`}
+            render={props => <ProjectTasks {...props} pageType="project" />}
+          />
+          <Route path={`${match.path}/create-project`} component={CreateProject} />
+        </Switch>
+      </AppLayoutTemplate>
     </div>
   </AppTemplate>
 )

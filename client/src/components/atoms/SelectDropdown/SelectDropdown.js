@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import styles from './SelectDropdown.module.scss'
@@ -51,6 +51,7 @@ const SelectDropdown = ({
 }
 
 SelectDropdown.propTypes = {
+  id: PropTypes.string,
   name: PropTypes.string.isRequired,
   selectedValue: PropTypes.string.isRequired,
   defaultOption: PropTypes.string,
