@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const Project = require("../models/Project");
+const Task = require("../models/Task");
 
 exports.getProjects = async (req, res) => {
   try {
@@ -70,7 +71,8 @@ exports.createProject = async (req, res) => {
     const newProject = new Project({
       user: req.user.id,
       name,
-      color
+      color,
+      description
     });
     await newProject.save();
 
@@ -121,15 +123,26 @@ exports.removeProject = async (req, res) => {
   const projectId = req.params.projectId;
 
   try {
-    const project = await Project.findById(projectId);
+    const project = await Project.findOne({
+      user: req.user.id,
+      _id: projectId
+    });
+
+    const updatedTasksDBres = await Task.updateMany(
+      { user: req.user.id, "project._id": projectId },
+      { $set: { project: undefined } }
+    );
 
     if (!project)
       return res.status(404).json({ errors: [{ msg: "Project not found!" }] });
 
     await project.remove();
 
-    res.status(200).json({ msg: "Project has been removed!" });
-    return;
+    res
+      .status(200)
+      .json({ msg: "Project has been removed!", removedProjectId: projectId });
+
+    return updatedTasksDBres;
   } catch (error) {
     console.error(error.message);
 

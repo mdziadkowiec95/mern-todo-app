@@ -66,8 +66,6 @@ exports.registerUser = async (req, res) => {
 
     await preferences.save();
 
-    console.log(preferences);
-
     const token = jwt.sign(jwtPayload, config.get("mySecretJwt"), {
       expiresIn: 12 * 3600
     });
