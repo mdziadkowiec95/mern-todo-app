@@ -23,7 +23,7 @@ for (let i = 0; i < 10; i += 1) {
   })
 }
 
-const initialState = {
+export const initialState = {
   pageContext: {
     type: 'inbox',
     id: '',

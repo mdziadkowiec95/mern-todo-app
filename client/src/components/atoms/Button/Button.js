@@ -78,6 +78,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
   title: '',
+  asLink: false,
   disabled: false,
 }
 

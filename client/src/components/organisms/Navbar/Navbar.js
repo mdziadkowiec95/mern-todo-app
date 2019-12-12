@@ -21,7 +21,7 @@ const Navbar = ({ auth: { isAuth }, logoutUser, openSidebar, history }) => {
     <NavbarTemplate>
       <Container>
         {!isAuth && <NavLink to="/">iDO</NavLink>}
-        <BurgerButton onClickFn={openSidebar} />
+        <BurgerButton onClick={openSidebar} />
         <div className={styles.navItems}>
           <SearchFormContainer />
           <div className={styles.navActionIcons}>
