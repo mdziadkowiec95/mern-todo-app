@@ -12,7 +12,8 @@ const ProjectSchema = new Schema({
     required: true
   },
   description: {
-    type: String
+    type: String,
+    default: ""
   },
   color: {
     type: String,

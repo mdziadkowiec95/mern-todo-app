@@ -15,6 +15,7 @@
     "test:verbose": "jest --verbose",
     "test:users": "npm test ./__tests__/users-controller.js",
     "test:preferences": "jest ./__tests__/preferences-controller.js",
+    "test:projects": "jest ./__tests__/projects-controller.js",
     "test:auth": "npm test ./__tests__/auth-controller.js",
     "test:tasks": "npm test ./__tests__/tasks-controller.js"
   },

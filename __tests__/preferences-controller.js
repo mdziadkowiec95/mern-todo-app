@@ -37,7 +37,9 @@ beforeAll(async () => {
     user.save();
 
     const userPreferences = new Preferences({
-      user: fakeUserId
+      user: fakeUserId,
+      labels: [],
+      projects: []
     });
 
     // Generate user labels to leave space for only one more label (label_9)
@@ -45,15 +47,6 @@ beforeAll(async () => {
       userPreferences.labels.push({
         _id: generateObjectId(i),
         name: `label_${i}`,
-        color: "#fff"
-      });
-    }
-
-    // Generate user projects to leave space for only one more project (project_9)
-    for (let i = 0; i < 9; i++) {
-      userPreferences.projects.push({
-        _id: generateObjectId(i),
-        name: `project_${i}`,
         color: "#fff"
       });
     }
