@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import styles from './TaskListTemplate.module.scss'
+import styles from './TaskList.module.scss'
 import cn from 'classnames'
-import Loader from '../../components/atoms/Loader/Loader'
-import TaskCard from '../../components/molecules/TaskCard/TaskCard'
-import config from '../../config'
 import Moment from 'react-moment'
+import TaskCard from '../TaskCard/TaskCard'
+import config from '../../../config'
+import Loader from '../../atoms/Loader/Loader'
+import WeekdayDate from '../../atoms/WeekdayDate/WeekdayDate'
 
 const addDaysToDate = (dayCount = 0, startingDate = new Date()) => {
   const dayAfterDayCount = new Date(startingDate.getTime() + dayCount * 24 * 60 * 60 * 1000)
@@ -75,22 +76,6 @@ const TaskListTemplate = ({ tasks, pageType, isLoading }) => {
     return false
   }
 
-  const WeekdayDate = ({ date, replaceDayName }) => (
-    <>
-      {replaceDayName ? (
-        <>
-          <span>{replaceDayName} - </span>
-          <Moment format="DD-MM" date={date} />
-        </>
-      ) : (
-        <>
-          <Moment format="dddd" date={date} />
-          <span> - </span>
-          <Moment format="DD-MM" date={date} />
-        </>
-      )}
-    </>
-  )
   return (
     <div className={styles.wrapper}>
       {pageType === 'next-week' &&
@@ -98,7 +83,8 @@ const TaskListTemplate = ({ tasks, pageType, isLoading }) => {
         sortedTasks.map((day, dayIndex) => (
           <div key={`weekday-${dayIndex}`}>
             {day.tasks && day.tasks.length > 0 ? (
-              <ul>
+              <ul className={ListWrapperClassName}>
+                {isLoading && <Loader isLarge inWrapper absoluteCenter />}
                 <WeekdayDate
                   date={day.startDate}
                   replaceDayName={getDayNameReplacement(dayIndex)}
@@ -115,7 +101,7 @@ const TaskListTemplate = ({ tasks, pageType, isLoading }) => {
                   date={day.startDate}
                   replaceDayName={getDayNameReplacement(dayIndex)}
                 />
-                <p>No tasks assigned</p>
+                <p className={styles.noTasksText}>No tasks assigned</p>
               </>
             )}
           </div>
@@ -130,7 +116,7 @@ const TaskListTemplate = ({ tasks, pageType, isLoading }) => {
               </li>
             ))
           ) : (
-            <h3>No tasks found!</h3>
+            <h3>No tasks planned yet</h3>
           )}
         </ul>
       )}

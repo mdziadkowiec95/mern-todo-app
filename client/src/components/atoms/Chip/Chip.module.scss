@@ -19,6 +19,10 @@
     opacity: 0.85;
   }
 
+  &.readonly {
+    margin: 0.5rem 0.5rem 0.5rem 0;
+  }
+
   &.small {
     padding: 0.3rem 0.8rem;
     font-size: 1rem;

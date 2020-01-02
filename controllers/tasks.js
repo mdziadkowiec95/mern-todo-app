@@ -39,13 +39,14 @@ exports.searchTask = async (req, res) => {
 };
 
 exports.getTasks = async (req, res) => {
+  // Status won't be necessary
   const { status, timePeriod, projectId, labelId } = req.query;
 
   const filters = {
     user: req.user.id
   };
 
-  // Construct filters object
+  // if (status !== "inbox") {
   if (timePeriod) {
     const dateRange = {
       $gte: null,
@@ -74,7 +75,6 @@ exports.getTasks = async (req, res) => {
     filters.date = dateRange;
   }
 
-  if (status) filters.status = status;
   if (projectId) filters["project._id"] = projectId;
 
   if (labelId) {
@@ -221,7 +221,7 @@ exports.createOrUpdateTask = async (req, res) => {
     res.status(200).json(newTask);
     return;
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
 
     if (error.kind === "ObjectId")
       return res.status(404).json({ errors: [{ msg: "Task not found!" }] });

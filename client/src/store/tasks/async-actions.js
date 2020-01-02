@@ -26,7 +26,7 @@ export const getTasks = params => async dispatch => {
 
     const payload = !res.data.errors ? res.data : []
 
-    dispatch(getTasksSuccess(payload))
+    return dispatch(getTasksSuccess(payload))
   } catch (error) {
     handleErrorResponse(error, dispatch)
     dispatch(getTasksError())

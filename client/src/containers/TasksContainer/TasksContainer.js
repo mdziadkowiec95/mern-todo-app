@@ -7,6 +7,19 @@ import { bindActionCreators, compose } from 'redux'
 import { getTasks } from '../../store/tasks/async-actions'
 import config from '../../config'
 import { setPageContext } from '../../store/tasks/actions'
+import TaskList from '../../components/molecules/TaskList/TaskList'
+
+const getNextDayDate = (startDate = new Date()) => {
+  const nextDay = new Date(startDate)
+  nextDay.setDate(nextDay.getDate() + 1)
+  return new Date(nextDay)
+}
+
+const getDayName = (date = new Date()) => {
+  const dayIndex = date.getDay()
+  const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  return weekDays[dayIndex]
+}
 
 class TasksContainer extends Component {
   componentDidMount() {
@@ -24,10 +37,11 @@ class TasksContainer extends Component {
     }
   }
 
-  fetchTasks() {
+  async fetchTasks() {
     const {
       pageType,
       match: { params },
+      state,
       setPageContext,
       getTasks,
     } = this.props
@@ -53,25 +67,23 @@ class TasksContainer extends Component {
         reqParams.projectId = params.id
       }
 
-      getTasks(reqParams)
+      await getTasks(reqParams)
+
+      // if (state && state.taskId) {
+      //   window.scrollBy({
+      //     top: 500,
+      //     left: 100,
+      //     behavior: 'smooth',
+      //   })
+      // }
     }
   }
   render() {
-    const { tasks, isLoading } = this.props
+    const { tasks, pageType, isLoading } = this.props
 
     return (
       <div>
-        <TaskListTemplate isLoading={isLoading}>
-          {tasks && tasks.length > 0 ? (
-            tasks.map(task => (
-              <li key={task._id}>
-                <TaskCard {...task} />
-              </li>
-            ))
-          ) : (
-            <h3>No tasks found!</h3>
-          )}
-        </TaskListTemplate>
+        <TaskList pageType={pageType} tasks={tasks} isLoading={isLoading} />
       </div>
     )
   }

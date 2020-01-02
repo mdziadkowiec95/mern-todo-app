@@ -11,7 +11,7 @@ exports.authUser = async (req, res) => {
     res.json(user);
     return;
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
 
     res.status(500).send("Server error!");
     return error;
@@ -59,7 +59,7 @@ exports.signIn = async (req, res) => {
       }
     );
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     res.status(500).send("Server error!");
 
     return error;

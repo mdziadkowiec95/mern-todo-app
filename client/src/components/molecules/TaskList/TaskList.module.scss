@@ -1,0 +1,19 @@
+@import 'utils/utils';
+
+.wrapper {
+  padding: 4rem 0;
+}
+
+.listWrapper {
+  position: relative;
+  border-radius: map-get($radius, normal);
+
+  &.isLoading {
+    opacity: 0.3;
+  }
+}
+
+.noTasksText {
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
