@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import styles from './AccordionMenu.module.scss'
 import ButtonLink from '../../atoms/ButtonLink/ButtonLink'
+import Chip from '../../atoms/Chip/Chip'
+import { NavLink } from 'react-router-dom'
 
 const AccordionMenu = ({
   title,
@@ -53,9 +55,12 @@ const AccordionMenu = ({
             <ul>
               {items.map(item => (
                 <li key={item._id}>
-                  <ButtonLink href={`${routerLinkBase}${item._id}`} asNavLink onClick={onItemClick}>
-                    <span style={{ color: item.color }}> {item.name}</span>
-                  </ButtonLink>
+                  <NavLink to={`${routerLinkBase}${item._id}`} onClick={onItemClick}>
+                    <Chip asTextLabel background={item.color} small>
+                      {item.name}
+                    </Chip>
+                    {/* <span style={{ color: item.color }}> {item.name}</span> */}
+                  </NavLink>
                 </li>
               ))}
             </ul>

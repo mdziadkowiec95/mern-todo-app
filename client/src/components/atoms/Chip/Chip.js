@@ -4,7 +4,17 @@ import styles from './Chip.module.scss'
 import config from '../../../config'
 import cn from 'classnames'
 
-const Chip = ({ id, background, children, canRemove, canAdd, small, readonly, onClick }) => {
+const Chip = ({
+  id,
+  background,
+  children,
+  canRemove,
+  canAdd,
+  asTextLabel,
+  small,
+  readonly,
+  onClick,
+}) => {
   const inlineCSS = {
     backgroundColor: background,
   }
@@ -13,8 +23,15 @@ const Chip = ({ id, background, children, canRemove, canAdd, small, readonly, on
     [styles.remove]: canRemove,
     [styles.add]: canAdd,
     [styles.small]: small,
-    [styles.readonly]: readonly,
+    [styles.readonly]: readonly || asTextLabel,
   })
+
+  if (asTextLabel)
+    return (
+      <div style={inlineCSS} className={WrapperClassName}>
+        {children}
+      </div>
+    )
 
   return (
     <button

@@ -65,7 +65,7 @@ export const tasksReducer = (state = initialState, action) => {
     case types.UPDATE_TASK_SUCCESS:
       return {
         ...state,
-        taskList: getUpdatedTaskList(state.taskList, payload),
+        taskList: getUpdatedTaskList(state, payload),
         isLoading: false,
       }
 

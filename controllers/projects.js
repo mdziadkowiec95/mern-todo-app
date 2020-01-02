@@ -8,7 +8,7 @@ exports.getProjects = async (req, res) => {
 
     res.json(projects);
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
 
     res.status(500).send("Server error!");
   }
@@ -28,7 +28,7 @@ exports.getSingleProject = async (req, res) => {
 
     res.json(project);
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
 
     if (error.kind === "ObjectId")
       return res.status(404).json({ errors: [{ msg: "Project not found!" }] });
