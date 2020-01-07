@@ -24,12 +24,13 @@ export const getTasks = params => async dispatch => {
       params,
     })
 
-    if (!res.data.errors) return dispatch(getTasksSuccess(res.data))
+    const payload = !res.data.errors ? res.data : []
 
-    dispatch(getTasksSuccess([]))
+    return dispatch(getTasksSuccess(payload))
   } catch (error) {
-    dispatch(getTasksError())
     handleErrorResponse(error, dispatch)
+    dispatch(getTasksError())
+    return error
   }
 }
 
@@ -74,9 +75,8 @@ export const removeTask = taskId => async dispatch => {
     // return
     const res = await axios.delete(`/api/tasks/${taskId}`)
 
-    notifyUser(res.data.msg, 'success')
-
     dispatch(removeTaskSuccess(taskId))
+    dispatch(notifyUser(res.data.msg, 'success'))
   } catch (error) {
     dispatch(removeTaskError())
     handleErrorResponse(error)

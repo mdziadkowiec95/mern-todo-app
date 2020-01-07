@@ -1,15 +1,15 @@
-import * as actions from './actions'
-import { types } from './types'
+import * as actions from '../actions'
+import { types } from '../types'
 
 describe('notification actions', () => {
-  it('should create an action to add a notification', () => {
+  it('should create proper action to add a notification', () => {
     const id = '1'
     const type = 'error'
     const msg = 'Some message'
 
     const expectedAction = {
       type: types.ADD_NOTIFICATION,
-      payload: {
+      payload: { 
         id,
         type,
         msg,
@@ -18,7 +18,7 @@ describe('notification actions', () => {
     expect(actions.addNotification(id, type, msg)).toEqual(expectedAction)
   })
 
-  it('should create an action to remove a notification', () => {
+  it('should create proper action to remove a notification', () => {
     const id = '1'
 
     const expectedAction = {

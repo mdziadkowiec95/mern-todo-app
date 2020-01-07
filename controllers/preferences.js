@@ -12,7 +12,7 @@ exports.getPreferences = async (req, res) => {
 
     res.json(userPreferences);
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
 
     res.status(500).send("Server error!");
   }
@@ -34,7 +34,7 @@ exports.getLabelsAndProjects = async (req, res) => {
       projects: userProjects
     });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
 
     res.status(500).send("Server error!");
   }
@@ -78,7 +78,7 @@ exports.addLabel = async (req, res) => {
 
     return;
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
 
     res.status(500).send("Server error!");
     return error;
@@ -180,7 +180,7 @@ exports.removeLabel = async (req, res) => {
     });
     return;
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
 
     if (error.kind === "ObjectId")
       return res.status(404).json({ errors: [{ msg: "Label not found!" }] });

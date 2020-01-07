@@ -21,7 +21,7 @@ const ProjectMain = ({ match, pageType, setPageContext }) => {
     <div>
       <h1>Project tasks</h1>
       <Button primary asRouterLink goTo={`${match.url}/details`}>
-        Project details
+        Preview tasks
       </Button>
     </div>
   )

@@ -5,12 +5,13 @@ import styles from './TaskCard.module.scss'
 import cn from 'classnames'
 import DatePicker from '../../atoms/DatePicker/DatePicker'
 import { isValidDate } from '../../../utils/dates'
-import { Link } from 'react-router-dom'
+import { Link, withRouter, Redirect } from 'react-router-dom'
 import Button from '../../atoms/Button/Button'
 import TextField from '../../atoms/TextField/TextField'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import IconSVG from '../../atoms/IconSVG/IconSVG'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { bindActionCreators } from 'redux'
 import { removeTask, updateTask } from '../../../store/tasks/async-actions'
 import Chip from '../../atoms/Chip/Chip'
@@ -19,6 +20,7 @@ import SelectDropdown from '../../atoms/SelectDropdown/SelectDropdown'
 import { LabelOrProjectType } from '../../../propTypes'
 
 const TaskCard = ({
+  history,
   _id,
   priority,
   status,
@@ -39,6 +41,7 @@ const TaskCard = ({
   }
   const [isEditMode, setEditMode] = useState(false)
   const [editState, setEditState] = useState(INITIAL_EDIT_STATE)
+  const [inboxRedirect, turnOnInboxRedirect] = useState(false)
 
   const { updatedDate, updatedTitle, updatedProject, updatedLabels } = editState
 
@@ -99,14 +102,17 @@ const TaskCard = ({
       labelsIDs.length !== labels.length ||
       labelsIDs.some((labelId, i) => labelId !== labels[i]._id)
 
+    const isNewDateDifferent = new Date(date).getTime() !== new Date(updatedDate).getTime()
+
     if (areLabelsModified) taskPayload.labelsIDs = labelsIDs
     if (title !== updatedTitle) taskPayload.title = updatedTitle
-    if (new Date(date).getTime() !== new Date(updatedDate).getTime()) taskPayload.date = updatedDate
+    if (isNewDateDifferent) taskPayload.date = updatedDate
     if (updatedProject) taskPayload.projectId = updatedProject._id
 
     await updateTask(_id, taskPayload)
-
     setEditMode(false)
+
+    if (isNewDateDifferent) turnOnInboxRedirect(true)
   }
 
   /** --- CSS classNames --- */
@@ -115,6 +121,8 @@ const TaskCard = ({
   const MainWrapperClassName = cn(styles.card, {
     [styles.editMode]: isEditMode,
   })
+
+  // if (inboxRedirect) return <Redirect to={{ pathname: '/app/inbox', state: { taskId: _id } }} />
 
   return (
     <>
@@ -224,6 +232,7 @@ const TaskCard = ({
 }
 
 TaskCard.propTypes = {
+  history: PropTypes.object.isRequired,
   _id: PropTypes.string.isRequired,
   priority: PropTypes.oneOf(['low', 'normal', 'high']),
   status: PropTypes.oneOf(['inbox', 'active']),
@@ -246,4 +255,4 @@ const mapStateToProps = ({ preferences: { labels, projects } }) => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({ updateTask, removeTask }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskCard)
+export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(TaskCard)

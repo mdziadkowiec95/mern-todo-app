@@ -8,7 +8,7 @@ export const setPageContext = pageContext => ({
 
 // ------ Get all tasks for current view ------ //
 export const getTasksBegin = () => ({
-  type: types.GET_TASKS_BEGIN,
+  type: types.GET_TASKS_BEGIN, 
 })
 
 /**
