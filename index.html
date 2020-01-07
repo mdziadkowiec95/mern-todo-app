@@ -1,0 +1,27 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const authToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWRiNDhiNzk1ZGQ2NWYwNjA5Y2M3ZTcyIn0sImlhdCI6MTU3MjExMzI3MywiZXhwIjoxNTcyMTU2NDczfQ.Jwfpb2w1LhgibxWhKEZ3wgnPSeRLXd70yauYOkPu0uc';
+
+      fetch('http://localhost:5000/api/tasks', {
+        method: 'GET',
+        headers: {
+          'x-auth-token': authToken
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          const date = data.find(el => el.date).date;
+          console.log(date);
+          console.log(new Date(date));
+        });
+    </script>
+  </body>
+</html>
