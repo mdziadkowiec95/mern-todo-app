@@ -1,5 +1,4 @@
 node_modules
-package-lock.json 
 config/default.js
 index.html
 .vs-code
