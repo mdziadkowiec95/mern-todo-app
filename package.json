@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "MERN stack TO-DO App",
   "main": "server.js",
+  "homepage": "http://mdziadkowiec95.github.io/mern-todo-app",
   "scripts": {
     "start": "node server",
     "client:storybook": "npm run storybook --prefix client",
