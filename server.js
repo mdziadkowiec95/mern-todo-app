@@ -8,6 +8,7 @@ const auth = require("./routes/api/auth");
 const dashboards = require("./routes/api/dashboards");
 const connectDB = require("./config/db");
 const cors = require("cors");
+const path = require("path");
 
 connectDB();
 
@@ -22,6 +23,16 @@ app.use("/api/preferences", preferences);
 app.use("/api/projects", projects);
 app.use("/api/auth", auth);
 app.use("/api/dashboards", dashboards);
+
+// Serve static assets in production
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 const port = process.env.PORT || 5000;
 
