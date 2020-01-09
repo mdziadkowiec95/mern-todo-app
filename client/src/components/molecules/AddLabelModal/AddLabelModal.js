@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { toggleAddLabelModal } from '../../../store/ui/actions'
 import Label from '../../atoms/Label/Label'
-import { addLabel } from '../../../store/preferences/async-actions'
+import { addLabel, editLabel } from '../../../store/preferences/async-actions'
 import PropTypes from 'prop-types'
 
 const AddLabelModalBase = ({
@@ -22,6 +22,8 @@ const AddLabelModalBase = ({
   handleSubmit,
   setFieldValue,
   modalType,
+  onCancel,
+  existingLabel,
   toggleAddLabelModal,
 }) => {
   const namePlaceholder = modalType === 'project' ? 'Enter project name' : 'Enter label name'
@@ -29,12 +31,8 @@ const AddLabelModalBase = ({
 
   return (
     <div className={styles.wrapper}>
+      <button onClick={() => onCancel()}>Cancel</button>
       <form onSubmit={handleSubmit} className={styles.form}>
-        <ButtonIcon
-          name="closeBorder"
-          className={styles.closeBtn}
-          onClickFn={() => toggleAddLabelModal(false)}
-        />
         <TextField
           isError={errors.name && touched.name}
           name="name"
@@ -70,25 +68,25 @@ const AddTaskModalValidationSchema = Yup.object().shape({
 })
 
 const AddLabelModal = withFormik({
-  mapPropsToValues: () => ({
-    name: '',
-    color: '',
+  mapPropsToValues: ({ existingLabel }) => ({
+    name: existingLabel.name,
+    color: existingLabel.color,
   }),
 
   // Custom sync validation
   validationSchema: AddTaskModalValidationSchema,
 
-  handleSubmit: (values, { props, setSubmitting }) => {
+  handleSubmit: async (values, { props, setSubmitting }) => {
     const { name, color } = values
 
-    const onSuccess = () => {
+    if (props.existingLabel && props.existingLabel._id) {
+      await props.editLabel(props.existingLabel._id, name, color)
+      props.onCancel()
+    } else {
+      await props.addLabel(name, color)
       setSubmitting(false)
+      props.onCancel()
     }
-    const onError = onSuccess
-
-    props.addLabel(name, color, onSuccess, onError)
-
-    setSubmitting(false)
   },
 
   displayName: 'AddLabelModal',
@@ -107,6 +105,6 @@ AddLabelModalBase.propTypes = {
 }
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ toggleAddLabelModal, addLabel }, dispatch)
+  bindActionCreators({ toggleAddLabelModal, addLabel, editLabel }, dispatch)
 
 export default connect(null, mapDispatchToProps)(AddLabelModal)

@@ -1,0 +1,23 @@
+@import 'utils/utils';
+
+.priorityFlag {
+  &.low {
+    fill: map-get($colors, priority-low);
+  }
+
+  &.normal {
+    fill: map-get($colors, priority-normal);
+  }
+
+  &.high {
+    fill: map-get($colors, priority-high);
+  }
+
+  &.notActive {
+    opacity: 0.6;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}

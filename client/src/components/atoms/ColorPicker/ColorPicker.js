@@ -1,10 +1,10 @@
 import React from 'react'
-import { colors } from './colors'
 import styles from './ColorPicker.module.scss'
 import PropTypes from 'prop-types'
+import { defaultColors } from './defaultColors'
 
-const ColorPicker = ({ onSelectColor, selectedColor }) => {
-  const colorsPallete = Object.values(colors)
+const ColorPicker = ({ colors, onSelectColor, selectedColor }) => {
+  const colorPallete = Object.values(colors)
 
   const createSingleColorStyles = (color, pickedColor) =>
     color === pickedColor
@@ -20,27 +20,33 @@ const ColorPicker = ({ onSelectColor, selectedColor }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.palleteWrap}>
-        {colorsPallete.map(color => (
-          <span
-            role="presentation"
-            key={color}
-            data-color={color}
-            className={styles.color}
-            style={createSingleColorStyles(color, selectedColor)}
-            onClick={() => onSelectColor(color)}
-          ></span>
-        ))}
+        {colorPallete.length > 0 ? (
+          colorPallete.map(color => (
+            <span
+              role="presentation"
+              key={color}
+              data-color={color}
+              className={styles.color}
+              style={createSingleColorStyles(color, selectedColor)}
+              onClick={() => onSelectColor(color)}
+            ></span>
+          ))
+        ) : (
+          <span>No colors available</span>
+        )}
       </div>
     </div>
   )
 }
 
 ColorPicker.propTypes = {
+  colors: PropTypes.object,
   onSelectColor: PropTypes.func.isRequired,
   selectedColor: PropTypes.string,
 }
 
 ColorPicker.defaultProps = {
+  colors: defaultColors,
   selectedColor: '',
 }
 export default ColorPicker

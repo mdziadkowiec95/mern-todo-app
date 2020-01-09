@@ -9,6 +9,9 @@ import {
   addLabelSuccess,
   addLabelError,
   addLabelBegin,
+  editLabelBegin,
+  editLabelSuccess,
+  editLabelError,
 } from './actions'
 import { handleErrorResponse } from '../../helpers'
 import { toggleAddLabelModal } from '../ui/actions'
@@ -37,7 +40,7 @@ export const getLabelsAndProjects = () => async dispatch => {
   }
 }
 
-export const addLabel = (name, color, onSuccess, onError) => async dispatch => {
+export const addLabel = (name, color) => async dispatch => {
   try {
     dispatch(addLabelBegin())
 
@@ -51,12 +54,31 @@ export const addLabel = (name, color, onSuccess, onError) => async dispatch => {
     const res = await axios.put('/api/preferences/labels', reqPayload)
     const updatedLabels = res.data
 
-    dispatch(addLabelSuccess(updatedLabels))
-    dispatch(toggleAddLabelModal(false))
-    onSuccess()
+    return dispatch(addLabelSuccess(updatedLabels))
   } catch (error) {
     handleErrorResponse(error, dispatch)
-    dispatch(addLabelError())
-    onError()
+    return dispatch(addLabelError())
+  }
+}
+
+export const editLabel = (_id, name, color) => async dispatch => {
+  try {
+    dispatch(editLabelBegin())
+
+    const reqPayload = {
+      label: {
+        name,
+        color,
+      },
+    }
+
+    const res = await axios.put(`/api/preferences/labels/${_id}`, reqPayload)
+    const updatedLabel = res.data
+
+    dispatch(editLabelSuccess(updatedLabel))
+    return dispatch(toggleAddLabelModal(false))
+  } catch (error) {
+    handleErrorResponse(error, dispatch)
+    return dispatch(editLabelError())
   }
 }

@@ -32,29 +32,29 @@ describe('Button component', () => {
     expect(btn.textContent).toEqual(text)
   })
 
-  it('should render as proper link when "asLink" and "goTo" props are provided', () => {
-    const { getByText } = render(
-      <Button asRouterLink goTo="/url">
-        {placeholderChildText}
-      </Button>,
-    )
-    const btn = getByText(placeholderChildText)
-    expect(btn.tagName).toEqual('A')
-    expect(btn.href).toBeTruthy()
-    expect(btn.rel).toEqual('noopener noreferrer')
-  })
+  // it('should render as proper link when "asLink" and "goTo" props are provided', () => {
+  //   const { getByText } = render(
+  //     <Button asRouterLink goTo="/url">
+  //       {placeholderChildText}
+  //     </Button>,
+  //   )
+  //   const btn = getByText(placeholderChildText)
+  //   expect(btn.tagName).toEqual('A')
+  //   expect(btn.href).toBeTruthy()
+  //   expect(btn.rel).toEqual('noopener noreferrer')
+  // })
 
-  it('should render as proper link when "asLink" and "goTo" props are provided', () => {
-    const { getByText } = render(
-      <Button asLink goTo="/url">
-        {placeholderChildText}
-      </Button>,
-    )
-    const btn = getByText(placeholderChildText)
-    expect(btn.tagName).toEqual('A')
-    expect(btn.href).toBeTruthy()
-    expect(btn.rel).toEqual('noopener noreferrer')
-  })
+  // it('should render as proper link when "asLink" and "goTo" props are provided', () => {
+  //   const { getByText } = render(
+  //     <Button asLink goTo="/url">
+  //       {placeholderChildText}
+  //     </Button>,
+  //   )
+  //   const btn = getByText(placeholderChildText)
+  //   expect(btn.tagName).toEqual('A')
+  //   expect(btn.href).toBeTruthy()
+  //   expect(btn.rel).toEqual('noopener noreferrer')
+  // })
 
   //   it('should run onClick function properly', () => {
   //     const onClickFn = jest.fn()

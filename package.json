@@ -11,7 +11,7 @@
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
-    "test": "jest --coverage",
+    "test": "jest --coverage && npm run test --prefix client",
     "test:server": "npm test ./__tests__/",
     "test:verbose": "jest --verbose",
     "test:users": "npm test ./__tests__/users-controller.js",

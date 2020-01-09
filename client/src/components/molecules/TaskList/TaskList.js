@@ -76,50 +76,58 @@ const TaskListTemplate = ({ tasks, pageType, isLoading }) => {
     return false
   }
 
+  const WrapperClassName = cn(styles.wrapper)
+
+  const InnerClassName = cn(styles.inner, {
+    [styles.isLoading]: isLoading,
+  })
+
   return (
-    <div className={styles.wrapper}>
-      {pageType === 'next-week' &&
-        sortedTasks.length > 0 &&
-        sortedTasks.map((day, dayIndex) => (
-          <div key={`weekday-${dayIndex}`}>
-            {day.tasks && day.tasks.length > 0 ? (
-              <ul className={ListWrapperClassName}>
-                {isLoading && <Loader isLarge inWrapper absoluteCenter />}
-                <WeekdayDate
-                  date={day.startDate}
-                  replaceDayName={getDayNameReplacement(dayIndex)}
-                />
-                {day.tasks.map(task => (
-                  <li key={task._id}>
-                    <TaskCard {...task} />
-                  </li>
-                ))}
-              </ul>
+    <div className={WrapperClassName}>
+      {isLoading && <Loader isLarge inWrapper absoluteCenter />}
+      <div className={InnerClassName}>
+        {pageType === 'next-week' &&
+          sortedTasks.length > 0 &&
+          sortedTasks.map((day, dayIndex) => (
+            <div key={`weekday-${dayIndex}`}>
+              {day.tasks && day.tasks.length > 0 ? (
+                <ul className={ListWrapperClassName}>
+                  <WeekdayDate
+                    date={day.startDate}
+                    replaceDayName={getDayNameReplacement(dayIndex)}
+                  />
+                  {day.tasks.map(task => (
+                    <li key={task._id}>
+                      <TaskCard {...task} />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <>
+                  <WeekdayDate
+                    date={day.startDate}
+                    replaceDayName={getDayNameReplacement(dayIndex)}
+                  />
+                  <p className={styles.noTasksText}>No tasks assigned</p>
+                </>
+              )}
+            </div>
+          ))}
+        {pageType !== 'next-week' && (
+          <ul className={ListWrapperClassName}>
+            {/* {!isLoading && <Loader isLarge inWrapper absoluteCenter />} */}
+            {tasks && tasks.length > 0 ? (
+              tasks.map(task => (
+                <li key={task._id}>
+                  <TaskCard {...task} />
+                </li>
+              ))
             ) : (
-              <>
-                <WeekdayDate
-                  date={day.startDate}
-                  replaceDayName={getDayNameReplacement(dayIndex)}
-                />
-                <p className={styles.noTasksText}>No tasks assigned</p>
-              </>
+              <h3>No tasks planned yet</h3>
             )}
-          </div>
-        ))}
-      {pageType !== 'next-week' && (
-        <ul className={ListWrapperClassName}>
-          {isLoading && <Loader isLarge inWrapper absoluteCenter />}
-          {tasks && tasks.length > 0 ? (
-            tasks.map(task => (
-              <li key={task._id}>
-                <TaskCard {...task} />
-              </li>
-            ))
-          ) : (
-            <h3>No tasks planned yet</h3>
-          )}
-        </ul>
-      )}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }

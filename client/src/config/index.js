@@ -23,6 +23,7 @@ const config = {
     'warning-bg': '#ffb648',
   },
   pageTypes: ['', 'inbox', 'today', 'next-week', 'label', 'project'],
+  taskPriorities: ['low', 'normal', 'high']
 }
 
 export default config
