@@ -4,6 +4,7 @@ export const initialState = {
   isSidebarOpen: false,
   isAddTaskModalOpen: false,
   isAddLabelModalOpen: false,
+  isEditLabelsModalOpen: false
 }
 
 export const uiReducer = (state = initialState, action) => {

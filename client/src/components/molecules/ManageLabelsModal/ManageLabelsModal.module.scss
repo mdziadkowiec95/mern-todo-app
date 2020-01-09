@@ -1,0 +1,51 @@
+@import 'utils/utils';
+
+.wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%, -50%);
+  width: 250px;
+  border-radius: map-get($radius, small);
+  background-color: map-get($colors, white);
+  transform-origin: 0 100%;
+  animation: manage-labels-modal-fade-in 0.3s map-get($easings, primary);
+
+  @extend %shadow-100;
+}
+
+.inner {
+  position: relative;
+
+  padding: 2rem 0;
+
+  .closeBtn {
+    position: absolute;
+    top: -2rem;
+    right: -2rem;
+  }
+}
+
+.labelWrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  transition: background-color 0.2s map-get($easings, primary);
+
+  &:hover {
+    background-color: rgba(map-get($colors, tertiary), 0.3);
+  }
+}
+
+@keyframes manage-labels-modal-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%, -50%) scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(-50%, -50%) scale(1);
+  }
+}

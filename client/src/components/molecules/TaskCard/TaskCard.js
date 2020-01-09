@@ -17,7 +17,9 @@ import { removeTask, updateTask } from '../../../store/tasks/async-actions'
 import Chip from '../../atoms/Chip/Chip'
 import MultiSelect from '../MultiSelect/MultiSelect'
 import SelectDropdown from '../../atoms/SelectDropdown/SelectDropdown'
-import { LabelOrProjectType } from '../../../propTypes'
+import { LabelOrProjectType, PriorityType } from '../../../propTypes'
+import PriorityFlag from '../../atoms/PriorityFlag/PriorityFlag'
+import PriorityPicker from '../PriorityPicker/PriorityPicker'
 
 const TaskCard = ({
   history,
@@ -38,12 +40,13 @@ const TaskCard = ({
     updatedTitle: title,
     updatedProject: project,
     updatedLabels: labels,
+    updatedPriority: priority,
   }
   const [isEditMode, setEditMode] = useState(false)
   const [editState, setEditState] = useState(INITIAL_EDIT_STATE)
   const [inboxRedirect, turnOnInboxRedirect] = useState(false)
 
-  const { updatedDate, updatedTitle, updatedProject, updatedLabels } = editState
+  const { updatedDate, updatedTitle, updatedProject, updatedLabels, updatedPriority } = editState
 
   const markAsDoneEl = useRef(null)
 
@@ -108,6 +111,7 @@ const TaskCard = ({
     if (title !== updatedTitle) taskPayload.title = updatedTitle
     if (isNewDateDifferent) taskPayload.date = updatedDate
     if (updatedProject) taskPayload.projectId = updatedProject._id
+    if (priority !== updatedPriority) taskPayload.priority = updatedPriority
 
     await updateTask(_id, taskPayload)
     setEditMode(false)
@@ -116,7 +120,6 @@ const TaskCard = ({
   }
 
   /** --- CSS classNames --- */
-  const priorityFlagClassNames = cn(styles.priorityFlag, styles[priority])
 
   const MainWrapperClassName = cn(styles.card, {
     [styles.editMode]: isEditMode,
@@ -165,7 +168,17 @@ const TaskCard = ({
                 )}
               </div>
               <div className={styles.cardActions}>
-                <IconSVG name="flag" className={priorityFlagClassNames} size="20px" />
+                {/* <PriorityFlag priority={priority} /> */}
+                <PriorityPicker
+                  onSelect={pr =>
+                    setEditState({
+                      ...editState,
+                      updatedPriority: pr,
+                    })
+                  }
+                  selectedPriority={updatedPriority}
+                  allowEdit={isEditMode}
+                />
               </div>
             </div>
             <div>
@@ -234,7 +247,7 @@ const TaskCard = ({
 TaskCard.propTypes = {
   history: PropTypes.object.isRequired,
   _id: PropTypes.string.isRequired,
-  priority: PropTypes.oneOf(['low', 'normal', 'high']),
+  priority: PriorityType,
   status: PropTypes.oneOf(['inbox', 'active']),
   title: PropTypes.string.isRequired,
   userLabels: PropTypes.arrayOf(LabelOrProjectType),

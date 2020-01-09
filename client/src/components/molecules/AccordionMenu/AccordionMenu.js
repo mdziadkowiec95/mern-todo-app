@@ -5,6 +5,9 @@ import styles from './AccordionMenu.module.scss'
 import ButtonLink from '../../atoms/ButtonLink/ButtonLink'
 import Chip from '../../atoms/Chip/Chip'
 import { NavLink } from 'react-router-dom'
+import Button from '../../atoms/Button/Button'
+import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
+import config from '../../../config'
 
 const AccordionMenu = ({
   title,
@@ -13,9 +16,11 @@ const AccordionMenu = ({
   onItemClick,
   routerLinkBase,
   noItemsPlaceholder,
-  TabActionComponent,
+  EditActionComponent,
+  AddActionComponent,
 }) => {
   const [isActive, setIsActive] = useState(false)
+  const [isEditMode, toggleEditMode] = useState(false)
   const [contentHeight, setContentHeight] = useState('0px')
 
   const contentEl = useRef(null)
@@ -32,6 +37,18 @@ const AccordionMenu = ({
     if (isActive) setContentHeight(`${scrollHeight}px`)
   }, [isActive, items])
 
+  useEffect(() => {
+    if (!isActive) toggleEditMode(false)
+  }, [isActive])
+
+  const handleEditState = () => {
+    toggleEditMode(!isEditMode)
+  }
+
+  const handleItemDelete = (id) => {
+
+  }
+
   const wrapperClassName = cn(styles.wrapper, {
     [styles.isActive]: isActive,
     [styles.activeTab]: isActiveTab,
@@ -47,7 +64,8 @@ const AccordionMenu = ({
         <button className={buttonClassName} onClick={toggleAccordion}>
           {title}
         </button>
-        {TabActionComponent && TabActionComponent}
+        {isActive && EditActionComponent && EditActionComponent}
+        {AddActionComponent && AddActionComponent}
       </div>
       <div ref={contentEl} style={{ maxHeight: `${contentHeight}` }} className={styles.content}>
         <div className={styles.contentInner}>
@@ -59,7 +77,6 @@ const AccordionMenu = ({
                     <Chip asTextLabel background={item.color} small>
                       {item.name}
                     </Chip>
-                    {/* <span style={{ color: item.color }}> {item.name}</span> */}
                   </NavLink>
                 </li>
               ))}
@@ -80,12 +97,13 @@ AccordionMenu.propTypes = {
   onItemClick: PropTypes.func,
   routerLinkBase: PropTypes.string.isRequired,
   noItemsPlaceholder: PropTypes.string,
-  TabActionComponent: PropTypes.element,
+  AddActionComponent: PropTypes.element,
+  EditActionComponent: PropTypes.element,
   AddItemComponent: PropTypes.element,
 }
 
 AccordionMenu.defaultProps = {
-  isActiveTab: false,
+  isActiveTab: false, 
   items: [],
   noItemsPlaceholder: `You don't have any items`,
 }

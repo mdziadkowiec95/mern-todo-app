@@ -11,6 +11,7 @@ import config from '../../../config'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import AddLabelModal from '../../molecules/AddLabelModal/AddLabelModal'
 import { getLabelsAndProjects } from '../../../store/preferences/async-actions'
+import ManageLabelsModal from '../../molecules/ManageLabelsModal/ManageLabelsModal'
 
 const Sidebar = ({
   history,
@@ -74,7 +75,19 @@ const Sidebar = ({
             items={userLabels}
             noItemsPlaceholder="You don't have any labels"
             onItemClick={handleSidebarClose}
-            TabActionComponent={
+            EditActionComponent={
+              <ButtonIcon
+                name="edit"
+                size="tiny"
+                color={config.colors.primary}
+                className={styles.editBtn}
+                onClickFn={e => {
+                  e.stopPropagation()
+                  alert('EDIT')
+                }}
+              />
+            }
+            AddActionComponent={
               <ButtonIcon
                 name="plus"
                 size="tiny"
@@ -95,7 +108,7 @@ const Sidebar = ({
             items={userProjects}
             noItemsPlaceholder="You don't have any projects"
             onItemClick={handleSidebarClose}
-            TabActionComponent={
+            AddActionComponent={
               <ButtonIcon
                 name="plus"
                 size="tiny"
@@ -107,7 +120,8 @@ const Sidebar = ({
             }
           />
         </div>
-        {isAddLabelModalOpen && <AddLabelModal />}
+        {/* {isAddLabelModalOpen && <AddLabelModal />} */}
+        {!isAddLabelModalOpen && <ManageLabelsModal />}
       </aside>
       {isSidebarOpen && (
         <div role="presentation" onClick={hideSidebar} className={styles.overlay}></div>
