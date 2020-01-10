@@ -12,6 +12,10 @@
   color: map-get($colors, tertiary);
 }
 
+.center {
+  text-align: center;
+}
+
 // Sizes
 h1 {
   font-size: 5rem;

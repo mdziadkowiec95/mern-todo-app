@@ -5,11 +5,10 @@ import styles from './TaskCard.module.scss'
 import cn from 'classnames'
 import DatePicker from '../../atoms/DatePicker/DatePicker'
 import { isValidDate } from '../../../utils/dates'
-import { Link, withRouter, Redirect } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import Button from '../../atoms/Button/Button'
 import TextField from '../../atoms/TextField/TextField'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
-import IconSVG from '../../atoms/IconSVG/IconSVG'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { bindActionCreators } from 'redux'
@@ -18,14 +17,13 @@ import Chip from '../../atoms/Chip/Chip'
 import MultiSelect from '../MultiSelect/MultiSelect'
 import SelectDropdown from '../../atoms/SelectDropdown/SelectDropdown'
 import { LabelOrProjectType, PriorityType } from '../../../propTypes'
-import PriorityFlag from '../../atoms/PriorityFlag/PriorityFlag'
 import PriorityPicker from '../PriorityPicker/PriorityPicker'
 
 const TaskCard = ({
-  history,
+  // history,
   _id,
   priority,
-  status,
+  // status,
   title,
   labels,
   project,
@@ -44,7 +42,7 @@ const TaskCard = ({
   }
   const [isEditMode, setEditMode] = useState(false)
   const [editState, setEditState] = useState(INITIAL_EDIT_STATE)
-  const [inboxRedirect, turnOnInboxRedirect] = useState(false)
+  // const [inboxRedirect, turnOnInboxRedirect] = useState(false)
 
   const { updatedDate, updatedTitle, updatedProject, updatedLabels, updatedPriority } = editState
 
@@ -116,7 +114,7 @@ const TaskCard = ({
     await updateTask(_id, taskPayload)
     setEditMode(false)
 
-    if (isNewDateDifferent) turnOnInboxRedirect(true)
+    // if (isNewDateDifferent) turnOnInboxRedirect(true)
   }
 
   /** --- CSS classNames --- */
@@ -168,7 +166,6 @@ const TaskCard = ({
                 )}
               </div>
               <div className={styles.cardActions}>
-                {/* <PriorityFlag priority={priority} /> */}
                 <PriorityPicker
                   onSelect={pr =>
                     setEditState({
@@ -232,7 +229,7 @@ const TaskCard = ({
               <DatePicker
                 selectedDate={isValidDate(updatedDate) ? updatedDate : null}
                 setDate={setDate}
-                placeholder="Test"
+                placeholder="Pick a date"
                 withIcon
                 minDate={new Date()}
               />
@@ -255,6 +252,8 @@ TaskCard.propTypes = {
   labels: PropTypes.arrayOf(LabelOrProjectType),
   project: LabelOrProjectType,
   date: PropTypes.string,
+  updateTask: PropTypes.func.isRequired,
+  removeTask: PropTypes.func.isRequired,
 }
 
 TaskCard.defaultProps = {

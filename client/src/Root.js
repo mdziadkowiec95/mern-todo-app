@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Provider } from 'react-redux'
-import { BrowserRouter, Switch } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import NotificationListContainer from './containers/NotificationListContainer/NotificationListContainer'
 import AuthRoute from './hoc/AuthRoute'
 import RedirectAuthToApp from './hoc/RedirectAuthToApp'

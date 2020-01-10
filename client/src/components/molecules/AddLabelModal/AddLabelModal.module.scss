@@ -1,26 +1,5 @@
 @import 'utils/utils';
 
-.wrapper {
-  // position: fixed;
-  // top: 50%;
-  // left: 5rem;
-  // transform: translateY(-50%);
-  width: 220px;
-
-  // border-radius: map-get($radius, small);
-  // background-color: map-get($colors, white);
-  transform-origin: 0 100%;
-  // animation: add-label-modal-fade-in-mobile 0.3s map-get($easings, primary);
-
-  // @extend %shadow-100;
-
-  @include breakpoint-up(desktop) {
-    // left: 50%;
-    // transform: translate(-50%, -50%);
-    // animation: add-label-modal-fade-in-desktop 0.3s map-get($easings, primary);
-  }
-}
-
 .form {
   position: relative;
   padding: 2rem 1rem 1rem 1rem;
@@ -33,6 +12,7 @@
 }
 
 .addLabelBtnWrap {
+  margin-top: 1rem;
   text-align: center;
 }
 

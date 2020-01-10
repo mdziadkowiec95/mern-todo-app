@@ -8,10 +8,10 @@ import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import FormErrorMessage from '../../atoms/FormErrorMessage/FormErrorMessage'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { toggleAddLabelModal } from '../../../store/ui/actions'
 import Label from '../../atoms/Label/Label'
 import { addLabel, editLabel } from '../../../store/preferences/async-actions'
 import PropTypes from 'prop-types'
+import Button from '../../atoms/Button/Button'
 
 const AddLabelModalBase = ({
   values,
@@ -21,22 +21,17 @@ const AddLabelModalBase = ({
   handleBlur,
   handleSubmit,
   setFieldValue,
-  modalType,
   onCancel,
   existingLabel,
-  toggleAddLabelModal,
 }) => {
-  const namePlaceholder = modalType === 'project' ? 'Enter project name' : 'Enter label name'
-  const colorPickerLabel = modalType === 'project' ? 'Pick project color' : 'Pick label color'
-
   return (
     <div className={styles.wrapper}>
-      <button onClick={() => onCancel()}>Cancel</button>
+      <ButtonIcon name="arrowFullRight" centerInWrap onClickFn={onCancel} title="Add new label" />
       <form onSubmit={handleSubmit} className={styles.form}>
         <TextField
           isError={errors.name && touched.name}
           name="name"
-          placeholder={namePlaceholder}
+          placeholder="Enter new label name"
           onChangeFn={handleChange}
           onBlurFn={handleBlur}
           inputValue={values.name}
@@ -44,7 +39,7 @@ const AddLabelModalBase = ({
         />
         {errors.name && touched.name && <FormErrorMessage errors={errors.name} />}
         <Label center className={styles.label}>
-          {colorPickerLabel}
+          {existingLabel ? 'Change label color' : 'Pick label color'}
         </Label>
         {errors.color && touched.color && <FormErrorMessage errors={errors.color} />}
         <ColorPicker
@@ -52,7 +47,9 @@ const AddLabelModalBase = ({
           onSelectColor={color => setFieldValue('color', color)}
         />
         <div className={styles.addLabelBtnWrap}>
-          <ButtonIcon type="submit" name="plusBackground" />
+          <Button isSubmit primary>
+            Done
+          </Button>
         </div>
       </form>
     </div>
@@ -101,10 +98,10 @@ AddLabelModalBase.propTypes = {
   handleSubmit: PropTypes.func,
   isSubmitting: PropTypes.bool,
   setFieldValue: PropTypes.func,
-  toggleAddLabelModal: PropTypes.func.isRequired,
+  onCancel: PropTypes.func,
+  existingLabel: PropTypes.object,
 }
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({ toggleAddLabelModal, addLabel, editLabel }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ addLabel, editLabel }, dispatch)
 
 export default connect(null, mapDispatchToProps)(AddLabelModal)

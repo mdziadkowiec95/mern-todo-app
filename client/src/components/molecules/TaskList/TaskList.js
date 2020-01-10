@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styles from './TaskList.module.scss'
 import cn from 'classnames'
-import Moment from 'react-moment'
 import TaskCard from '../TaskCard/TaskCard'
 import config from '../../../config'
 import Loader from '../../atoms/Loader/Loader'
@@ -36,7 +35,7 @@ const generateSevenDaysData = () => {
   return days
 }
 
-const TaskListTemplate = ({ tasks, pageType, isLoading }) => {
+const TaskList = ({ tasks, pageType, isLoading }) => {
   const [sortedTasks, setSortedTasks] = useState([])
 
   const sortTasksForSevenDays = tasks => {
@@ -115,7 +114,6 @@ const TaskListTemplate = ({ tasks, pageType, isLoading }) => {
           ))}
         {pageType !== 'next-week' && (
           <ul className={ListWrapperClassName}>
-            {/* {!isLoading && <Loader isLarge inWrapper absoluteCenter />} */}
             {tasks && tasks.length > 0 ? (
               tasks.map(task => (
                 <li key={task._id}>
@@ -132,10 +130,10 @@ const TaskListTemplate = ({ tasks, pageType, isLoading }) => {
   )
 }
 
-TaskListTemplate.propTypes = {
-  children: PropTypes.node.isRequired,
+TaskList.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
   tasks: PropTypes.array,
   pageType: PropTypes.oneOf(config.pageTypes),
 }
 
-export default TaskListTemplate
+export default TaskList

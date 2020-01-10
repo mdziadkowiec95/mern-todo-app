@@ -12,9 +12,11 @@ import {
   editLabelBegin,
   editLabelSuccess,
   editLabelError,
+  removeLabelBegin,
+  removeLabelSuccess,
+  removeLabelError,
 } from './actions'
 import { handleErrorResponse } from '../../helpers'
-import { toggleAddLabelModal } from '../ui/actions'
 
 export const getPreferences = () => async dispatch => {
   try {
@@ -75,10 +77,23 @@ export const editLabel = (_id, name, color) => async dispatch => {
     const res = await axios.put(`/api/preferences/labels/${_id}`, reqPayload)
     const updatedLabel = res.data
 
-    dispatch(editLabelSuccess(updatedLabel))
-    return dispatch(toggleAddLabelModal(false))
+    return dispatch(editLabelSuccess(updatedLabel))
   } catch (error) {
     handleErrorResponse(error, dispatch)
     return dispatch(editLabelError())
+  }
+}
+
+export const removeLabel = labelId => async dispatch => {
+  try {
+    dispatch(removeLabelBegin())
+
+    const res = await axios.delete(`/api/preferences/labels/${labelId}`)
+    const removedLabelId = res.data.removedLabelId
+
+    return dispatch(removeLabelSuccess(removedLabelId))
+  } catch (error) {
+    handleErrorResponse(error, dispatch)
+    return dispatch(removeLabelError())
   }
 }

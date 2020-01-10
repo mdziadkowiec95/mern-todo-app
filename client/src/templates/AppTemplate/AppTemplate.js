@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { toggleAddTaskModal } from '../../store/ui/actions'
@@ -11,7 +11,6 @@ import AddTaskModal from '../../components/molecules/AddTaskModal/AddTaskModal'
 import config from '../../config'
 
 const AppTemplate = ({ isAddTaskModalOpen, toggleAddTaskModal, children }) => {
-
   return (
     <MainTemplate>
       <Navbar />
@@ -33,6 +32,8 @@ const AppTemplate = ({ isAddTaskModalOpen, toggleAddTaskModal, children }) => {
 
 AppTemplate.propTypes = {
   children: PropTypes.node.isRequired,
+  isAddTaskModalOpen: PropTypes.bool.isRequired,
+  toggleAddTaskModal: PropTypes.func.isRequired,
 }
 
 AppTemplate.defaultProps = {

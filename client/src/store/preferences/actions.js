@@ -62,3 +62,15 @@ export const editLabelSuccess = editedLabel => ({
 export const editLabelError = () => ({
   type: types.EDIT_LABEL_ERROR,
 })
+
+/** --- Remove existing label --- */
+export const removeLabelBegin = () => ({
+  type: types.REMOVE_LABEL_BEGIN,
+})
+export const removeLabelSuccess = removeLabelId => ({
+  type: types.REMOVE_LABEL_SUCCESS,
+  payload: removeLabelId,
+})
+export const removeLabelError = () => ({
+  type: types.REMOVE_LABEL_ERROR,
+})

@@ -14,9 +14,9 @@ import ProjectTasks from './ProjectTasks/ProjectTasks'
 const App = ({ match }) => (
   <AppTemplate>
     <div className={styles.main}>
-      <Route path={`${match.path}/preferences`} component={Preferences} />
       <AppLayoutTemplate match={match}>
         <Switch>
+          <Route path={`${match.path}/preferences`} component={Preferences} />
           <Route
             exact
             path={match.path}

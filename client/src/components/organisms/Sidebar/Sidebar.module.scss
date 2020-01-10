@@ -8,7 +8,6 @@
   transform: translateX(-400px);
   min-width: 290px;
   height: 100vh;
-  padding: 4rem 3rem 4rem 0;
   background-color: map-get($colors, white);
   border-radius: 0 map-get($radius, normal) map-get($radius, normal) 0;
   overflow-y: scroll;
@@ -28,6 +27,11 @@
   &.isOpen {
     transform: translateX(0);
   }
+}
+
+.inner {
+  position: relative;
+  padding: 4rem 3rem 4rem 0;
 }
 
 .tab {

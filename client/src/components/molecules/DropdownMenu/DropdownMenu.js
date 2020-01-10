@@ -9,15 +9,15 @@ import config from '../../../config'
 const DropdownMenu = ({ iconName, iconColor, children }) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  // useEffect event listener cleanup
-  useEffect(() => {
-    return () => document.removeEventListener('click', handleDropdownClose)
-  }, [])
-
   const handleDropdownClose = () => {
     setIsOpen(false)
     document.removeEventListener('click', handleDropdownClose)
   }
+
+  // useEffect event listener cleanup
+  useEffect(() => {
+    return () => document.removeEventListener('click', handleDropdownClose)
+  }, [])
 
   const handleDropdownOpen = () => {
     if (!isOpen) {

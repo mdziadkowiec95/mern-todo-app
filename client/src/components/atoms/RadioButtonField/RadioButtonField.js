@@ -1,18 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import styles from './RadioButtonField.module.scss'
-
-const MOCK_OPTIONS = [
-  {
-    label: 'label1',
-    value: 'value1',
-  },
-  {
-    label: 'label2',
-    value: 'value2',
-  },
-]
 
 const RadioButtonField = ({ fieldTitle, name, data, selectedRadio, onChange, center }) => {
   const FieldSetWrapClassName = cn(styles.fieldset, {
@@ -47,6 +36,18 @@ const RadioButtonField = ({ fieldTitle, name, data, selectedRadio, onChange, cen
       </span>
     </fieldset>
   )
+}
+
+RadioButtonField.propTypes = {
+  data: PropTypes.array,
+  fieldTitle: PropTypes.string,
+  name: PropTypes.string,
+  selectedRadio: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+}
+
+RadioButtonField.defaultProps = {
+  data: [],
 }
 
 export default RadioButtonField
