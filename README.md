@@ -2,7 +2,7 @@
 
 Status: **IN PROGRESS** (develop branch)
 
-CRUD Full stack TODO app built with MERN stack.
+CRUD Full-stack TODO app built with MERN stack.
 
 ## Built With
 
@@ -12,7 +12,6 @@ CRUD Full stack TODO app built with MERN stack.
 - [MongoDB](https://www.mongodb.com/cloud/atlas) - database
 - [Jest](https://jestjs.io/) - Jest testing library
 - [react-testing-library](https://github.com/testing-library/react-testing-library) - Testing Library (React)
-- [Storybook](https://storybook.js.org/) - storybook for react components
 
 ## Getting Started
 
