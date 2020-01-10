@@ -1,28 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import TaskListTemplate from '../../templates/TaskListTemplate/TaskListTemplate'
-import TaskCard from '../../components/molecules/TaskCard/TaskCard'
 import { bindActionCreators, compose } from 'redux'
 import { getTasks } from '../../store/tasks/async-actions'
 import config from '../../config'
 import { setPageContext } from '../../store/tasks/actions'
 import TaskList from '../../components/molecules/TaskList/TaskList'
 
-const getNextDayDate = (startDate = new Date()) => {
-  const nextDay = new Date(startDate)
-  nextDay.setDate(nextDay.getDate() + 1)
-  return new Date(nextDay)
-}
-
-const getDayName = (date = new Date()) => {
-  const dayIndex = date.getDay()
-  const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  return weekDays[dayIndex]
-}
-
 class TasksContainer extends Component {
   componentDidMount() {
+    // eslint-disable-next-line
     console.log(`TaskContainer mounted ${this.props.pageType}`)
     this.fetchTasks()
   }
@@ -32,6 +19,7 @@ class TasksContainer extends Component {
     const idChanged = prevProps.match.params.id !== match.params.id
 
     if (pageTypeChanged || idChanged) {
+      // eslint-disable-next-line
       console.log(`TaskContainer updated ${pageType}`)
       this.fetchTasks()
     }
@@ -41,6 +29,7 @@ class TasksContainer extends Component {
     const {
       pageType,
       match: { params },
+      // eslint-disable-next-line
       state,
       setPageContext,
       getTasks,
@@ -90,6 +79,7 @@ class TasksContainer extends Component {
 }
 
 TasksContainer.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
   getTasks: PropTypes.func.isRequired,
   setPageContext: PropTypes.func.isRequired,
   pageType: PropTypes.oneOf(config.pageTypes),

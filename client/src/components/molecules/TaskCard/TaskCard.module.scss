@@ -42,22 +42,4 @@
     // padding: 1rem 0 0 1rem;
     // border-top: 1px solid map-get($colors, light-200);
   }
-
-  .priorityFlag {
-    position: absolute;
-    top: 0;
-    right: 0;
-
-    &.low {
-      fill: map-get($colors, priority-low);
-    }
-
-    &.normal {
-      fill: map-get($colors, priority-normal);
-    }
-
-    &.high {
-      fill: map-get($colors, priority-high);
-    }
-  }
 }

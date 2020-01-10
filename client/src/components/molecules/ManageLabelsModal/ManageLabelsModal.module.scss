@@ -1,0 +1,60 @@
+@import 'utils/utils';
+
+.wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px;
+  border-radius: map-get($radius, small);
+  background-color: map-get($colors, white);
+  animation: manage-labels-modal-fade-in 0.3s map-get($easings, primary);
+
+  @extend %shadow-100;
+
+  &.isLoading {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+}
+
+.inner {
+  position: relative;
+
+  padding: 2rem 0;
+
+  .closeBtn {
+    position: absolute;
+    top: -2rem;
+    right: -2rem;
+  }
+}
+
+.addBtnWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.labelWrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  transition: background-color 0.2s map-get($easings, primary);
+
+  &:hover {
+    background-color: rgba(map-get($colors, tertiary), 0.3);
+  }
+}
+
+@keyframes manage-labels-modal-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}

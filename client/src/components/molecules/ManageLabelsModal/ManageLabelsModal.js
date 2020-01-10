@@ -1,0 +1,107 @@
+import React, { useState } from 'react'
+import styles from './ManageLabelsModal.module.scss'
+import { connect } from 'react-redux'
+import Chip from '../../atoms/Chip/Chip'
+import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
+import AddLabelModal from '../AddLabelModal/AddLabelModal'
+import { removeLabel } from '../../../store/preferences/async-actions'
+import { bindActionCreators } from 'redux'
+import Loader from '../../atoms/Loader/Loader'
+import cn from 'classnames'
+import { toggleManageLabelsModal } from '../../../store/ui/actions'
+import Heading from '../../atoms/Heading/Heading'
+
+const initialLabelState = {
+  _id: '',
+  name: '',
+  color: '',
+}
+
+const ManageLabelsModal = ({ userLabels, isLoading, removeLabel, toggleManageLabelsModal }) => {
+  const [isEditMode, toggleEditMode] = useState(false)
+
+  const [existingLabel, setExistingLabel] = useState(initialLabelState)
+
+  const handleEditCancel = () => {
+    toggleEditMode(false)
+    setExistingLabel(initialLabelState)
+  }
+
+  const handleAddNewLabel = () => {
+    toggleEditMode(true)
+  }
+
+  const handleEditLabel = label => {
+    toggleEditMode(true)
+    setExistingLabel({ ...label })
+  }
+
+  const handleRemoveLabel = labelId => {
+    removeLabel(labelId)
+  }
+
+  const LabelsList = () => (
+    <>
+      <div className={styles.addBtnWrap}>
+        <ButtonIcon name="plus" onClickFn={handleAddNewLabel} title="Add new label" />
+      </div>
+      <ul>
+        {userLabels.length > 0 &&
+          userLabels.map(label => (
+            <li key={label._id} className={styles.labelWrap}>
+              <Chip background={label.color} readonly fullWidth>
+                {label.name}
+              </Chip>
+              <ButtonIcon
+                name="minusBorder"
+                size="tiny"
+                onClickFn={() => handleRemoveLabel(label._id)}
+                title="Remove label"
+              />
+              <ButtonIcon
+                name="edit"
+                size="tiny"
+                onClickFn={() => handleEditLabel(label)}
+                title="Edit label"
+              />
+            </li>
+          ))}
+      </ul>
+    </>
+  )
+
+  const WrapperClassName = cn(styles.wrapper, {
+    [styles.isLoading]: isLoading,
+  })
+
+  return (
+    <div className={WrapperClassName}>
+      <div className={styles.inner}>
+        {isLoading && <Loader absoluteCenter />}
+        <Heading tagSize="3" center primary>
+          Edit labels
+        </Heading>
+        <ButtonIcon
+          name="closeBorder"
+          className={styles.closeBtn}
+          onClickFn={() => toggleManageLabelsModal(false)}
+        />
+        {isEditMode ? (
+          <AddLabelModal existingLabel={existingLabel} onCancel={handleEditCancel} />
+        ) : (
+          <LabelsList />
+        )}
+      </div>
+    </div>
+  )
+}
+
+const mapStateToProps = ({ preferences }) => ({
+  userLabels: preferences.labels,
+  isLoading: preferences.isLoading,
+})
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ toggleManageLabelsModal, removeLabel }, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(ManageLabelsModal)

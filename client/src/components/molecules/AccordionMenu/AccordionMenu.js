@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import styles from './AccordionMenu.module.scss'
-import ButtonLink from '../../atoms/ButtonLink/ButtonLink'
 import Chip from '../../atoms/Chip/Chip'
 import { NavLink } from 'react-router-dom'
 
@@ -47,7 +46,7 @@ const AccordionMenu = ({
         <button className={buttonClassName} onClick={toggleAccordion}>
           {title}
         </button>
-        {TabActionComponent && TabActionComponent}
+        {TabActionComponent}
       </div>
       <div ref={contentEl} style={{ maxHeight: `${contentHeight}` }} className={styles.content}>
         <div className={styles.contentInner}>
@@ -59,7 +58,6 @@ const AccordionMenu = ({
                     <Chip asTextLabel background={item.color} small>
                       {item.name}
                     </Chip>
-                    {/* <span style={{ color: item.color }}> {item.name}</span> */}
                   </NavLink>
                 </li>
               ))}
@@ -81,7 +79,6 @@ AccordionMenu.propTypes = {
   routerLinkBase: PropTypes.string.isRequired,
   noItemsPlaceholder: PropTypes.string,
   TabActionComponent: PropTypes.element,
-  AddItemComponent: PropTypes.element,
 }
 
 AccordionMenu.defaultProps = {

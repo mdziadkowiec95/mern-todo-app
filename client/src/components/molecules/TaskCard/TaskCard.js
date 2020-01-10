@@ -5,11 +5,10 @@ import styles from './TaskCard.module.scss'
 import cn from 'classnames'
 import DatePicker from '../../atoms/DatePicker/DatePicker'
 import { isValidDate } from '../../../utils/dates'
-import { Link, withRouter, Redirect } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import Button from '../../atoms/Button/Button'
 import TextField from '../../atoms/TextField/TextField'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
-import IconSVG from '../../atoms/IconSVG/IconSVG'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { bindActionCreators } from 'redux'
@@ -17,13 +16,14 @@ import { removeTask, updateTask } from '../../../store/tasks/async-actions'
 import Chip from '../../atoms/Chip/Chip'
 import MultiSelect from '../MultiSelect/MultiSelect'
 import SelectDropdown from '../../atoms/SelectDropdown/SelectDropdown'
-import { LabelOrProjectType } from '../../../propTypes'
+import { LabelOrProjectType, PriorityType } from '../../../propTypes'
+import PriorityPicker from '../PriorityPicker/PriorityPicker'
 
 const TaskCard = ({
-  history,
+  // history,
   _id,
   priority,
-  status,
+  // status,
   title,
   labels,
   project,
@@ -38,12 +38,13 @@ const TaskCard = ({
     updatedTitle: title,
     updatedProject: project,
     updatedLabels: labels,
+    updatedPriority: priority,
   }
   const [isEditMode, setEditMode] = useState(false)
   const [editState, setEditState] = useState(INITIAL_EDIT_STATE)
-  const [inboxRedirect, turnOnInboxRedirect] = useState(false)
+  // const [inboxRedirect, turnOnInboxRedirect] = useState(false)
 
-  const { updatedDate, updatedTitle, updatedProject, updatedLabels } = editState
+  const { updatedDate, updatedTitle, updatedProject, updatedLabels, updatedPriority } = editState
 
   const markAsDoneEl = useRef(null)
 
@@ -108,15 +109,15 @@ const TaskCard = ({
     if (title !== updatedTitle) taskPayload.title = updatedTitle
     if (isNewDateDifferent) taskPayload.date = updatedDate
     if (updatedProject) taskPayload.projectId = updatedProject._id
+    if (priority !== updatedPriority) taskPayload.priority = updatedPriority
 
     await updateTask(_id, taskPayload)
     setEditMode(false)
 
-    if (isNewDateDifferent) turnOnInboxRedirect(true)
+    // if (isNewDateDifferent) turnOnInboxRedirect(true)
   }
 
   /** --- CSS classNames --- */
-  const priorityFlagClassNames = cn(styles.priorityFlag, styles[priority])
 
   const MainWrapperClassName = cn(styles.card, {
     [styles.editMode]: isEditMode,
@@ -165,7 +166,16 @@ const TaskCard = ({
                 )}
               </div>
               <div className={styles.cardActions}>
-                <IconSVG name="flag" className={priorityFlagClassNames} size="20px" />
+                <PriorityPicker
+                  onSelect={pr =>
+                    setEditState({
+                      ...editState,
+                      updatedPriority: pr,
+                    })
+                  }
+                  selectedPriority={updatedPriority}
+                  allowEdit={isEditMode}
+                />
               </div>
             </div>
             <div>
@@ -219,7 +229,7 @@ const TaskCard = ({
               <DatePicker
                 selectedDate={isValidDate(updatedDate) ? updatedDate : null}
                 setDate={setDate}
-                placeholder="Test"
+                placeholder="Pick a date"
                 withIcon
                 minDate={new Date()}
               />
@@ -234,7 +244,7 @@ const TaskCard = ({
 TaskCard.propTypes = {
   history: PropTypes.object.isRequired,
   _id: PropTypes.string.isRequired,
-  priority: PropTypes.oneOf(['low', 'normal', 'high']),
+  priority: PriorityType,
   status: PropTypes.oneOf(['inbox', 'active']),
   title: PropTypes.string.isRequired,
   userLabels: PropTypes.arrayOf(LabelOrProjectType),
@@ -242,6 +252,8 @@ TaskCard.propTypes = {
   labels: PropTypes.arrayOf(LabelOrProjectType),
   project: LabelOrProjectType,
   date: PropTypes.string,
+  updateTask: PropTypes.func.isRequired,
+  removeTask: PropTypes.func.isRequired,
 }
 
 TaskCard.defaultProps = {

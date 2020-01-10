@@ -5,18 +5,18 @@ import { connect } from 'react-redux'
 import cn from 'classnames'
 import styles from './Sidebar.module.scss'
 import AccordionMenu from '../../molecules/AccordionMenu/AccordionMenu'
-import { toggleSidebar, toggleAddLabelModal } from '../../../store/ui/actions'
+import { toggleSidebar, toggleManageLabelsModal } from '../../../store/ui/actions'
 import { compose } from 'redux'
 import config from '../../../config'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
-import AddLabelModal from '../../molecules/AddLabelModal/AddLabelModal'
 import { getLabelsAndProjects } from '../../../store/preferences/async-actions'
+import ManageLabelsModal from '../../molecules/ManageLabelsModal/ManageLabelsModal'
 
 const Sidebar = ({
   history,
   isSidebarOpen,
-  isAddLabelModalOpen,
-  toggleAddLabelModal,
+  isManageLabelsModalOpen,
+  toggleManageLabelsModal,
   hideSidebar,
   getLabelsAndProjects,
   activePageType,
@@ -39,75 +39,78 @@ const Sidebar = ({
   return (
     <>
       <aside className={SidebarWrapperClassName}>
-        <NavLink
-          to="/app/inbox"
-          className={styles.tab}
-          activeClassName={styles.isActive}
-          onClick={handleSidebarClose}
-        >
-          Inbox
-        </NavLink>
-        <NavLink
-          to="/app/today"
-          className={styles.tab}
-          activeClassName={styles.isActive}
-          onClick={handleSidebarClose}
-        >
-          Today
-        </NavLink>
-        <NavLink
-          to="/app/next-week"
-          className={styles.tab}
-          activeClassName={styles.isActive}
-          onClick={handleSidebarClose}
-        >
-          Next week
-        </NavLink>
-        <br />
-        <hr />
-        <br />
-        <div className={styles.accordion}>
-          <AccordionMenu
-            title="Labels"
-            isActiveTab={activePageType === 'label'}
-            routerLinkBase="/app/label/"
-            items={userLabels}
-            noItemsPlaceholder="You don't have any labels"
-            onItemClick={handleSidebarClose}
-            TabActionComponent={
-              <ButtonIcon
-                name="plus"
-                size="tiny"
-                onClickFn={e => {
-                  e.stopPropagation()
-                  toggleAddLabelModal(true)
-                }}
-              />
-            }
-          />
-        </div>
+        <div className={styles.inner}>
+          <NavLink
+            to="/app/inbox"
+            className={styles.tab}
+            activeClassName={styles.isActive}
+            onClick={handleSidebarClose}
+          >
+            Inbox
+          </NavLink>
+          <NavLink
+            to="/app/today"
+            className={styles.tab}
+            activeClassName={styles.isActive}
+            onClick={handleSidebarClose}
+          >
+            Today
+          </NavLink>
+          <NavLink
+            to="/app/next-week"
+            className={styles.tab}
+            activeClassName={styles.isActive}
+            onClick={handleSidebarClose}
+          >
+            Next week
+          </NavLink>
+          <br />
+          <hr />
+          <br />
+          <div className={styles.accordion}>
+            <AccordionMenu
+              title="Labels"
+              isActiveTab={activePageType === 'label'}
+              routerLinkBase="/app/label/"
+              items={userLabels}
+              noItemsPlaceholder="You don't have any labels"
+              onItemClick={handleSidebarClose}
+              TabActionComponent={
+                <ButtonIcon
+                  name="edit"
+                  size="tiny"
+                  onClickFn={e => {
+                    e.stopPropagation()
+                    toggleManageLabelsModal(true)
+                  }}
+                />
+              }
+            />
+          </div>
 
-        <div className={styles.accordion}>
-          <AccordionMenu
-            title="Projects"
-            isActiveTab={activePageType === 'project'}
-            routerLinkBase="/app/project/"
-            items={userProjects}
-            noItemsPlaceholder="You don't have any projects"
-            onItemClick={handleSidebarClose}
-            TabActionComponent={
-              <ButtonIcon
-                name="plus"
-                size="tiny"
-                onClickFn={e => {
-                  e.stopPropagation()
-                  history.push('/app/create-project')
-                }}
-              />
-            }
-          />
+          <div className={styles.accordion}>
+            <AccordionMenu
+              title="Projects"
+              isActiveTab={activePageType === 'project'}
+              routerLinkBase="/app/project/"
+              items={userProjects}
+              noItemsPlaceholder="You don't have any projects"
+              onItemClick={handleSidebarClose}
+              TabActionComponent={
+                <ButtonIcon
+                  name="plus"
+                  size="tiny"
+                  onClickFn={e => {
+                    e.stopPropagation()
+                    history.push('/app/create-project')
+                  }}
+                />
+              }
+            />
+          </div>
+          {/* {isAddLabelModalOpen && <AddLabelModal />} */}
+          {isManageLabelsModalOpen && <ManageLabelsModal />}
         </div>
-        {isAddLabelModalOpen && <AddLabelModal />}
       </aside>
       {isSidebarOpen && (
         <div role="presentation" onClick={hideSidebar} className={styles.overlay}></div>
@@ -119,9 +122,9 @@ const Sidebar = ({
 Sidebar.propTypes = {
   history: PropTypes.object.isRequired,
   isSidebarOpen: PropTypes.bool.isRequired,
-  isAddLabelModalOpen: PropTypes.bool.isRequired,
+  isManageLabelsModalOpen: PropTypes.bool.isRequired,
   hideSidebar: PropTypes.func.isRequired,
-  toggleAddLabelModal: PropTypes.func.isRequired,
+  toggleManageLabelsModal: PropTypes.func.isRequired,
   getLabelsAndProjects: PropTypes.func.isRequired,
   activePageType: PropTypes.oneOf(config.pageTypes),
   userLabels: PropTypes.array,
@@ -135,7 +138,7 @@ Sidebar.defaultProps = {
 
 const mapStateToProps = ({ ui, tasks: { pageContext }, preferences: { labels, projects } }) => ({
   isSidebarOpen: ui.isSidebarOpen,
-  isAddLabelModalOpen: ui.isAddLabelModalOpen,
+  isManageLabelsModalOpen: ui.isManageLabelsModalOpen,
   userLabels: labels,
   userProjects: projects,
   activePageType: pageContext.type,
@@ -143,7 +146,7 @@ const mapStateToProps = ({ ui, tasks: { pageContext }, preferences: { labels, pr
 
 const mapDispatchToProps = dispatch => ({
   hideSidebar: () => dispatch(toggleSidebar(false)),
-  toggleAddLabelModal: isOpen => dispatch(toggleAddLabelModal(isOpen)),
+  toggleManageLabelsModal: isOpen => dispatch(toggleManageLabelsModal(isOpen)),
   getLabelsAndProjects: () => dispatch(getLabelsAndProjects()),
 })
 

@@ -64,6 +64,11 @@
   }
 }
 
+.btnWrapCenter {
+  display: flex;
+  justify-content: center;
+}
+
 @keyframes active-button-icon {
   100% {
     transform: scale(0.85);

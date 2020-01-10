@@ -1,4 +1,4 @@
-export const colors = {
+export const defaultColors = {
   red: 'rgb(244, 67, 54)',
   violet: 'rgb(233, 30, 99)',
   purple: 'rgb(156, 39, 176)',

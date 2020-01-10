@@ -13,6 +13,7 @@ const Chip = ({
   asTextLabel,
   small,
   readonly,
+  fullWidth,
   onClick,
 }) => {
   const inlineCSS = {
@@ -24,6 +25,7 @@ const Chip = ({
     [styles.add]: canAdd,
     [styles.small]: small,
     [styles.readonly]: readonly || asTextLabel,
+    [styles.fullWidth]: fullWidth,
   })
 
   if (asTextLabel)
@@ -56,6 +58,7 @@ Chip.propTypes = {
   canAdd: PropTypes.bool,
   small: PropTypes.bool,
   readonly: PropTypes.bool,
+  fullWidth: PropTypes.bool,
   children: PropTypes.node,
   onClick: PropTypes.func,
 }
@@ -66,6 +69,7 @@ Chip.defaultProps = {
   canAdd: false,
   small: false,
   readonly: false,
+  fullWidth: false,
 }
 
 export default Chip

@@ -15,7 +15,7 @@ export const toggleAddTaskModal = isOpen => ({
  * @param {String} type (optional) 'label' or 'project' (it tells what item to add)
  */
 
-export const toggleAddLabelModal = isOpen => ({
-  type: types.TOGGLE_ADD_LABEL_MODAL,
+export const toggleManageLabelsModal = isOpen => ({
+  type: types.TOGGLE_MANAGE_LABELS_MODAL,
   payload: isOpen,
 })

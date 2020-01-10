@@ -9,9 +9,14 @@ import {
   addLabelSuccess,
   addLabelError,
   addLabelBegin,
+  editLabelBegin,
+  editLabelSuccess,
+  editLabelError,
+  removeLabelBegin,
+  removeLabelSuccess,
+  removeLabelError,
 } from './actions'
 import { handleErrorResponse } from '../../helpers'
-import { toggleAddLabelModal } from '../ui/actions'
 
 export const getPreferences = () => async dispatch => {
   try {
@@ -37,7 +42,7 @@ export const getLabelsAndProjects = () => async dispatch => {
   }
 }
 
-export const addLabel = (name, color, onSuccess, onError) => async dispatch => {
+export const addLabel = (name, color) => async dispatch => {
   try {
     dispatch(addLabelBegin())
 
@@ -51,12 +56,44 @@ export const addLabel = (name, color, onSuccess, onError) => async dispatch => {
     const res = await axios.put('/api/preferences/labels', reqPayload)
     const updatedLabels = res.data
 
-    dispatch(addLabelSuccess(updatedLabels))
-    dispatch(toggleAddLabelModal(false))
-    onSuccess()
+    return dispatch(addLabelSuccess(updatedLabels))
   } catch (error) {
     handleErrorResponse(error, dispatch)
-    dispatch(addLabelError())
-    onError()
+    return dispatch(addLabelError())
+  }
+}
+
+export const editLabel = (_id, name, color) => async dispatch => {
+  try {
+    dispatch(editLabelBegin())
+
+    const reqPayload = {
+      label: {
+        name,
+        color,
+      },
+    }
+
+    const res = await axios.put(`/api/preferences/labels/${_id}`, reqPayload)
+    const updatedLabel = res.data
+
+    return dispatch(editLabelSuccess(updatedLabel))
+  } catch (error) {
+    handleErrorResponse(error, dispatch)
+    return dispatch(editLabelError())
+  }
+}
+
+export const removeLabel = labelId => async dispatch => {
+  try {
+    dispatch(removeLabelBegin())
+
+    const res = await axios.delete(`/api/preferences/labels/${labelId}`)
+    const removedLabelId = res.data.removedLabelId
+
+    return dispatch(removeLabelSuccess(removedLabelId))
+  } catch (error) {
+    handleErrorResponse(error, dispatch)
+    return dispatch(removeLabelError())
   }
 }

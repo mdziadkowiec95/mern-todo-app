@@ -1,16 +1,24 @@
 @import 'utils/utils';
 
 .wrapper {
+  position: relative;
   padding: 4rem 0;
+  transition: opacity 0.2s;
+}
+
+.inner {
+  &.isLoading {
+    opacity: 0.2;
+  }
 }
 
 .listWrapper {
   position: relative;
   border-radius: map-get($radius, normal);
 
-  &.isLoading {
-    opacity: 0.3;
-  }
+  // &.isLoading {
+  //   opacity: 0.5;
+  // }
 }
 
 .noTasksText {
