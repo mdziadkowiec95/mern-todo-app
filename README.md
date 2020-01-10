@@ -2,7 +2,7 @@
 
 Status: **IN PROGRESS** (develop branch)
 
-CRUD Full stack TODO app built with MERN stack.
+CRUD Full-stack TODO app built with MERN stack.
 
 ## Built With
 
