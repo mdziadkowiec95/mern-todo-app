@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '../../../components/atoms/Button/Button'
-import ProjectContainer from '../../../containers/ProjectContainer/ProjectContainer'
 import TasksContainer from '../../../containers/TasksContainer/TasksContainer'
 import config from '../../../config'
 
@@ -13,13 +12,13 @@ const ProjectTasks = ({ match, pageType }) => {
       </Button>
 
       <TasksContainer match={match} pageType={pageType} />
-      {/* <TasksContainer match={match} pageType="project" /> */}
     </>
   )
 }
 
 ProjectTasks.propTypes = {
   pageType: PropTypes.oneOf(config.pageTypes),
+  match: PropTypes.object.isRequired,
 }
 
 export default ProjectTasks

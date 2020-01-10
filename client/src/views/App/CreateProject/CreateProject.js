@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import AppLayoutTemplate from '../../../templates/AppLayoutTemplate/AppLayoutTemplate'
 
 const CreateProject = ({ match }) => {
   return (
     <>
+      {match.path}
       <div>CreateProject</div>
       <ul>
         <li>
@@ -23,6 +23,7 @@ const CreateProject = ({ match }) => {
   )
 }
 
-CreateProject.propTypes = {}
-
+CreateProject.propTypes = {
+  match: PropTypes.object.isRequired,
+}
 export default CreateProject

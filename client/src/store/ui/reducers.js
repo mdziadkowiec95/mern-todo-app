@@ -3,8 +3,7 @@ import { types } from './types'
 export const initialState = {
   isSidebarOpen: false,
   isAddTaskModalOpen: false,
-  isAddLabelModalOpen: false,
-  isEditLabelsModalOpen: false
+  isManageLabelsModalOpen: false,
 }
 
 export const uiReducer = (state = initialState, action) => {
@@ -21,10 +20,10 @@ export const uiReducer = (state = initialState, action) => {
         ...state,
         isAddTaskModalOpen: payload,
       }
-    case types.TOGGLE_ADD_LABEL_MODAL:
+    case types.TOGGLE_MANAGE_LABELS_MODAL:
       return {
         ...state,
-        isAddLabelModalOpen: payload,
+        isManageLabelsModalOpen: payload,
       }
     default:
       return state

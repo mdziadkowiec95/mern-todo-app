@@ -12,5 +12,6 @@ export const NAMES = [
   'logout',
   'arrowDown',
   'closeBorder',
-  'edit'
+  'edit',
+  'arrowFullRight',
 ]

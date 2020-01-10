@@ -15,6 +15,7 @@ export const preferencesReducer = (state = initialState, action) => {
     case types.GET_LABELS_AND_PROJECTS_BEGIN:
     case types.ADD_LABEL_BEGIN:
     case types.EDIT_LABEL_BEGIN:
+    case types.REMOVE_LABEL_BEGIN:
       return {
         ...state,
         isLoading: true,
@@ -36,6 +37,7 @@ export const preferencesReducer = (state = initialState, action) => {
     case types.GET_LABELS_AND_PROJECTS_ERROR:
     case types.ADD_LABEL_ERROR:
     case types.EDIT_LABEL_ERROR:
+    case types.REMOVE_LABEL_ERROR:
       return {
         ...state,
         isLoading: false,
@@ -53,6 +55,13 @@ export const preferencesReducer = (state = initialState, action) => {
           if (label._id === payload._id) return payload
           return label
         }),
+        isLoading: false,
+      }
+    case types.REMOVE_LABEL_SUCCESS:
+      return {
+        ...state,
+        labels: state.labels.filter(label => label._id !== payload),
+        isLoading: false,
       }
     default:
       return state

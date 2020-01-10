@@ -16,6 +16,7 @@ const ButtonIcon = ({
   color,
   maskContent,
   solid,
+  centerInWrap,
   onClickFn,
   className,
   children,
@@ -46,7 +47,8 @@ const ButtonIcon = ({
     width: maskSize[size],
     height: maskSize[size],
   }
-  return (
+
+  const ButtonIconBase = (
     <button type={type} className={ButtonIconClassNames} title={title} onClick={onClickFn}>
       {children}
       <IconSVG name={name} size={iconSizes[size]} fill={color} />
@@ -54,6 +56,12 @@ const ButtonIcon = ({
         <span style={maskStyles} className={styles.mask}></span>
       )}
     </button>
+  )
+
+  return centerInWrap ? (
+    <div className={styles.btnWrapCenter}>{ButtonIconBase}</div>
+  ) : (
+    ButtonIconBase
   )
 }
 

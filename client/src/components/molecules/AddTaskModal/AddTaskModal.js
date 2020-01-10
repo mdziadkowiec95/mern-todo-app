@@ -16,6 +16,7 @@ import SelectDropdown from '../../atoms/SelectDropdown/SelectDropdown'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import { toggleAddTaskModal } from '../../../store/ui/actions'
 import RadioButtonField from '../../atoms/RadioButtonField/RadioButtonField'
+import { LabelOrProjectType } from '../../../propTypes'
 
 const TaskPriorityOptions = [
   {
@@ -52,7 +53,6 @@ const AddTaskModalBase = props => {
     handleBlur,
     handleSubmit,
     setFieldValue,
-    user,
     userLabels,
     userProjects,
     toggleAddTaskModal,
@@ -218,13 +218,8 @@ AddTaskModalBase.propTypes = {
     status: PropTypes.string,
     priority: PropTypes.string,
     projectId: PropTypes.string,
-    labels: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string,
-        name: PropTypes.string,
-        color: PropTypes.string,
-      }),
-    ),
+    userLabels: PropTypes.arrayOf(LabelOrProjectType),
+    userProjects: PropTypes.arrayOf(LabelOrProjectType),
     date: PropTypes.object,
   }),
   errors: PropTypes.any,
@@ -237,9 +232,8 @@ AddTaskModalBase.propTypes = {
   toggleAddTaskModal: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = ({ auth: { user }, preferences: { labels, projects }, ui }) => ({
+const mapStateToProps = ({ preferences: { labels, projects }, ui }) => ({
   isAddTaskModalOpen: ui.isAddTaskModalOpen,
-  user: user,
   userLabels: labels,
   userProjects: projects,
 })

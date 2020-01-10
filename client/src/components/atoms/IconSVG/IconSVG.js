@@ -24,7 +24,7 @@ const getViewBox = name => {
     case 'arrowDown':
       return '0 0 24 24'
     case 'edit':
-      return  '0 0 24 24'
+      return '0 0 24 24'
     default:
       return '0 0 24 24'
   }
@@ -60,6 +60,8 @@ const getPath = (name, props) => {
       return <path {...props} d={PATHS.closeBorder} />
     case 'edit':
       return <path {...props} d={PATHS.edit} />
+    case 'arrowFullRight':
+      return <path {...props} d={PATHS.arrowFullRight} />
     default:
       return <path />
   }

@@ -26,6 +26,11 @@ class CalendarButton extends Component {
   }
 }
 
+CalendarButton.propTypes = {
+  value: PropTypes.string,
+  onClick: PropTypes.func,
+}
+
 const DatePicker = ({ selectedDate, setDate, placeholder, withIcon, minDate }) => {
   const [showAsModal, setShowAsModal] = useState(false)
 
