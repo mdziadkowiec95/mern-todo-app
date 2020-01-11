@@ -39,7 +39,7 @@ const AddLabelModalBase = ({
         />
         {errors.name && touched.name && <FormErrorMessage errors={errors.name} />}
         <Label center className={styles.label}>
-          {existingLabel ? 'Change label color' : 'Pick label color'}
+          {existingLabel && existingLabel._id ? 'Change label color' : 'Pick label color'}
         </Label>
         {errors.color && touched.color && <FormErrorMessage errors={errors.color} />}
         <ColorPicker
