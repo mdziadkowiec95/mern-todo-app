@@ -20,7 +20,13 @@ class CalendarButton extends Component {
     return (
       <div className="react-datepicker__btn-wrap">
         <ButtonIcon title="Select date" reversed name="calendar" onClickFn={onClick} />
-        {value && <Moment format="dddd, MM-DD, HH:mm" date={value} />}
+        {value && (
+          <div className="react-datepicker__date-text">
+            <Moment format="dddd" date={value} />
+            <br />
+            <Moment format="MM-DD, HH:mm" date={value} />
+          </div>
+        )}
       </div>
     )
   }

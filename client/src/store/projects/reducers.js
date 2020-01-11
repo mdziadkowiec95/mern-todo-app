@@ -10,11 +10,19 @@ export const projectsReducer = (state = initialState, action) => {
 
   switch (type) {
     case types.GET_SINGLE_PROJECT_BEGIN:
+    case types.CREATE_PROJECT_BEGIN:
       return {
         ...state,
         isLoading: true,
       }
+
     case types.GET_SINGLE_PROJECT_SUCCESS:
+      return {
+        ...state,
+        project: payload,
+        isLoading: false,
+      }
+    case types.CREATE_PROJECT_SUCCESS:
       return {
         ...state,
         project: payload,
@@ -22,10 +30,12 @@ export const projectsReducer = (state = initialState, action) => {
       }
 
     case types.GET_SINGLE_PROJECT_ERROR:
+    case types.CREATE_PROJECT_ERROR:
       return {
         ...state,
         isLoading: false,
       }
+
     default:
       return state
   }

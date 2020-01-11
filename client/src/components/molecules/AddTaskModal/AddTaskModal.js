@@ -17,6 +17,7 @@ import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import { toggleAddTaskModal } from '../../../store/ui/actions'
 import RadioButtonField from '../../atoms/RadioButtonField/RadioButtonField'
 import { LabelOrProjectType } from '../../../propTypes'
+import PriorityPicker from '../PriorityPicker/PriorityPicker'
 
 const TaskPriorityOptions = [
   {
@@ -87,6 +88,10 @@ const AddTaskModalBase = props => {
     }
   }
 
+  const handlePriorityChange = priority => {
+    if (priority) setFieldValue('priority', priority)
+  }
+
   const FormWrapperClassName = cn(styles.wrapper)
 
   return (
@@ -110,43 +115,6 @@ const AddTaskModalBase = props => {
           />
           {errors.title && touched.title && <FormErrorMessage errors={errors.title} />}
 
-          <SelectDropdown
-            id="projectId"
-            name="projectId"
-            defaultOption="Select a project"
-            selectedValue={values.projectId}
-            options={userProjects}
-            className={styles.doubleFieldItem}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-
-          <DatePicker
-            selectedDate={values.date}
-            setDate={dateValue => setFieldValue('date', dateValue)}
-            placeholder="Pick a date"
-            withIcon
-            minDate={new Date()}
-          />
-
-          <RadioButtonField
-            fieldTitle="Task status"
-            name="status"
-            selectedRadio={values.status}
-            data={TaskStatusOptions}
-            onChange={handleStatusChange}
-            center
-          />
-
-          <RadioButtonField
-            fieldTitle="Set priority"
-            name="priority"
-            selectedRadio={values.priority}
-            data={TaskPriorityOptions}
-            onChange={handleChange}
-            center
-          />
-
           <MultiSelect
             labels={{
               add: 'Add labels:',
@@ -158,6 +126,58 @@ const AddTaskModalBase = props => {
             selectedOptions={values.labels}
             onSelect={handleLabelSelect}
             onRemove={handleLabelRemove}
+          />
+
+          <div className={styles.doubleItemWrap}>
+            <SelectDropdown
+              id="projectId"
+              name="projectId"
+              defaultOption="Select a project"
+              selectedValue={values.projectId}
+              options={userProjects}
+              className={styles.doubleItemWrapChild}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+
+            <div className={styles.doubleItemWrapChild}>
+              <div className={styles.labeledBtn}>
+                <p className={styles.label}>Date</p>
+                <DatePicker
+                  selectedDate={values.date}
+                  setDate={dateValue => setFieldValue('date', dateValue)}
+                  placeholder="Pick a date"
+                  withIcon
+                  minDate={new Date()}
+                />
+              </div>
+              <div className={styles.labeledBtn}>
+                <p className={styles.label}>Priority</p>
+                <PriorityPicker
+                  selectedPriority={values.priority}
+                  onSelect={handlePriorityChange}
+                  className={styles.priorityPicker}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* <RadioButtonField
+            fieldTitle="Set priority"
+            name="priority"
+            selectedRadio={values.priority}
+            data={TaskPriorityOptions}
+            onChange={handleChange}
+            center
+          /> */}
+
+          <RadioButtonField
+            fieldTitle="Task status"
+            name="status"
+            selectedRadio={values.status}
+            data={TaskStatusOptions}
+            onChange={handleStatusChange}
+            center
           />
 
           <Button primary isSubmit block>

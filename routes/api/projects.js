@@ -35,10 +35,6 @@ router.post(
     check("name")
       .isLength({ min: 3 })
       .withMessage("Project name must be at least 3 characters long!"),
-    check("description")
-      .optional()
-      .isLength({ min: 10 })
-      .withMessage("Project description must be at least 3 characters long!"),
     check("color", "Project must have valid color!").custom(
       (color, { req }) => color && isValidColor(color)
     )

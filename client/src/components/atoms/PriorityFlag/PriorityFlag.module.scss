@@ -1,6 +1,8 @@
 @import 'utils/utils';
 
 .priorityFlag {
+  transition: opacity 0.2s map-get($easings, primary);
+
   &.low {
     fill: map-get($colors, priority-low);
   }
