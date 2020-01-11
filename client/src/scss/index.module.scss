@@ -13,6 +13,10 @@
   box-sizing: border-box;
 }
 
+*::selection {
+  @extend %selection;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }
@@ -23,6 +27,10 @@ html {
 
 fieldset {
   border: none;
+}
+
+button {
+  background: transparent;
 }
 
 button:focus,
@@ -50,13 +58,19 @@ html {
   font-size: 62.5%;
   font-weight: 400;
   color: map-get($colors, dark);
+  font-family: 'Open Sans', sans-serif;
   // background-color: map-get($colors, primary);
+}
+
+input,
+select,
+textarea {
+  font-family: 'Open Sans', sans-serif;
 }
 
 body {
   min-height: 100vh;
   font-size: 1.4rem;
-  font-family: 'Open Sans', sans-serif;
 }
 
 a {

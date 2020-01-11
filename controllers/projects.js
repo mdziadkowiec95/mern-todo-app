@@ -38,15 +38,15 @@ exports.getSingleProject = async (req, res) => {
 };
 
 exports.createProject = async (req, res) => {
-  const name = req.body.name.trim();
-  let description = req.body.description;
-  const { color } = req.body;
-
-  if (description) description = description.trim();
-
-  const errors = validationResult(req);
-
   try {
+    const name = req.body.name.trim();
+    let description = req.body.description;
+    const { color } = req.body;
+
+    if (description) description = description.trim();
+
+    const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.status(400).json({
         errors: errors.array()

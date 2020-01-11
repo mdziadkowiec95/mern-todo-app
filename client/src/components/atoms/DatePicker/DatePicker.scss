@@ -8,6 +8,10 @@
     align-items: center;
     justify-content: flex-start;
   }
+
+  &__date-text {
+    font-size: 1.1rem;
+  }
 }
 
 // External classes override
