@@ -3,6 +3,7 @@ export const NAMES = [
   'plusBackground',
   'plusBorder',
   'minusBorder',
+  'minusBg',
   'search',
   'calendar',
   'check',

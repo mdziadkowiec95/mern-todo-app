@@ -25,7 +25,7 @@ const Sidebar = ({
 }) => {
   useEffect(() => {
     getLabelsAndProjects()
-  }, [])
+  }, [getLabelsAndProjects])
 
   // Fix closing sidebar (now it runs Redux action on every NavLink click)
   // It would be better to detect what was clicked (watch DropdownMenu)

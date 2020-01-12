@@ -19,21 +19,6 @@ import RadioButtonField from '../../atoms/RadioButtonField/RadioButtonField'
 import { LabelOrProjectType } from '../../../propTypes'
 import PriorityPicker from '../PriorityPicker/PriorityPicker'
 
-const TaskPriorityOptions = [
-  {
-    label: 'Low',
-    value: 'low',
-  },
-  {
-    label: 'Normal',
-    value: 'normal',
-  },
-  {
-    label: 'High',
-    value: 'high',
-  },
-]
-
 const TaskStatusOptions = [
   {
     label: 'Inbox',

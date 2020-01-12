@@ -27,3 +27,17 @@ export const createProjectSuccess = projectData => ({
 export const createProjectError = () => ({
   type: types.CREATE_PROJECT_ERROR,
 })
+
+// ------ Remove existing project ------ //
+export const removeProjectBegin = () => ({
+  type: types.REMOVE_PROJECT_BEGIN,
+})
+
+export const removeProjectSuccess = projectId => ({
+  type: types.REMOVE_PROJECT_SUCCESS,
+  payload: projectId,
+})
+
+export const removeProjectError = () => ({
+  type: types.REMOVE_PROJECT_ERROR,
+})
