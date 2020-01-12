@@ -1,45 +1,85 @@
 import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import Loader from '../../components/atoms/Loader/Loader'
+import ButtonIcon from '../../components/atoms/ButtonIcon/ButtonIcon'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getSingleProject } from '../../store/projects/async-actions'
-import { getTasks } from '../../store/tasks/async-actions'
-import TaskListTemplate from '../../templates/TaskListTemplate/TaskListTemplate'
-import TaskCard from '../../components/molecules/TaskCard/TaskCard'
-import Button from '../../components/atoms/Button/Button'
-import ButtonLink from '../../components/atoms/ButtonLink/ButtonLink'
-import ProjectTasks from '../../views/App/ProjectTasks/ProjectTasks'
+import { getSingleProject, removeProject } from '../../store/projects/async-actions'
+import config from '../../config'
+import { compose } from 'redux'
+import { withRouter } from 'react-router'
 
 class ProjectContainer extends Component {
   componentDidMount() {
-    this.fetchProjectData()
+    const storedProjectIdChanged = this.props.project
+      ? this.props.project._id !== this.props.match.params.id
+      : true
+
+    if (storedProjectIdChanged) this.fetchProjectData()
   }
 
-  fetchProjectData = () => {
+  fetchProjectData() {
     const { getSingleProject, match } = this.props
     const projectId = match.params.id
 
     getSingleProject(projectId)
   }
 
+  onRemoveSuccess() {
+    this.props.history.push('/app/inbox')
+  }
+
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.id !== this.props.match.params.id) this.fetchProjectData()
+    const projectIdParamChanged = prevProps.match.params.id !== this.props.match.params.id
+
+    const storedProjectIdChanged = this.props.project
+      ? this.props.project._id !== this.props.match.params.id
+      : true
+
+    if (projectIdParamChanged && storedProjectIdChanged) this.fetchProjectData()
   }
 
   render() {
-    const { project, match } = this.props
+    const { project, removeProject, isLoading } = this.props
+
+    if (isLoading) return <Loader fullScreen />
+    if (!isLoading && (!project || !project._id)) return <p>Project does not exist</p>
 
     return (
       <div>
+        <p>1. Show confirm modal on delete</p>
+        <p>2. Add some styles (wite bg, read/edit mode view</p>
+        <ButtonIcon
+          name="minusBg"
+          color={config.colors['error-bg']}
+          onClickFn={() => removeProject(project._id, () => this.onRemoveSuccess())}
+        />
         <h1 style={{ backgroundColor: project.color }}>{project.name}</h1>
       </div>
     )
   }
 }
-const mapStateToProps = ({ tasks, projects }) => ({
-  project: projects.project,
-})
-const mapDispatchToProps = dispatch => bindActionCreators({ getSingleProject }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectContainer)
+ProjectContainer.propTypes = {
+  history: PropTypes.object.isRequired,
+  project: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    color: PropTypes.string,
+    description: PropTypes.string,
+  }),
+  isLoading: PropTypes.bool.isRequired,
+  getSingleProject: PropTypes.func.isRequired,
+  removeProject: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
+}
+
+const mapStateToProps = ({ projects: { project, isLoading } }) => ({
+  project,
+  isLoading,
+})
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ getSingleProject, removeProject }, dispatch)
+
+export default compose(connect(mapStateToProps, mapDispatchToProps), withRouter)(ProjectContainer)

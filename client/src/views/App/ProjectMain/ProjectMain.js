@@ -5,6 +5,7 @@ import config from '../../../config'
 import { setPageContext } from '../../../store/tasks/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import ProjectContainer from '../../../containers/ProjectContainer/ProjectContainer'
 
 const ProjectMain = ({ match, pageType, setPageContext }) => {
   // TEMPORARY - maybe it would be better to create HOC for setting pageContext
@@ -15,7 +16,7 @@ const ProjectMain = ({ match, pageType, setPageContext }) => {
     }
 
     setPageContext(pageContext)
-  }, [])
+  }, [pageType, match.params.id, setPageContext])
 
   return (
     <div>
@@ -23,6 +24,7 @@ const ProjectMain = ({ match, pageType, setPageContext }) => {
       <Button primary asRouterLink goTo={`${match.url}/details`}>
         Preview tasks
       </Button>
+      <ProjectContainer match={match} />
     </div>
   )
 }

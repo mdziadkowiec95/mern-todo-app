@@ -5,8 +5,14 @@ import {
   createProjectBegin,
   createProjectSuccess,
   createProjectError,
+  removeProjectBegin,
+  removeProjectSuccess,
+  removeProjectError,
+  getSingleProjectError,
 } from './actions'
 import { handleErrorResponse } from '../../helpers'
+import { notifyUser } from '../notifications/thunks'
+import { removeSingleProject } from '../preferences/actions'
 
 /**
  * @param {String} projectId ID of specific project
@@ -19,7 +25,7 @@ export const getSingleProject = projectId => async dispatch => {
 
     dispatch(getSingleProjectSuccess(res.data))
   } catch (error) {
-    dispatch(getSingleProjectBegin())
+    dispatch(getSingleProjectError())
     handleErrorResponse(error, dispatch)
   }
 }
@@ -31,6 +37,7 @@ export const getSingleProject = projectId => async dispatch => {
  * - @property {string} description
  * - @property {string} color
  */
+
 export const createProject = (projectData, onSuccess) => async dispatch => {
   try {
     const { name, color, description } = projectData
@@ -51,6 +58,23 @@ export const createProject = (projectData, onSuccess) => async dispatch => {
     return dispatch(createProjectSuccess(createdProject))
   } catch (error) {
     dispatch(createProjectError())
+    return handleErrorResponse(error, dispatch)
+  }
+}
+
+export const removeProject = (projectId, onSuccess) => async dispatch => {
+  try {
+    dispatch(removeProjectBegin())
+
+    const res = await axios.delete(`/api/projects/${projectId}`)
+    const { removedProjectId } = res.data
+
+    dispatch(removeProjectSuccess(removedProjectId))
+    dispatch(removeSingleProject(removedProjectId))
+    onSuccess()
+    return dispatch(notifyUser('Project has been removed!', 'success'))
+  } catch (error) {
+    dispatch(removeProjectError())
     return handleErrorResponse(error, dispatch)
   }
 }

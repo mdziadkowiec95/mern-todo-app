@@ -9,6 +9,7 @@
   width: 100%;
   padding: 0 1rem;
   max-width: 500px;
+  will-change: transform, opacity;
   transform: translateX(50%);
   transform-origin: 100% 100%;
   animation: add-task-modal-fade-in-mobile 0.3s map-get($easings, primary);
@@ -75,7 +76,7 @@
 }
 
 .labeledBtn {
-  margin: 0.5rem;
+  margin: 2.5rem;
 
   .label {
     text-align: center;

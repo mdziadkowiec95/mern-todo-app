@@ -4,8 +4,9 @@ import Chip from '../../atoms/Chip/Chip'
 import styles from './MultiSelect.module.scss'
 import cn from 'classnames'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
+import { LabelOrProjectType } from '../../../propTypes'
 
-const MultiSelect = ({ labels, textOpen, options, selectedOptions, onSelect, onRemove }) => {
+const MultiSelect = ({ labels, options, selectedOptions, onSelect, onRemove }) => {
   const [firstRender, setFirstRender] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
   const [listHeight, setListHeight] = useState('0px')
@@ -20,7 +21,9 @@ const MultiSelect = ({ labels, textOpen, options, selectedOptions, onSelect, onR
     } else if (!firstRender && selectedOptions.length > 0) {
       toggleOptionList(true)
     }
-  }, [selectedOptions, options])
+    // Temporarily disabled es-lint here (isOpen in deps causes interval render)
+    // eslint-disable-next-line
+  }, [selectedOptions, options, firstRender])
 
   const listWrapEl = useRef(null)
 
@@ -117,6 +120,7 @@ MultiSelect.propTypes = {
     dontAdd: PropTypes.string,
     textOpen: PropTypes.string,
   }),
+  selectedOptions: PropTypes.arrayOf(LabelOrProjectType),
 }
 
 MultiSelect.defaultProps = {

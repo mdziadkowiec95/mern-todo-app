@@ -22,9 +22,9 @@ class CalendarButton extends Component {
         <ButtonIcon title="Select date" reversed name="calendar" onClickFn={onClick} />
         {value && (
           <div className="react-datepicker__date-text">
-            <Moment format="dddd" date={value} />
+            <Moment format="dddd" date={new Date(value)} />
             <br />
-            <Moment format="MM-DD, HH:mm" date={value} />
+            <Moment format="MM-DD, HH:mm" date={new Date(value)} />
           </div>
         )}
       </div>
