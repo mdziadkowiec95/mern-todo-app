@@ -8,14 +8,29 @@ import { getSingleProject, removeProject } from '../../store/projects/async-acti
 import config from '../../config'
 import { compose } from 'redux'
 import { withRouter } from 'react-router'
+import ConfirmModal from '../../components/molecules/ConfirmModal/ConfirmModal'
 
 class ProjectContainer extends Component {
+  state = {
+    isConfirmModalOpen: false
+  }
+
   componentDidMount() {
     const storedProjectIdChanged = this.props.project
       ? this.props.project._id !== this.props.match.params.id
       : true
 
     if (storedProjectIdChanged) this.fetchProjectData()
+  }
+
+  componentDidUpdate(prevProps) {
+    const projectIdParamChanged = prevProps.match.params.id !== this.props.match.params.id
+
+    const storedProjectIdChanged = this.props.project
+      ? this.props.project._id !== this.props.match.params.id
+      : true
+
+    if (projectIdParamChanged && storedProjectIdChanged) this.fetchProjectData()
   }
 
   fetchProjectData() {
@@ -29,14 +44,10 @@ class ProjectContainer extends Component {
     this.props.history.push('/app/inbox')
   }
 
-  componentDidUpdate(prevProps) {
-    const projectIdParamChanged = prevProps.match.params.id !== this.props.match.params.id
-
-    const storedProjectIdChanged = this.props.project
-      ? this.props.project._id !== this.props.match.params.id
-      : true
-
-    if (projectIdParamChanged && storedProjectIdChanged) this.fetchProjectData()
+  toggleConfirmModal(isOpen) {
+    this.setState({
+      isConfirmModalOpen: isOpen
+    })
   }
 
   render() {
@@ -52,8 +63,13 @@ class ProjectContainer extends Component {
         <ButtonIcon
           name="minusBg"
           color={config.colors['error-bg']}
-          onClickFn={() => removeProject(project._id, () => this.onRemoveSuccess())}
+          onClickFn={() => this.toggleConfirmModal(true)} 
         />
+        {this.state.isConfirmModalOpen && <ConfirmModal
+          descriptionText="Project will be removed also from all tasks in which it occurs."
+          onConfirm={() => removeProject(project._id, () => this.onRemoveSuccess())}
+          onCancel={() => this.toggleConfirmModal(false)}
+        />}
         <h1 style={{ backgroundColor: project.color }}>{project.name}</h1>
       </div>
     )

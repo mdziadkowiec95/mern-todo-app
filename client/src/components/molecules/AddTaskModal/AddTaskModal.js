@@ -83,7 +83,7 @@ const AddTaskModalBase = props => {
     <div className={FormWrapperClassName}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <ButtonIcon
-          name="closeBorder"
+          name="closeBg"
           className={styles.closeBtn}
           onClickFn={() => toggleAddTaskModal(false)}
         />
