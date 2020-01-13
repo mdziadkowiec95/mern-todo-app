@@ -13,6 +13,7 @@ export const NAMES = [
   'logout',
   'arrowDown',
   'closeBorder',
+  'closeBg',
   'edit',
   'arrowFullRight',
 ]
