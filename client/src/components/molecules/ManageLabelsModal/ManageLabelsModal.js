@@ -11,6 +11,7 @@ import cn from 'classnames'
 import { toggleManageLabelsModal } from '../../../store/ui/actions'
 import Heading from '../../atoms/Heading/Heading'
 import ConfirmModal from '../ConfirmModal/ConfirmModal'
+import Modal from '../../../portals/Modal'
 
 const initialLabelState = {
   _id: '',
@@ -39,7 +40,7 @@ const ManageLabelsModal = ({ userLabels, isLoading, removeLabel, toggleManageLab
   }
 
   // Show confirm modal when user clicks remove button to ensure he is aware what are the consequences
-  const initRemoveLabel = (labelId) => {
+  const initRemoveLabel = labelId => {
     toggleConfirmModal(true)
     setLabelToRemove(labelId)
   }
@@ -90,11 +91,15 @@ const ManageLabelsModal = ({ userLabels, isLoading, removeLabel, toggleManageLab
 
   return (
     <div>
-       {isConfirmModalOpen && labelToRemove && <ConfirmModal
-          descriptionText="Label will be removed also from all tasks in which it occurs."
-          onConfirm={() => handleRemoveLabelConfirm(labelToRemove)}
-          onCancel={handleRemoveCancel}
-        />}
+      {isConfirmModalOpen && labelToRemove && (
+        <Modal>
+          <ConfirmModal
+            descriptionText="Label will be removed also from all tasks in which it occurs."
+            onConfirm={() => handleRemoveLabelConfirm(labelToRemove)}
+            onCancel={handleRemoveCancel}
+          />
+        </Modal>
+      )}
       <div className={WrapperClassName}>
         <div className={styles.inner}>
           {isLoading && <Loader absoluteCenter />}

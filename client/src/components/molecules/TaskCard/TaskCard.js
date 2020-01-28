@@ -1,16 +1,15 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Moment from 'react-moment'
 import PropTypes from 'prop-types'
 import styles from './TaskCard.module.scss'
 import cn from 'classnames'
 import DatePicker from '../../atoms/DatePicker/DatePicker'
 import { isValidDate } from '../../../utils/dates'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Button from '../../atoms/Button/Button'
 import TextField from '../../atoms/TextField/TextField'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import { connect } from 'react-redux'
-import { compose } from 'redux'
 import { bindActionCreators } from 'redux'
 import { removeTask, updateTask } from '../../../store/tasks/async-actions'
 import Chip from '../../atoms/Chip/Chip'
@@ -20,10 +19,8 @@ import { LabelOrProjectType, PriorityType } from '../../../propTypes'
 import PriorityPicker from '../PriorityPicker/PriorityPicker'
 
 const TaskCard = ({
-  // history,
   _id,
   priority,
-  // status,
   title,
   labels,
   project,
@@ -42,11 +39,9 @@ const TaskCard = ({
   }
   const [isEditMode, setEditMode] = useState(false)
   const [editState, setEditState] = useState(INITIAL_EDIT_STATE)
-  // const [inboxRedirect, turnOnInboxRedirect] = useState(false)
+  const markAsDoneEl = useRef(null)
 
   const { updatedDate, updatedTitle, updatedProject, updatedLabels, updatedPriority } = editState
-
-  const markAsDoneEl = useRef(null)
 
   const setDate = newDate => {
     setEditState({ ...editState, updatedDate: newDate })
@@ -111,19 +106,13 @@ const TaskCard = ({
     if (updatedProject) taskPayload.projectId = updatedProject._id
     if (priority !== updatedPriority) taskPayload.priority = updatedPriority
 
-    await updateTask(_id, taskPayload)
     setEditMode(false)
-
-    // if (isNewDateDifferent) turnOnInboxRedirect(true)
+    await updateTask(_id, taskPayload)
   }
-
-  /** --- CSS classNames --- */
 
   const MainWrapperClassName = cn(styles.card, {
     [styles.editMode]: isEditMode,
   })
-
-  // if (inboxRedirect) return <Redirect to={{ pathname: '/app/inbox', state: { taskId: _id } }} />
 
   return (
     <>
@@ -242,7 +231,6 @@ const TaskCard = ({
 }
 
 TaskCard.propTypes = {
-  history: PropTypes.object.isRequired,
   _id: PropTypes.string.isRequired,
   priority: PriorityType,
   status: PropTypes.oneOf(['inbox', 'active']),
@@ -267,4 +255,4 @@ const mapStateToProps = ({ preferences: { labels, projects } }) => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({ updateTask, removeTask }, dispatch)
 
-export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(TaskCard)
+export default connect(mapStateToProps, mapDispatchToProps)(TaskCard)

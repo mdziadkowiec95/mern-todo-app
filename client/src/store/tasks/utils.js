@@ -75,16 +75,40 @@ export const getUpdatedTaskList = (state, payload) => {
   const { status, date, labels, projectId } = payload
   const taskContext = checkTaskContext(pageContext, status, date, labels, projectId)
 
+  console.log(taskContext)
+
   const updatedTaskIndex = taskList.findIndex(task => task._id === payload._id)
 
   if (updatedTaskIndex === -1) return taskList
 
+  taskList.splice(updatedTaskIndex, 1)
+
+  let updatedTaskList = [...taskList]
   // if task context has not been changed after update then update task in store
   // else remove the task from current view
-  if (taskContext && pageContext.type === taskContext) {
-    taskList[updatedTaskIndex] = payload
+  if (pageContext.type === 'inbox' || (taskContext && pageContext.type === taskContext)) {
+    const firstBiggerDateTaskIndex = taskList.findIndex(task => {
+      if (task && task.date && task.date > date) {
+        return true
+      }
+      return false
+    })
+
+    console.log(firstBiggerDateTaskIndex)
+
+    if (firstBiggerDateTaskIndex !== -1) {
+      updatedTaskList = [
+        ...taskList.slice(0, firstBiggerDateTaskIndex),
+        payload,
+        ...taskList.slice(firstBiggerDateTaskIndex, taskList.length),
+      ]
+    } else {
+      updatedTaskList.push(payload)
+    }
+
+    // updatedTaskList[updatedTaskIndex] = payload
   } else {
-    taskList.splice(updatedTaskIndex, 1)
+    updatedTaskList.splice(updatedTaskIndex, 1)
   }
-  return taskList
+  return updatedTaskList
 }

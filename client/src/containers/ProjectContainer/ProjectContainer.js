@@ -9,10 +9,18 @@ import config from '../../config'
 import { compose } from 'redux'
 import { withRouter } from 'react-router'
 import ConfirmModal from '../../components/molecules/ConfirmModal/ConfirmModal'
+import Modal from '../../portals/Modal'
+import Heading from '../../components/atoms/Heading/Heading'
+import Button from '../../components/atoms/Button/Button'
+import FlexBox from '../../templates/FlexBox/FlexBox'
 
 class ProjectContainer extends Component {
-  state = {
-    isConfirmModalOpen: false
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      isConfirmModalOpen: false,
+    }
   }
 
   componentDidMount() {
@@ -46,31 +54,41 @@ class ProjectContainer extends Component {
 
   toggleConfirmModal(isOpen) {
     this.setState({
-      isConfirmModalOpen: isOpen
+      isConfirmModalOpen: isOpen,
     })
   }
 
   render() {
-    const { project, removeProject, isLoading } = this.props
+    const { project, removeProject, isLoading, match } = this.props
 
     if (isLoading) return <Loader fullScreen />
     if (!isLoading && (!project || !project._id)) return <p>Project does not exist</p>
 
     return (
       <div>
-        <p>1. Show confirm modal on delete</p>
-        <p>2. Add some styles (wite bg, read/edit mode view</p>
-        <ButtonIcon
-          name="minusBg"
-          color={config.colors['error-bg']}
-          onClickFn={() => this.toggleConfirmModal(true)} 
-        />
-        {this.state.isConfirmModalOpen && <ConfirmModal
-          descriptionText="Project will be removed also from all tasks in which it occurs."
-          onConfirm={() => removeProject(project._id, () => this.onRemoveSuccess())}
-          onCancel={() => this.toggleConfirmModal(false)}
-        />}
-        <h1 style={{ backgroundColor: project.color }}>{project.name}</h1>
+        <Heading primary center>
+          {project.name}
+        </Heading>
+        <FlexBox center>
+          <Button primary asRouterLink goTo={`${match.url}/details`}>
+            Preview tasks
+          </Button>
+          <ButtonIcon
+            name="minusBg"
+            color={config.colors['error-bg']}
+            onClickFn={() => this.toggleConfirmModal(true)}
+          />
+        </FlexBox>
+        <p>{project.description}</p>
+        {this.state.isConfirmModalOpen && (
+          <Modal>
+            <ConfirmModal
+              descriptionText="Project will be removed also from all tasks in which it occurs."
+              onConfirm={() => removeProject(project._id, () => this.onRemoveSuccess())}
+              onCancel={() => this.toggleConfirmModal(false)}
+            />
+          </Modal>
+        )}
       </div>
     )
   }
