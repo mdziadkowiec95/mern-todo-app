@@ -3,10 +3,20 @@ const bcrypt = require("bcryptjs");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-
+const crypto = require('crypto');
 const User = require("../models/User");
 const Task = require("../models/Task");
 const Preferences = require("../models/Preferences");
+const Token = require('../models/Token');
+const nodemailer = require('nodemailer');
+const nodemailerSendgrid = require('nodemailer-sendgrid');
+const { generateEmailVerificationTemplate } = require('../email-templates/email-verification');
+
+const transport = nodemailer.createTransport(
+  nodemailerSendgrid({
+      apiKey: config.get('SENDGRID_API_KEY')
+  })
+);
 
 exports.registerUser = async (req, res) => {
   const { email, password, passwordConfirm, name } = req.body;
@@ -53,6 +63,32 @@ exports.registerUser = async (req, res) => {
     user.password = await bcrypt.hashSync(password, salt);
 
     await user.save();
+
+    // Create and save email verificaiton token
+    const verificationToken = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') } );
+    await verificationToken.save();
+
+    // Send an email with confirmation link
+    const protocol = req.connection && req.connection.encrypted ? 'https' : 'http';
+    const href = `${protocol}://${req.headers.host}/email-confirmation/${verificationToken.token}`;
+    
+    transport.sendMail({
+      from: 'merntodoapp@example.com',
+      to: 'Michał Dziadkowiec <michal.dziadkowiec123@gmail.com>',
+      subject: 'Productive Todo App - Email verification',
+      html: `${generateEmailVerificationTemplate(user.name, href)}`
+    }).then(([res]) => {
+      console.log(`Verification email sent to ${user.email}. Code ${res.statusCode} ${res.statusMessage}`);
+    })
+    .catch(err => {
+      console.log('Errors occurred, failed to deliver verification email');
+    
+      if (err.response && err.response.body && err.response.body.errors) {
+          err.response.body.errors.forEach(error => console.log('%s: %s', error.field, error.message));
+      } else {
+          console.log(err);
+      }
+    });
 
     const jwtPayload = {
       user: {

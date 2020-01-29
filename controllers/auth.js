@@ -34,6 +34,10 @@ exports.signIn = async (req, res) => {
       return res.status(404).json({ errors: [{ msg: "User not found!" }] });
     }
 
+    if (!user.isVerified) {
+      return res.status(401).json({ errors: [{ msg: "Your account has not been verified. Please check your email!" }] })
+    }
+
     const passwordMatch = bcrypt.compareSync(password, user.password);
 
     if (!passwordMatch) {
