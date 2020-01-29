@@ -20,26 +20,26 @@ const transport = nodemailer.createTransport(
 
 exports.registerUser = async (req, res) => {
   const { email, password, passwordConfirm, name } = req.body;
-
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array()
-    });
-  }
-
-  // Do I really need to check it on backend?
-  if (password !== passwordConfirm) {
-    return res.status(400).json({
-      errors: [
-        {
-          msg: "Passwords must be the same"
-        }
-      ]
-    });
-  }
   try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array()
+      });
+    }
+
+    // Do I really need to check it on backend?
+    if (password !== passwordConfirm) {
+      return res.status(400).json({
+        errors: [
+          {
+            msg: "Passwords must be the same"
+          }
+        ]
+      });
+    }
+
     let user = await User.findOne({ email });
 
     if (user) {
@@ -74,7 +74,7 @@ exports.registerUser = async (req, res) => {
     
     transport.sendMail({
       from: 'merntodoapp@example.com',
-      to: 'Michał Dziadkowiec <michal.dziadkowiec123@gmail.com>',
+      to: `Michał Dziadkowiec <${user.email}>`,
       subject: 'Productive Todo App - Email verification',
       html: `${generateEmailVerificationTemplate(user.name, href)}`
     }).then(([res]) => {

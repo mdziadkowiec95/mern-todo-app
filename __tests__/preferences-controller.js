@@ -92,9 +92,6 @@ beforeAll(async () => {
     taskWithProject.save();
     taskWithLabel1.save();
     taskWithLabel2.save();
-    console.log(taskWithLabel1, taskWithLabel2);
-    // console.log(user);
-    console.log(userPreferences);
 
     return userPreferences.save();
   });
