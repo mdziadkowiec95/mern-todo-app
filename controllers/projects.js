@@ -7,6 +7,7 @@ exports.getProjects = async (req, res) => {
     const projects = await Project.find({ user: req.user.id });
 
     res.json(projects);
+    return;
   } catch (error) {
     console.error(error.message);
 
@@ -27,6 +28,7 @@ exports.getSingleProject = async (req, res) => {
       return res.status(404).json({ errors: [{ msg: "Project not found!" }] });
 
     res.json(project);
+    return;
   } catch (error) {
     console.error(error.message);
 

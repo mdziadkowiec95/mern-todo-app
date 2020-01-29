@@ -64,7 +64,7 @@ describe("AuthController function tests", () => {
         }
       };
 
-      AuthController.authUser(req, res).then(() => {
+      AuthController.authUser(req, res).then(() => {        
         expect(res.user).toEqual(
           expect.objectContaining({
             id: testUser.id,

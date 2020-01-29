@@ -9,6 +9,8 @@ import Button from '../../components/atoms/Button/Button'
 import FormErrorMessage from '../../components/atoms/FormErrorMessage/FormErrorMessage'
 import { registerUser } from '../../store/auth/thunks'
 import FormWrapper from '../../templates/FormWrapper/FormWrapper'
+import { withRouter } from 'react-router'
+import { compose } from 'redux'
 
 class SignUpFormInner extends Component {
   render() {
@@ -108,17 +110,22 @@ const SignUpFormContainer = withFormik({
     }
 
     // Run Redux action with onSucces and onError callbacks
+    const onSuccess = () => {
+      resetForm()
+      setSubmitting(false)
+      props.history.push('/sign-in')
+    }
+
+    const onError = () => {
+      setFieldValue('password', '')
+      setFieldValue('passwordConfirm', '')
+      setSubmitting(false)
+    };
+
     props.registerUser(
       userData,
-      () => {
-        resetForm()
-        setSubmitting(false)
-      },
-      () => {
-        setFieldValue('password', '')
-        setFieldValue('passwordConfirm', '')
-        setSubmitting(false)
-      },
+      onSuccess,
+      onError
     )
   },
 })(SignUpFormInner)
@@ -139,4 +146,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({ registerUser }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpFormContainer)
+export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(SignUpFormContainer)

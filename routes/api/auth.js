@@ -31,4 +31,24 @@ router.post(
   AuthController.signIn
 );
 
+/**
+ * @route GET api/auth/confirmation
+ * @desc Confirm user email based on 'token' query param
+ * @access Public
+ */
+
+router.get('/confirmation', AuthController.emailConfirmation)
+
+/**
+ * @route GET api/auth/confirmation/resend
+ * @desc Resend email confirmation token
+ * @access Public
+ */
+
+router.post('/confirmation/resend', [
+  check("email")
+      .isEmail()
+      .withMessage("Please, enter correct email!"),
+], AuthController.emailConfirmationResend)
+
 module.exports = router;
