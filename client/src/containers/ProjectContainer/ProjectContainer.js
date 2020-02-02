@@ -80,6 +80,18 @@ class ProjectContainer extends Component {
           />
         </FlexBox>
         <p>{project.description}</p>
+        <h1>TODO:</h1>
+        <div>
+          <h3>1. Show task data:</h3>
+          <p>- title</p>
+          <p>- description</p>
+          <p>- color label</p>
+          <p>
+            - posibility to add images ??? (with limit up to 4?) (multer npm package)... Gallery
+            component example (https://blog.alexdevero.com/learn-react-practice-create-gallery/)
+          </p>
+          <p>- posibility to add external links</p>
+        </div>
         {this.state.isConfirmModalOpen && (
           <Modal>
             <ConfirmModal

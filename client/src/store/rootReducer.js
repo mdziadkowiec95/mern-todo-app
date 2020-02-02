@@ -5,6 +5,7 @@ import { tasksReducer } from './tasks/reducers'
 import { uiReducer } from './ui/reducers'
 import { preferencesReducer } from './preferences/reducers'
 import { projectsReducer } from './projects/reducers'
+import { searchReducer } from './search/reducers'
 
 const rootReducer = combineReducers({
   auth,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   projects: projectsReducer,
   ui: uiReducer,
   preferences: preferencesReducer,
+  search: searchReducer,
 })
 
 export default rootReducer
