@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import Button from '../../../components/atoms/Button/Button'
 import config from '../../../config'
 import { setPageContext } from '../../../store/tasks/actions'
 import { connect } from 'react-redux'

@@ -1,3 +1,17 @@
-.searchField {
-  margin-left: auto;
+@import 'utils/utils';
+
+.wrapper {
+  position: relative;
+
+  .field {
+    margin-left: auto;
+  }
+
+  .suggestions {
+    position: absolute;
+    top: 100%;
+    background-color: map-get($colors, white);
+    border-radius: map-get($radius, normal);
+    padding: 1rem;
+  }
 }
