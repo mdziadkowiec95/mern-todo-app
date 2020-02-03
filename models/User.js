@@ -14,6 +14,10 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
   avatar: {
     type: String
   },
@@ -63,5 +67,11 @@ UserSchema.path('labels').validate(function(labels) {
 UserSchema.path('projects').validate(function(projects) {
   return projects.length <= 10;
 }, 'User can create up to 10 projects!');
+
+const tokenSchema = new mongoose.Schema({
+  _userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
+  token: { type: String, required: true },
+  createdAt: { type: Date, required: true, default: Date.now, expires: 43200 }
+});
 
 module.exports = User = mongoose.model('user', UserSchema);

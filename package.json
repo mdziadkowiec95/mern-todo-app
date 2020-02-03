@@ -11,8 +11,9 @@
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
+    "test:quick": "jest",
     "test": "jest --coverage && npm run test --prefix client",
-    "test:server": "npm test ./__tests__/",
+    "test:server": "jest ./__tests__/",
     "test:verbose": "jest --verbose",
     "test:users": "npm test ./__tests__/users-controller.js",
     "test:preferences": "jest ./__tests__/preferences-controller.js",
@@ -38,6 +39,8 @@
     "gravatar": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.3",
+    "nodemailer": "^6.4.2",
+    "nodemailer-sendgrid": "^1.0.3",
     "request": "^2.88.0"
   },
   "devDependencies": {

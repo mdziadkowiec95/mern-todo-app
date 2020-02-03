@@ -3,33 +3,36 @@ const bcrypt = require("bcryptjs");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-
+const crypto = require('crypto');
 const User = require("../models/User");
 const Task = require("../models/Task");
 const Preferences = require("../models/Preferences");
+const Token = require('../models/Token');
+const { generateEmailVerificationTemplate } = require('../email-templates/email-verification');
+const { sendEmail, logSendEmailError } = require('../utils/sendEmail')
 
 exports.registerUser = async (req, res) => {
   const { email, password, passwordConfirm, name } = req.body;
-
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array()
-    });
-  }
-
-  // Do I really need to check it on backend?
-  if (password !== passwordConfirm) {
-    return res.status(400).json({
-      errors: [
-        {
-          msg: "Passwords must be the same"
-        }
-      ]
-    });
-  }
   try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array()
+      });
+    }
+
+    // Do I really need to check it on backend?
+    if (password !== passwordConfirm) {
+      return res.status(400).json({
+        errors: [
+          {
+            msg: "Passwords must be the same"
+          }
+        ]
+      });
+    }
+
     let user = await User.findOne({ email });
 
     if (user) {
@@ -54,6 +57,24 @@ exports.registerUser = async (req, res) => {
 
     await user.save();
 
+    // Create and save email verificaiton token
+    const verificationToken = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') } );
+    await verificationToken.save();
+
+    // Send an email with confirmation link
+    const protocol = req.connection && req.connection.encrypted ? 'https' : 'http';
+    const host = process.env.NODE_ENV === 'production' ? req.headers.host : 'localhost:3000';
+    const href = `${protocol}://${host}/email-confirmation/${verificationToken.token}`;
+
+    const emailRes = await sendEmail({
+      from: 'merntodoapp@example.com',
+      to: `Michał Dziadkowiec <${user.email}>`,
+      subject: 'Productive Todo App - Email verification',
+      html: `${generateEmailVerificationTemplate(user.name, href)}`
+    })
+
+    console.log(`Verification email sent to ${user.email}. Code ${emailRes.statusCode} ${emailRes.statusMessage}`);
+
     const jwtPayload = {
       user: {
         id: user.id
@@ -73,7 +94,9 @@ exports.registerUser = async (req, res) => {
     res.status(200).json({ token });
     return;
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+
+    logSendEmailError(error)
 
     res.status(500).send("Server error!");
     return error;
