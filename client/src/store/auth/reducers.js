@@ -25,6 +25,7 @@ export default function(state = initialState, action) {
         isLoading: true,
       }
       case AuthActionTypes.REGISTER_USER_SUCCESS:
+      case AuthActionTypes.RESEND_CONFIRM_EMAIL_ERROR:
         return {
           ...state,
           isLoading: false,

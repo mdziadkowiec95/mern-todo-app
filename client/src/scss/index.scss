@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
 // @import '~normalize.css';
 @import 'utils/utils';
+@import 'helpers/helpers';
 
 * {
   margin: 0;
@@ -105,4 +106,8 @@ li,
 ol {
   list-style: none;
   padding-left: 0;
+}
+
+p {
+  margin-bottom: 1rem;
 }
