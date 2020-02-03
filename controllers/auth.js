@@ -5,15 +5,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Token = require("../models/Token");
 const crypto = require('crypto')
-const nodemailer = require('nodemailer');
-const nodemailerSendgrid = require('nodemailer-sendgrid');
 const { generateEmailVerificationTemplate } = require('../email-templates/email-verification');
-
-const transport = nodemailer.createTransport(
-  nodemailerSendgrid({
-      apiKey: config.get('SENDGRID_API_KEY')
-  })
-);
+const { sendEmail, logSendEmailError } = require('../utils/sendEmail')
 
 exports.authUser = async (req, res) => {
   try {
@@ -157,31 +150,28 @@ exports.emailConfirmationResend = async (req, res) => {
 
    // Send an email with confirmation link
    const protocol = req.connection && req.connection.encrypted ? 'https' : 'http';
-   const href = `${protocol}://${req.headers.host}/email-confirmation/${verificationToken.token}`;
+   const host = process.env.NODE_ENV === 'production' ? req.headers.host : 'localhost:3000';
+   const href = `${protocol}://${host}/email-confirmation/${verificationToken.token}`;
    
-   transport.sendMail({
-     from: 'merntodoapp@example.com',
-     to: `Michał Dziadkowiec <${user.email}>`,
-     subject: 'Productive Todo App - Email verification',
-     html: `${generateEmailVerificationTemplate(user.name, href)}`
-   }).then(([res]) => {
-     console.log(`Verification email sent to ${user.email}. Code ${res.statusCode} ${res.statusMessage}`);
-   })
-   .catch(err => {
-     console.log('Errors occurred, failed to deliver verification email');
-   
-     if (err.response && err.response.body && err.response.body.errors) {
-         err.response.body.errors.forEach(error => console.log('%s: %s', error.field, error.message));
-     } else {
-         console.log(err);
-     }
-   });
+    const emailRes = await sendEmail({
+      from: 'merntodoapp@example.com',
+      to: `Michał Dziadkowiec <${user.email}>`,
+      subject: 'Productive Todo App - Email verification',
+      html: `${generateEmailVerificationTemplate(user.name, href)}`
+    })
 
-   res.status(202).json({ msg: 'Confirmation email has been sent!' })
+    if (emailRes) {
+      console.log(`Verification email sent to ${user.email}. Code ${emailRes.statusCode} ${emailRes.statusMessage}`);
+    }
 
+    res.status(202).json({ msg: 'Confirmation email has been sent!' })
 
+    return;
   } catch (error) {
     console.error(error.message);
+
+    logSendEmailError(error)
     res.status(500).send("Server error!")
+    return error;
   }
 }

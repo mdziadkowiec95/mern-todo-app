@@ -22,7 +22,7 @@ class ConfirmationResendFormInner extends Component {
         <FormWrapper>
           <form onSubmit={handleSubmit}>
             <h2>Resend confrimation email</h2>
-            <p>Your token has expired. Resend</p>
+            <p>This token has expired. Enter your email to send new token</p>
             <br />
             <TextField
               isError={errors.userEmail && touched.userEmail}
