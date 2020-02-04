@@ -1,0 +1,29 @@
+@import 'utils/utils';
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    background-color: rgba(map-get($colors, dark), .8);
+
+    &Wrap {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 2rem;
+        background-color: map-get($colors, white);
+        border-radius: map-get($radius, normal);
+        
+        @extend %shadow-100;
+    }
+
+    .fileThumbnail {
+        width: 150px;
+        height: 150px;
+        background: center / contain;
+    }
+}
