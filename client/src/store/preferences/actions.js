@@ -80,3 +80,10 @@ export const removeSingleProject = projectId => ({
   type: types.REMOVE_SINGLE_PROJECT,
   payload: projectId,
 })
+
+export const addSingleProject = project => ({
+  type: types.ADD_SINGLE_PROJECT,
+  payload: {
+    project,
+  },
+})
