@@ -13,6 +13,7 @@ import Modal from '../../portals/Modal'
 import Heading from '../../components/atoms/Heading/Heading'
 import Button from '../../components/atoms/Button/Button'
 import FlexBox from '../../templates/FlexBox/FlexBox'
+import UploadModal from '../../components/organisms/UploadModal/UploadModal'
 
 class ProjectContainer extends Component {
   constructor(props) {
@@ -92,6 +93,9 @@ class ProjectContainer extends Component {
           </p>
           <p>- posibility to add external links</p>
         </div>
+
+        <UploadModal />
+
         {this.state.isConfirmModalOpen && (
           <Modal>
             <ConfirmModal
