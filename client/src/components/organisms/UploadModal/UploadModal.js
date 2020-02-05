@@ -3,6 +3,7 @@ import FileUploader from '../../molecules/FileUploader/FileUploader'
 import styles from './UploadModal.module.scss'
 import Button from '../../atoms/Button/Button'
 import IconSVG from '../../atoms/IconSVG/IconSVG'
+import axios from 'axios'
 
 const UploadModal = () => {
   const [chosenFiles, setChosenFiles] = useState([])
@@ -18,6 +19,25 @@ const UploadModal = () => {
   const handleUploadSubmit = e => {
     e.preventDefault()
     console.log(chosenFiles)
+
+    const formData = new FormData()
+    formData.append('projectId', '12345')
+
+    for (const file of chosenFiles) {
+      formData.append('projectFiles', file.fileData, file.fileData.name)
+    }
+
+    const req = axios({
+      method: 'POST',
+      url: '/api/projects/upload-files',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      data: formData,
+    })
+
+    req.then(res => console.log(res.data)).catch(err => console.log(err))
   }
 
   const getFileThumbnailStyles = thumbnail => ({
