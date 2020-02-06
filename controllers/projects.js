@@ -38,7 +38,12 @@ const fileFilter = (req, file, cb) => {
   if (fileMimetypes.includes(file.mimetype)) {
     cb(null, true); // store file
   } else {
-    cb(new Error('The file has wrong format'), false); // reject file
+    cb(
+      new Error(
+        'The file has wrong format. You can use following file formats: .jpg/jpeg, .png, .bmp, .pdf'
+      ),
+      false
+    ); // reject file
   }
 };
 

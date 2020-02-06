@@ -5,7 +5,7 @@ import * as ProjectsActions from './actions'
 import * as PreferencesActions from '../preferences/actions'
 
 /**
- * @param {String} projectId ID of specific project
+ * @param {String} projectId DB identifier of a specific project
  */
 export const getSingleProject = projectId => async dispatch => {
   try {
@@ -26,9 +26,12 @@ export const getSingleProject = projectId => async dispatch => {
  * - @param {string} projectData.description
  * - @param {string} projectData.color
  * @param {Function} onSuccess callback function which runs component logic after successful request
-
  */
 
+/**
+ * @param {Object} projectData object representing single project data
+ * @param {Function} onSuccess callback function to run as a side effect of a successful request
+ */
 export const createProject = (projectData, onSuccess) => async dispatch => {
   try {
     const { name, color, description } = projectData
@@ -62,7 +65,7 @@ export const createProject = (projectData, onSuccess) => async dispatch => {
 
 /**
  * @param {string} projectId ID of specific project
- * @param {Function} onSuccess callback function which runs component logic after successful request
+ * @param {Function} onSuccess callback function to run as a side effect of a successful request
  */
 
 export const removeProject = (projectId, onSuccess) => async dispatch => {
@@ -79,5 +82,29 @@ export const removeProject = (projectId, onSuccess) => async dispatch => {
   } catch (error) {
     dispatch(ProjectsActions.removeProjectError())
     return handleErrorResponse(error, dispatch)
+  }
+}
+
+export const uploadProjectFiles = formData => async dispatch => {
+  try {
+    dispatch(ProjectsActions.uploadProjectFilesBegin())
+
+    const res = await axios.post('/api/projects/upload-files', formData, {
+      onUploadProgress: function(progressEvent) {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+
+        const progress = {
+          percentCompleted,
+        }
+        dispatch(ProjectsActions.updateUploadProgress(progress))
+        // console.log(percentCompleted)
+      },
+    })
+
+    console.log(res)
+    // dispatch(ProjectsActions.uploadProjectFilesSuccess(formData))
+  } catch (error) {
+    dispatch(ProjectsActions.uploadProjectFilesError())
+    handleErrorResponse(error, dispatch)
   }
 }

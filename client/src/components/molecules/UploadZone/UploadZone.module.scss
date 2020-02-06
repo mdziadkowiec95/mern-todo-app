@@ -13,15 +13,18 @@
   font-size: 1.2rem;
   padding: 0 2rem;
 
-    .icon {}
+  &.hightlighted {
+    opacity: 0.5;
+  }
 
-    .input {
+  .icon {
+  }
+
+  .input {
     display: none;
-    }
+  }
 
-    .uploadText {
-        margin-top: 1rem;
-    }
+  .uploadText {
+    margin-top: 1rem;
+  }
 }
-
-

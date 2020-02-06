@@ -4,7 +4,11 @@ import ButtonIcon from '../../components/atoms/ButtonIcon/ButtonIcon'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getSingleProject, removeProject } from '../../store/projects/async-actions'
+import {
+  getSingleProject,
+  removeProject,
+  uploadProjectFiles,
+} from '../../store/projects/async-actions'
 import config from '../../config'
 import { compose } from 'redux'
 import { withRouter } from 'react-router'
@@ -59,6 +63,17 @@ class ProjectContainer extends Component {
     })
   }
 
+  handleOnSubmit = chosenFiles => {
+    const formData = new FormData()
+    formData.append('projectId', this.props.match.params.id)
+
+    for (const file of chosenFiles) {
+      formData.append('projectFiles', file.fileData, file.fileData.name)
+    }
+
+    this.props.uploadProjectFiles(formData)
+  }
+
   render() {
     const { project, removeProject, isLoading, match } = this.props
 
@@ -94,7 +109,7 @@ class ProjectContainer extends Component {
           <p>- posibility to add external links</p>
         </div>
 
-        <UploadModal />
+        <UploadModal onSubmit={this.handleOnSubmit} progress={this.props.uploadProgress} />
 
         {this.state.isConfirmModalOpen && (
           <Modal>
@@ -124,12 +139,13 @@ ProjectContainer.propTypes = {
   match: PropTypes.object.isRequired,
 }
 
-const mapStateToProps = ({ projects: { project, isLoading } }) => ({
+const mapStateToProps = ({ projects: { project, isLoading, uploadProgress } }) => ({
   project,
   isLoading,
+  uploadProgress,
 })
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ getSingleProject, removeProject }, dispatch)
+  bindActionCreators({ getSingleProject, removeProject, uploadProjectFiles }, dispatch)
 
 export default compose(connect(mapStateToProps, mapDispatchToProps), withRouter)(ProjectContainer)

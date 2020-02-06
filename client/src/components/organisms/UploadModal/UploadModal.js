@@ -1,15 +1,28 @@
 import React, { useState } from 'react'
-import FileUploader from '../../molecules/FileUploader/FileUploader'
+import UploadZone from '../../molecules/UploadZone/UploadZone'
 import styles from './UploadModal.module.scss'
 import Button from '../../atoms/Button/Button'
 import IconSVG from '../../atoms/IconSVG/IconSVG'
-import axios from 'axios'
+import PropTypes from 'prop-types'
 
-const UploadModal = () => {
+const UploadModal = ({ onSubmit, progress }) => {
   const [chosenFiles, setChosenFiles] = useState([])
 
-  const handleAddFiles = filesData => {
-    setChosenFiles(filesData)
+  const getExtendedFilesData = files => {
+    const extendedFilesData = files.map(file => ({
+      fileData: file,
+      fileType: file.type === 'application/pdf' ? 'pdf' : 'image',
+      thumbnail: file.type === 'application/pdf' ? null : URL.createObjectURL(file),
+    }))
+
+    return extendedFilesData
+  }
+
+  const handleAddFiles = files => {
+    // Create thumbnail URL only for images
+    const extendedFilesData = getExtendedFilesData(files)
+
+    setChosenFiles(extendedFilesData)
   }
 
   const handleFileDelete = index => {
@@ -18,26 +31,7 @@ const UploadModal = () => {
 
   const handleUploadSubmit = e => {
     e.preventDefault()
-    console.log(chosenFiles)
-
-    const formData = new FormData()
-    formData.append('projectId', '12345')
-
-    for (const file of chosenFiles) {
-      formData.append('projectFiles', file.fileData, file.fileData.name)
-    }
-
-    const req = axios({
-      method: 'POST',
-      url: '/api/projects/upload-files',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      data: formData,
-    })
-
-    req.then(res => console.log(res.data)).catch(err => console.log(err))
+    onSubmit(chosenFiles)
   }
 
   const getFileThumbnailStyles = thumbnail => ({
@@ -47,8 +41,9 @@ const UploadModal = () => {
   return (
     <div className={styles.modal}>
       <form onSubmit={handleUploadSubmit} className={styles.modalWrap}>
-        <FileUploader isDisabled={false} onFilesAdded={handleAddFiles} />
+        <UploadZone isDisabled={false} onFilesAdded={handleAddFiles} />
 
+        <div>Progress: {progress.percentCompleted}%</div>
         <ul>
           {chosenFiles.length > 0 &&
             chosenFiles.map((file, index) => (
@@ -75,6 +70,10 @@ const UploadModal = () => {
       </form>
     </div>
   )
+}
+
+UploadModal.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 }
 
 export default UploadModal
