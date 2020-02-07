@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const { convertUploadFileName } = require('../utils/stringFormatting')
 const Project = require('../models/Project');
 const Task = require('../models/Task');
 const multer = require('multer');
@@ -7,19 +8,21 @@ const fs = require('fs');
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     const projectId = req.body.projectId;
-    const directory = `./uploads/projects/${projectId}`;
+    const directory = `./uploads/projects/${projectId}`
 
     fs.exists(directory, exist => {
       if (!exist) {
         return fs.mkdir(directory, { recursive: true }, error =>
-          cb(error, directory)
+          cb(null, directory)
         );
       }
-      return cb(null, directory);
+      return cb(null, directory); 
     });
   },
   filename: function(req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
+    const fileName = convertUploadFileName(file.originalname)
+    
+    cb(null, fileName);
   }
 });
 
