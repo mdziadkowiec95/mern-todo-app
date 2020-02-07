@@ -5,6 +5,21 @@ const Task = require('../models/Task');
 const multer = require('multer');
 const fs = require('fs');
 
+const MAX_FILE_SIZE_MB = 1;
+const MAX_FILE_SIZE_TOTAL = MAX_FILE_SIZE_MB * 1024 * 1024;
+
+const isValidType = fileType => {
+  const fileMimetypes = [
+    'image/jpeg',
+    'image/png',
+    'image/bmp',
+    'application/pdf'
+  ];
+  return fileMimetypes.includes(fileType)
+}
+
+const isValidSize = fileSize => fileSize <= MAX_FILE_SIZE_TOTAL
+
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     const projectId = req.body.projectId;
@@ -13,7 +28,7 @@ const storage = multer.diskStorage({
     fs.exists(directory, exist => {
       if (!exist) {
         return fs.mkdir(directory, { recursive: true }, error =>
-          cb(null, directory)
+          cb(error, directory)
         );
       }
       return cb(null, directory); 
@@ -30,15 +45,29 @@ const fileFilter = (req, file, cb) => {
   if (!req.body.projectId) {
     return cb(new Error('Error! Project not found.'), false);
   }
+  
+  const preUploadFileList = JSON.parse(req.body.preUploadFileList)
 
-  const fileMimetypes = [
-    'image/jpeg',
-    'image/png',
-    'image/bmp',
-    'application/pdf'
-  ];
+  let invalidFileNames = [];
 
-  if (fileMimetypes.includes(file.mimetype)) {
+  preUploadFileList.forEach((file) => {
+    if (!isValidType(file.fileType) || !isValidSize(file.fileSize)) {
+      invalidFileNames.push(`"${file.fileName}"`)
+    } 
+  });
+
+  // @todo -- adjust error message to contain info about preValidation results
+
+  if (invalidFileNames.length > 0) {
+    const invalidFileNamesMsg = invalidFileNames.join(', ');
+
+    return cb(new Error(
+      `Validation error in files: ${invalidFileNamesMsg}. Valid file formats: .jpg/jpeg, .png, .bmp, .pdf. Max size: ${MAX_FILE_SIZE_MB}mb`
+    ), false);
+  
+  }
+
+  if (isValidType(file.mimetype)) {
     cb(null, true); // store file
   } else {
     cb(
@@ -53,10 +82,10 @@ const fileFilter = (req, file, cb) => {
 const uploadProjectFiles = multer({
   storage,
   limits: {
-    fileSize: 1024 * 1024 * 15
+    fileSize: MAX_FILE_SIZE_TOTAL
   },
   fileFilter
-}).fields([{ name: 'projectFiles', maxCount: 10 }]);
+}).single('projectFile');
 
 exports.getProjects = async (req, res) => {
   try {
@@ -109,7 +138,7 @@ exports.createProject = async (req, res) => {
       return res.status(400).json({
         errors: errors.array()
       });
-    }
+    } 
 
     const userProjects = await Project.find({ user: req.user.id });
 
@@ -244,11 +273,12 @@ exports.uploadFiles = async (req, res) => {
       }
 
       // Successful upload logic starts here
-      const uploadedFiles = req.files.projectFiles;
+      const uploadedFile = req.file;
 
       res.json({
-        msg: `${uploadedFiles.length} files uploaded!`,
-        uploadedFiles: uploadedFiles.map(file => file.originalname)
+        msg: `${uploadedFile.originalname} file uploaded!`,
+        createdDate: Date.now(),
+        success: true
       });
     });
   } catch (error) {

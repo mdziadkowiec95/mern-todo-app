@@ -67,8 +67,3 @@ export const uploadProjectFilesSuccess = uploadedFiles => ({
 export const uploadProjectFilesError = () => ({
   type: types.UPLOAD_PROJECT_FILES_ERROR,
 })
-
-export const updateUploadProgress = progress => ({
-  type: types.UPDATE_UPLOAD_PROGRESS,
-  payload: progress,
-})

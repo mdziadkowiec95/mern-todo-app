@@ -3,9 +3,6 @@ import { types } from './types'
 const initialState = {
   project: null,
   isLoading: false,
-  uploadProgress: {
-    percentCompleted: 0,
-  },
 }
 
 export const projectsReducer = (state = initialState, action) => {
@@ -51,14 +48,6 @@ export const projectsReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
       }
-    case types.UPDATE_UPLOAD_PROGRESS:
-      return {
-        ...state,
-        uploadProgress: {
-          percentCompleted: payload.percentCompleted,
-        },
-      }
-
     default:
       return state
   }

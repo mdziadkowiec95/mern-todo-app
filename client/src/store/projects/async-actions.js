@@ -3,6 +3,8 @@ import { handleErrorResponse } from '../../helpers'
 import { notifyUser } from '../notifications/thunks'
 import * as ProjectsActions from './actions'
 import * as PreferencesActions from '../preferences/actions'
+import * as UIActions from '../ui/actions'
+import uuid from 'uuid'
 
 /**
  * @param {String} projectId DB identifier of a specific project
@@ -85,23 +87,44 @@ export const removeProject = (projectId, onSuccess) => async dispatch => {
   }
 }
 
-export const uploadProjectFiles = formData => async dispatch => {
+export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => {
   try {
     dispatch(ProjectsActions.uploadProjectFilesBegin())
 
-    const res = await axios.post('/api/projects/upload-files', formData, {
-      onUploadProgress: function(progressEvent) {
-        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+    console.log(chosenFiles)
 
-        const progress = {
-          percentCompleted,
-        }
-        dispatch(ProjectsActions.updateUploadProgress(progress))
-        // console.log(percentCompleted)
-      },
+    const preUploadFileList = chosenFiles.map(file => ({
+      fileName: file.fileData.name,
+      fileType: file.fileData.type,
+      fileSize: file.fileData.size,
+    }))
+
+    const promises = chosenFiles.map(async file => {
+      const formData = new FormData()
+      formData.append('projectId', projectId)
+      formData.append('preUploadFileList', JSON.stringify(preUploadFileList))
+      formData.append('projectFile', file.fileData, file.fileData.name)
+
+      const uploadId = uuid.v4()
+
+      return await axios.post('/api/projects/upload-files', formData, {
+        onUploadProgress: function(progressEvent) {
+          console.log(progressEvent)
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+
+          const uploadItem = {
+            id: uploadId,
+            fileName: file.fileData.name,
+            percentCompleted,
+          }
+
+          dispatch(UIActions.updateUploadList(uploadItem))
+        },
+      })
     })
 
-    console.log(res)
+    await Promise.all(promises)
+
     // dispatch(ProjectsActions.uploadProjectFilesSuccess(formData))
   } catch (error) {
     dispatch(ProjectsActions.uploadProjectFilesError())

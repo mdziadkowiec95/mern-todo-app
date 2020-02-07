@@ -19,3 +19,8 @@ export const toggleManageLabelsModal = isOpen => ({
   type: types.TOGGLE_MANAGE_LABELS_MODAL,
   payload: isOpen,
 })
+
+export const updateUploadList = uploadItem => ({
+  type: types.UPDATE_UPLOAD_LIST,
+  payload: uploadItem,
+})
