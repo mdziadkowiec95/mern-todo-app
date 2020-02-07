@@ -1,0 +1,21 @@
+@import 'utils/utils';
+
+.wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 3000;
+  padding: 1rem;
+  background-color: map-get($colors, white);
+  border-radius: map-get($radius, small);
+
+  @extend %shadow-100;
+
+  .fileName {
+    margin-bottom: 0.4rem;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+  }
+}

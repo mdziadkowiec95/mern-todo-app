@@ -5,7 +5,7 @@ import config from '../../../config'
 import cn from 'classnames'
 import PropTypes from 'prop-types'
 
-const UploadZone = ({ isDisabled, onFilesAdded }) => {
+const UploadZone = ({ isDisabled, onFilesAdded, acceptedFileTypes }) => {
   const [isHightlighted, setIsHightlighted] = useState(false)
   const fileInputRef = useRef(null)
 
@@ -61,7 +61,7 @@ const UploadZone = ({ isDisabled, onFilesAdded }) => {
         className={styles.input}
         type="file"
         multiple
-        accept="image/*,.pdf"
+        accept={acceptedFileTypes}
         onChange={handleAddFiles}
       />
       <IconSVG name="upload" size="52" className={styles.icon} fill={config.colors.primary} />
@@ -77,6 +77,7 @@ UploadZone.propTypes = {
 
 UploadZone.defaultProps = {
   isDisabled: false,
+  acceptedFileTypes: '*',
 }
 
 export default UploadZone

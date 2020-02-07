@@ -9,6 +9,7 @@ import MainTemplate from '../MainTemplate/MainTemplate'
 import ButtonIcon from '../../components/atoms/ButtonIcon/ButtonIcon'
 import AddTaskModal from '../../components/molecules/AddTaskModal/AddTaskModal'
 import config from '../../config'
+import UploadStatusContainer from '../../containers/UploadStatusContainer/UploadStatusContainer'
 
 const AppTemplate = ({ isAddTaskModalOpen, toggleAddTaskModal, children }) => {
   return (
@@ -26,6 +27,7 @@ const AppTemplate = ({ isAddTaskModalOpen, toggleAddTaskModal, children }) => {
         />
         {isAddTaskModalOpen && <AddTaskModal />}
       </div>
+      <UploadStatusContainer />
     </MainTemplate>
   )
 }

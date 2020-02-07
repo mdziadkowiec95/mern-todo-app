@@ -64,14 +64,9 @@ class ProjectContainer extends Component {
   }
 
   handleOnSubmit = chosenFiles => {
-    const formData = new FormData()
-    formData.append('projectId', this.props.match.params.id)
+    const projectId = this.props.match.params.id
 
-    for (const file of chosenFiles) {
-      formData.append('projectFiles', file.fileData, file.fileData.name)
-    }
-
-    this.props.uploadProjectFiles(formData)
+    this.props.uploadProjectFiles(projectId, chosenFiles)
   }
 
   render() {
@@ -136,6 +131,8 @@ ProjectContainer.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   getSingleProject: PropTypes.func.isRequired,
   removeProject: PropTypes.func.isRequired,
+  uploadProjectFiles: PropTypes.func.isRequired,
+  uploadProgress: PropTypes.array,
   match: PropTypes.object.isRequired,
 }
 

@@ -4,6 +4,9 @@ import styles from './UploadModal.module.scss'
 import Button from '../../atoms/Button/Button'
 import IconSVG from '../../atoms/IconSVG/IconSVG'
 import PropTypes from 'prop-types'
+import ProgressBar from '../../atoms/ProgressBar/ProgressBar'
+
+const acceptedFileTypes = ['image/jpeg', 'image/png', 'image/bmp', '.pdf']
 
 const UploadModal = ({ onSubmit, progress }) => {
   const [chosenFiles, setChosenFiles] = useState([])
@@ -41,9 +44,19 @@ const UploadModal = ({ onSubmit, progress }) => {
   return (
     <div className={styles.modal}>
       <form onSubmit={handleUploadSubmit} className={styles.modalWrap}>
-        <UploadZone isDisabled={false} onFilesAdded={handleAddFiles} />
-
-        <div>Progress: {progress.percentCompleted}%</div>
+        <UploadZone
+          isDisabled={false}
+          onFilesAdded={handleAddFiles}
+          acceptedFileTypes={acceptedFileTypes}
+        />
+        {/* <ProgressBar percent={40} /> */}
+        {/* {progress.length > 0 &&
+          progress.map(singleProgress => (
+            <div key={`progress-${singleProgress.fileName}`}>
+              <p>{singleProgress.fileName}</p>
+              <ProgressBar percent={singleProgress.percentCompleted} />
+            </div>
+          ))} */}
         <ul>
           {chosenFiles.length > 0 &&
             chosenFiles.map((file, index) => (
