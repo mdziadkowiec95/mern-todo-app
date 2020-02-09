@@ -1,16 +1,14 @@
 @import 'utils/utils';
+
 .wrap {
   position: relative;
   width: 100%;
   display: flex;
-  //   align-items: center;
 
   .percent {
     margin-left: 10px;
     font-weight: 700;
     text-align: left;
-    // width: 40px;
-    // color: map-get($colors, white);
   }
 
   .inner {

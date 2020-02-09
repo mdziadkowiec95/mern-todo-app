@@ -24,3 +24,7 @@ export const updateUploadList = uploadItem => ({
   type: types.UPDATE_UPLOAD_LIST,
   payload: uploadItem,
 })
+
+export const clearFinishedUploads = () => ({
+  type: types.CLEAR_FINISHED_UPLOADS,
+})
