@@ -4,7 +4,7 @@ const MOCK_UPLOAD_LIST = [
   ...new Array(3).fill().map((item, i) => ({
     id: `${i}124124`,
     fileName: 'Michał Dziadkowiec.jpg' + i,
-    percentCompleted: parseInt(100 / (i + 1)),
+    percentCompleted: 100,
   })),
 ]
 
@@ -12,7 +12,7 @@ export const initialState = {
   isSidebarOpen: false,
   isAddTaskModalOpen: false,
   isManageLabelsModalOpen: false,
-  uploadList: [],
+  uploadList: [...MOCK_UPLOAD_LIST],
 }
 
 export const uiReducer = (state = initialState, action) => {
@@ -37,19 +37,22 @@ export const uiReducer = (state = initialState, action) => {
     case types.UPDATE_UPLOAD_LIST:
       const itemIndex = state.uploadList.findIndex(item => item.id === payload.id)
 
-      if (itemIndex !== -1) {
-        const updatedList = [...state.uploadList]
-        updatedList[itemIndex] = payload
+      const updatedList = [...state.uploadList]
 
-        return {
-          ...state,
-          uploadList: updatedList,
-        }
+      if (itemIndex !== -1) {
+        updatedList[itemIndex] = payload
+      } else {
+        updatedList.push(payload)
       }
 
       return {
         ...state,
-        uploadList: [...state.uploadList, payload],
+        uploadList: updatedList,
+      }
+    case types.CLEAR_FINISHED_UPLOADS:
+      return {
+        ...state,
+        uploadList: state.uploadList.filter(upload => upload.percentCompleted !== 100),
       }
     default:
       return state

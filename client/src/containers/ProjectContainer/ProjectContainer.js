@@ -103,7 +103,11 @@ class ProjectContainer extends Component {
           </p>
           <p>- posibility to add external links</p>
         </div>
-
+        {/* EXAMPLE PATH STORED AFTER UPLOAD */}
+        {/* <img
+          src="\uploads\projects\5e39ab2051c737121910a7a5\20200209T202500780ZMicha Dziadkowiec.jpg"
+          alt=""
+        /> */}
         <UploadModal onSubmit={this.handleOnSubmit} progress={this.props.uploadProgress} />
 
         {this.state.isConfirmModalOpen && (

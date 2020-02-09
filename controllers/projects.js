@@ -275,6 +275,10 @@ exports.uploadFiles = async (req, res) => {
       // Successful upload logic starts here
       const uploadedFile = req.file;
 
+      console.log(uploadedFile.path)
+
+      // @todo - store path in project mongoDB document (create an array of upload files)
+
       res.json({
         msg: `${uploadedFile.originalname} file uploaded!`,
         createdDate: Date.now(),
