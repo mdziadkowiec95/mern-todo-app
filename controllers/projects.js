@@ -42,8 +42,8 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (!req.body.projectId) {
-    return cb(new Error('Error! Project not found.'), false);
+  if (!req.params.projectId) {
+    return cb(new Error('Upload failed! Project not found.'), false);
   }
   
   const preUploadFileList = JSON.parse(req.body.preUploadFileList)
@@ -243,13 +243,15 @@ exports.removeProject = async (req, res) => {
 
 exports.uploadFiles = async (req, res) => {
   try {
-    /**
-     * @todo
-     * 1. Check if project exists (userId / projectId) msg ==> 'Unable to upload files. Project not found.'
-     * 2. If exist then store file path references in DB in provided project
-     */
+    const project = await Project.findOne({ _id: req.params.projectId, user: req.user.id });
 
-    uploadProjectFiles(req, res, function(err) {
+    if (!project) return res.status(404).json({
+      errors: [{
+        msg: 'Upload failed! Project not found.'
+      }]
+    })
+
+    uploadProjectFiles(req, res, async function(err) {
       if (err instanceof multer.MulterError) {
         console.error(err);
         return res.status(400).json({
@@ -275,7 +277,15 @@ exports.uploadFiles = async (req, res) => {
       // Successful upload logic starts here
       const uploadedFile = req.file;
 
-      console.log(uploadedFile.path)
+      const fileDoc = {
+        name: uploadedFile.originalname,
+        path: uploadedFile.path,
+        mimetype: uploadedFile.mimetype
+      };
+
+      project.files.push(fileDoc);
+
+      await project.save();
 
       // @todo - store path in project mongoDB document (create an array of upload files)
 
@@ -287,6 +297,9 @@ exports.uploadFiles = async (req, res) => {
     });
   } catch (error) {
     console.error(error.message);
+
+    if (error.kind === 'ObjectId')
+    return res.status(404).json({ errors: [{ msg: 'Upload failed! Project not found.' }] });
 
     res.status(500).send('Server error!');
   }

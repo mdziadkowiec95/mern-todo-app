@@ -5,6 +5,7 @@ const users = require('./routes/api/users');
 const preferences = require('./routes/api/preferences');
 const projects = require('./routes/api/projects');
 const auth = require('./routes/api/auth');
+const { protectProjectFiles } = require('./middleware/assetsAuth')
 const dashboards = require('./routes/api/dashboards');
 const connectDB = require('./config/db');
 const cors = require('cors');
@@ -22,10 +23,12 @@ app.use('/api/users', users);
 app.use('/api/preferences', preferences);
 
 app.use('/api/projects', projects);
-app.use('/uploads', express.static('uploads'));
 
 app.use('/api/auth', auth);
 app.use('/api/dashboards', dashboards);
+
+app.use('/uploads/projects', protectProjectFiles);
+app.use('/uploads', express.static('uploads'));
 
 // Serve static assets in production
 

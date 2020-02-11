@@ -87,12 +87,18 @@ export const removeProject = (projectId, onSuccess) => async dispatch => {
   }
 }
 
+const handlePromise = promise => {
+  return promise.then(data => [data, undefined]).catch(error => Promise.resolve([undefined, error]))
+}
+
 export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => {
   try {
     dispatch(ProjectsActions.uploadProjectFilesBegin())
 
     console.log(chosenFiles)
-
+    // (preUploadFileList) - provide a list of all upload files data ahead of time.
+    // This used when you decide to request multiple uploads at once and you want to validate
+    // all files before first request to eventually return validation error early enough.
     const preUploadFileList = chosenFiles.map(file => ({
       fileName: file.fileData.name,
       fileType: file.fileData.type,
@@ -101,29 +107,45 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
 
     const promises = chosenFiles.map(async file => {
       const formData = new FormData()
-      formData.append('projectId', projectId)
       formData.append('preUploadFileList', JSON.stringify(preUploadFileList))
       formData.append('projectFile', file.fileData, file.fileData.name)
 
       const uploadId = uuid.v4()
 
-      return await axios.post('/api/projects/upload-files', formData, {
-        onUploadProgress: function(progressEvent) {
-          console.log(progressEvent)
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+      const [singleUpload, singleUploadError] = await handlePromise(
+        axios.put(`/api/projects/${projectId}/upload-files`, formData, {
+          onUploadProgress: function(progressEvent) {
+            console.log(progressEvent)
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
 
-          const uploadItem = {
-            id: uploadId,
-            fileName: file.fileData.name,
-            percentCompleted,
-          }
+            const uploadItem = {
+              id: uploadId,
+              fileName: file.fileData.name,
+              percentCompleted,
+            }
 
-          dispatch(UIActions.updateUploadList(uploadItem))
-        },
-      })
+            dispatch(UIActions.updateUploadList(uploadItem))
+          },
+        }),
+      )
+
+      // @todo - process each file separately depenging on upload status
+      // IF stored successfuly then dispatch action to add file to Redux stroe
+      //
+
+      if (singleUpload) {
+        console.log('singleUpload', singleUpload)
+      } else if (singleUploadError) {
+        console.log('singleUploadError', singleUploadError)
+      }
+
+      return singleUpload
     })
 
-    await Promise.all(promises)
+    // Do I need to run Promsise.all here?? We'll see :-D
+    const uploads = await Promise.all(promises)
+
+    console.log('all uploads finished', uploads)
 
     // dispatch(ProjectsActions.uploadProjectFilesSuccess(formData))
   } catch (error) {

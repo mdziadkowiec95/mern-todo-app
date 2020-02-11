@@ -3,7 +3,6 @@ const router = express.Router();
 const { check } = require('express-validator');
 const authMiddleware = require('../../middleware/auth');
 const ProjectsController = require('../../controllers/projects');
-const PreferencesController = require('../../controllers/preferences');
 const { isValidColor } = require('../../utils/validators');
 
 /**
@@ -75,12 +74,11 @@ router.put(
 router.delete('/:projectId', authMiddleware, ProjectsController.removeProject);
 
 /**
- * @route POST api/projects/upload-files
+ * @route POST api/projects/:projectId/upload-files
  * @desc Upload files for a project
  * @access Private
- * @summary pass "projectId" in body in order to upload file to proper directory
  */
 
-router.post('/upload-files', ProjectsController.uploadFiles);
+router.put('/:projectId/upload-files', authMiddleware, ProjectsController.uploadFiles);
 
 module.exports = router;
