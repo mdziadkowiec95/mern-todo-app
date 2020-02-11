@@ -25,6 +25,7 @@ class ProjectContainer extends Component {
 
     this.state = {
       isConfirmModalOpen: false,
+      isUploadModalOpen: false,
     }
   }
 
@@ -69,14 +70,21 @@ class ProjectContainer extends Component {
     this.props.uploadProjectFiles(projectId, chosenFiles)
   }
 
+  handleToggleUploadModal = () => {
+    this.setState(state => ({
+      isUploadModalOpen: !state.isUploadModalOpen,
+    }))
+  }
+
   render() {
-    const { project, removeProject, isLoading, match } = this.props
+    const { project, removeProject, isLoading, authToken, match } = this.props
 
     if (isLoading) return <Loader fullScreen />
     if (!isLoading && (!project || !project._id)) return <p>Project does not exist</p>
 
     return (
       <div>
+        <button onClick={this.handleToggleUploadModal}>Toggle modal</button>
         <Heading primary center>
           {project.name}
         </Heading>
@@ -103,12 +111,20 @@ class ProjectContainer extends Component {
           </p>
           <p>- posibility to add external links</p>
         </div>
-        {/* EXAMPLE PATH STORED AFTER UPLOAD */}
+        {project.files &&
+          project.files.length > 0 &&
+          project.files.map(file => (
+            <div key={file._id}>
+              <img src={`/${file.path}?auth=${authToken}`} alt={file.name} />
+            </div>
+          ))}
         {/* <img
           src="\uploads\projects\5e39ab2051c737121910a7a5\20200209T202500780ZMicha Dziadkowiec.jpg"
           alt=""
         /> */}
-        <UploadModal onSubmit={this.handleOnSubmit} progress={this.props.uploadProgress} />
+        {this.state.isUploadModalOpen && (
+          <UploadModal onSubmit={this.handleOnSubmit} progress={this.props.uploadProgress} />
+        )}
 
         {this.state.isConfirmModalOpen && (
           <Modal>
@@ -131,6 +147,7 @@ ProjectContainer.propTypes = {
     name: PropTypes.string,
     color: PropTypes.string,
     description: PropTypes.string,
+    files: PropTypes.array,
   }),
   isLoading: PropTypes.bool.isRequired,
   getSingleProject: PropTypes.func.isRequired,
@@ -140,10 +157,14 @@ ProjectContainer.propTypes = {
   match: PropTypes.object.isRequired,
 }
 
-const mapStateToProps = ({ projects: { project, isLoading, uploadProgress } }) => ({
+const mapStateToProps = ({
+  projects: { project, isLoading, uploadProgress },
+  auth: { authToken },
+}) => ({
   project,
   isLoading,
   uploadProgress,
+  authToken,
 })
 
 const mapDispatchToProps = dispatch =>

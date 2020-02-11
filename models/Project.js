@@ -18,7 +18,21 @@ const ProjectSchema = new Schema({
   color: {
     type: String,
     required: true
-  }
+  },
+  files: [{
+    name: {
+      type: String,
+      required: true
+    },
+    path: {
+      type: String,
+      required: true
+    },
+    mimetype: {
+      type: String,
+      required: true
+    }
+  }]
 });
 
 module.exports = Project = mongoose.model("project", ProjectSchema);
