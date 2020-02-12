@@ -4,7 +4,9 @@ const MOCK_UPLOAD_LIST = [
   ...new Array(3).fill().map((item, i) => ({
     id: `${i}124124`,
     fileName: 'Michał Dziadkowiec.jpg' + i,
-    percentCompleted: 100,
+    percentCompleted: parseInt(100 / (i + 1)),
+    uploaded: 100 / (i + 1) === 100 ? true : false,
+    isError: i === 0,
   })),
 ]
 
@@ -52,7 +54,7 @@ export const uiReducer = (state = initialState, action) => {
     case types.CLEAR_FINISHED_UPLOADS:
       return {
         ...state,
-        uploadList: state.uploadList.filter(upload => upload.percentCompleted !== 100),
+        uploadList: state.uploadList.filter(upload => !upload.uploaded && !upload.isError),
       }
     default:
       return state

@@ -122,6 +122,8 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
               id: uploadId,
               fileName: file.fileData.name,
               percentCompleted,
+              uploaded: false,
+              isError: false,
             }
 
             dispatch(UIActions.updateUploadList(uploadItem))
@@ -135,8 +137,25 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
 
       if (singleUpload) {
         console.log('singleUpload', singleUpload)
+        const uploadItem = {
+          id: uploadId,
+          fileName: file.fileData.name,
+          percentCompleted: 100,
+          uploaded: true,
+          isError: false,
+        }
+        dispatch(UIActions.updateUploadList(uploadItem))
       } else if (singleUploadError) {
         console.log('singleUploadError', singleUploadError)
+        const uploadItem = {
+          id: uploadId,
+          fileName: file.fileData.name,
+          percentCompleted: 100,
+          uploaded: false,
+          isError: true,
+        }
+        dispatch(UIActions.updateUploadList(uploadItem))
+        // IF err then use uploadId (uuid) to show proper state on progress bar
       }
 
       return singleUpload

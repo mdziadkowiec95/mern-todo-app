@@ -22,7 +22,7 @@ const isValidSize = fileSize => fileSize <= MAX_FILE_SIZE_TOTAL
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    const projectId = req.body.projectId;
+    const projectId = req.params.projectId;
     const directory = `./uploads/projects/${projectId}`
 
     fs.exists(directory, exist => {
@@ -46,26 +46,29 @@ const fileFilter = (req, file, cb) => {
     return cb(new Error('Upload failed! Project not found.'), false);
   }
   
-  const preUploadFileList = JSON.parse(req.body.preUploadFileList)
+  if (req.body.preUploadFileList) {
+    const preUploadFileList = JSON.parse(req.body.preUploadFileList)
 
-  let invalidFileNames = [];
+    let invalidFileNames = [];
 
-  preUploadFileList.forEach((file) => {
-    if (!isValidType(file.fileType) || !isValidSize(file.fileSize)) {
-      invalidFileNames.push(`"${file.fileName}"`)
-    } 
-  });
+    preUploadFileList.forEach((file) => {
+      if (!isValidType(file.fileType) || !isValidSize(file.fileSize)) {
+        invalidFileNames.push(`"${file.fileName}"`)
+      }
+    });
 
-  // @todo -- adjust error message to contain info about preValidation results
+    // @todo -- adjust error message to contain info about preValidation results
 
-  if (invalidFileNames.length > 0) {
-    const invalidFileNamesMsg = invalidFileNames.join(', ');
+    if (invalidFileNames.length > 0) {
+      const invalidFileNamesMsg = invalidFileNames.join(', ');
 
-    return cb(new Error(
-      `Validation error in files: ${invalidFileNamesMsg}. Valid file formats: .jpg/jpeg, .png, .bmp, .pdf. Max size: ${MAX_FILE_SIZE_MB}mb`
-    ), false);
-  
+      return cb(new Error(
+        `Validation error in files: ${invalidFileNamesMsg}. Valid file formats: .jpg/jpeg, .png, .bmp, .pdf. Max size: ${MAX_FILE_SIZE_MB}mb`
+      ), false);
+
+    }
   }
+  
 
   if (isValidType(file.mimetype)) {
     cb(null, true); // store file
@@ -87,6 +90,71 @@ const uploadProjectFiles = multer({
   fileFilter
 }).single('projectFile');
 
+exports.uploadFiles = async (req, res) => {
+  try {
+    const project = await Project.findOne({ _id: req.params.projectId, user: req.user.id });
+
+    if (!project) return res.status(404).json({
+      errors: [{
+        msg: 'Upload failed! Project not found.'
+      }]
+    })
+
+    uploadProjectFiles(req, res, async function(err) {
+      if (err instanceof multer.MulterError) {
+        console.error(err);
+        return res.status(400).json({
+          errors: [
+            {
+              msg: err.message
+            }
+          ]
+        });
+        // A Multer error occurred when uploading.
+      } else if (err) {
+        console.error(err);
+        return res.status(400).json({
+          errors: [
+            {
+              msg: err.message
+            }
+          ]
+        });
+        // An unknown error occurred when uploading.
+      }
+
+      // Successful upload logic starts here
+      const uploadedFile = req.file;
+
+      const newFile = {
+        name: uploadedFile.originalname,
+        path: uploadedFile.path,
+        mimetype: uploadedFile.mimetype
+      };
+
+      project.files.push(newFile);
+
+      await project.save();
+
+      // @todo - store path in project mongoDB document (create an array of upload files)
+
+      res.json({
+        msg: `${uploadedFile.originalname} file uploaded!`,
+        file: newFile,
+        createdDate: Date.now(),
+        success: true
+      });
+    });
+  } catch (error) {
+    console.error(error.message);
+
+    if (error.kind === 'ObjectId')
+    return res.status(404).json({ errors: [{ msg: 'Upload failed! Project not found.' }] });
+
+    res.status(500).send('Server error!');
+  }
+};
+
 exports.getProjects = async (req, res) => {
   try {
     const projects = await Project.find({ user: req.user.id });
@@ -101,9 +169,8 @@ exports.getProjects = async (req, res) => {
 };
 
 exports.getSingleProject = async (req, res) => {
-  const projectId = req.params.projectId;
-
   try {
+    const projectId = req.params.projectId;
     const project = await Project.findOne({
       user: req.user.id,
       _id: projectId
@@ -238,69 +305,5 @@ exports.removeProject = async (req, res) => {
 
     res.status(500).send('Server error!');
     return error;
-  }
-};
-
-exports.uploadFiles = async (req, res) => {
-  try {
-    const project = await Project.findOne({ _id: req.params.projectId, user: req.user.id });
-
-    if (!project) return res.status(404).json({
-      errors: [{
-        msg: 'Upload failed! Project not found.'
-      }]
-    })
-
-    uploadProjectFiles(req, res, async function(err) {
-      if (err instanceof multer.MulterError) {
-        console.error(err);
-        return res.status(400).json({
-          errors: [
-            {
-              msg: err.message
-            }
-          ]
-        });
-        // A Multer error occurred when uploading.
-      } else if (err) {
-        console.error(err);
-        return res.status(400).json({
-          errors: [
-            {
-              msg: err.message
-            }
-          ]
-        });
-        // An unknown error occurred when uploading.
-      }
-
-      // Successful upload logic starts here
-      const uploadedFile = req.file;
-
-      const fileDoc = {
-        name: uploadedFile.originalname,
-        path: uploadedFile.path,
-        mimetype: uploadedFile.mimetype
-      };
-
-      project.files.push(fileDoc);
-
-      await project.save();
-
-      // @todo - store path in project mongoDB document (create an array of upload files)
-
-      res.json({
-        msg: `${uploadedFile.originalname} file uploaded!`,
-        createdDate: Date.now(),
-        success: true
-      });
-    });
-  } catch (error) {
-    console.error(error.message);
-
-    if (error.kind === 'ObjectId')
-    return res.status(404).json({ errors: [{ msg: 'Upload failed! Project not found.' }] });
-
-    res.status(500).send('Server error!');
   }
 };

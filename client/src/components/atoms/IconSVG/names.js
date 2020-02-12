@@ -17,5 +17,6 @@ export const NAMES = [
   'edit',
   'arrowFullRight',
   'upload',
-  'pdf'
+  'pdf',
+  'exclamationMark',
 ]
