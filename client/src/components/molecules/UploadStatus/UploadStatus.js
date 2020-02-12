@@ -34,7 +34,7 @@ const UploadStatus = ({ uploadList, allFinished, uploadActive, onClear }) => {
             uploadList.map(item => (
               <div key={item.id} className={styles.fileItem}>
                 <p className={styles.fileName}>{item.fileName}</p>
-                <ProgressBar percent={item.percentCompleted} />
+                <ProgressBar percent={item.percentCompleted} isError={item.isError} />
               </div>
             ))}
         </div>
@@ -47,6 +47,7 @@ UploadStatus.propTypes = {
   uploadList: PropTypes.array,
   allFinished: PropTypes.bool.isRequired,
   uploadActive: PropTypes.bool.isRequired,
+  onClear: PropTypes.func.isRequired,
 }
 
 UploadStatus.defaultProps = {
