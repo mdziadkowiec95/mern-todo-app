@@ -14,7 +14,7 @@ export const initialState = {
   isSidebarOpen: false,
   isAddTaskModalOpen: false,
   isManageLabelsModalOpen: false,
-  uploadList: [...MOCK_UPLOAD_LIST],
+  uploadList: [],
 }
 
 export const uiReducer = (state = initialState, action) => {
