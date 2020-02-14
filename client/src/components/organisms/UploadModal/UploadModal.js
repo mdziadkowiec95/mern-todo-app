@@ -49,14 +49,6 @@ const UploadModal = ({ onSubmit, progress }) => {
           onFilesAdded={handleAddFiles}
           acceptedFileTypes={acceptedFileTypes}
         />
-        {/* <ProgressBar percent={40} /> */}
-        {/* {progress.length > 0 &&
-          progress.map(singleProgress => (
-            <div key={`progress-${singleProgress.fileName}`}>
-              <p>{singleProgress.fileName}</p>
-              <ProgressBar percent={singleProgress.percentCompleted} />
-            </div>
-          ))} */}
         <ul>
           {chosenFiles.length > 0 &&
             chosenFiles.map((file, index) => (

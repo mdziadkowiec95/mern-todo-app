@@ -18,6 +18,7 @@ import Heading from '../../components/atoms/Heading/Heading'
 import Button from '../../components/atoms/Button/Button'
 import FlexBox from '../../templates/FlexBox/FlexBox'
 import UploadModal from '../../components/organisms/UploadModal/UploadModal'
+import FileList from '../../components/molecules/FileList/FileList'
 
 class ProjectContainer extends Component {
   constructor(props) {
@@ -76,6 +77,10 @@ class ProjectContainer extends Component {
     }))
   }
 
+  extendProjectFilePath = path => {
+    return path + `?auth=${this.props.authToken}`
+  }
+
   render() {
     const { project, removeProject, isLoading, authToken, match } = this.props
 
@@ -99,7 +104,7 @@ class ProjectContainer extends Component {
           />
         </FlexBox>
         <p>{project.description}</p>
-        <h1>TODO:</h1>
+        {/* <h1>TODO:</h1>
         <div>
           <h3>1. Show task data:</h3>
           <p>- title</p>
@@ -110,14 +115,10 @@ class ProjectContainer extends Component {
             component example (https://blog.alexdevero.com/learn-react-practice-create-gallery/)
           </p>
           <p>- posibility to add external links</p>
-        </div>
-        {project.files &&
-          project.files.length > 0 &&
-          project.files.map(file => (
-            <div key={file._id}>
-              <img src={`/${file.path}?auth=${authToken}`} alt={file.name} />
-            </div>
-          ))}
+        </div> */}
+
+        <FileList files={project.files} extendFilePath={this.extendProjectFilePath} />
+
         {/* <img
           src="\uploads\projects\5e39ab2051c737121910a7a5\20200209T202500780ZMicha Dziadkowiec.jpg"
           alt=""

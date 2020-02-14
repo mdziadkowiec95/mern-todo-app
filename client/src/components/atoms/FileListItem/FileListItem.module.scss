@@ -1,0 +1,31 @@
+@import 'utils/utils';
+
+.wrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .fileImg {
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin-right: 2rem;
+    border-radius: map-get($radius, small);
+
+    &.thumbnail {
+      background: center / cover;
+    }
+
+    &.icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid map-get($colors, grey-300);
+    }
+  }
+
+  .name {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+}
