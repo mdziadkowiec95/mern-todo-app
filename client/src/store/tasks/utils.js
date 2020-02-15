@@ -12,7 +12,6 @@ const getUpdatedListByDate = (items, itemData) => {
 
 // Detect if there is a need to update state after adding new task (check current view)
 export const checkTaskContext = (pageContext, status, date, labels, projectId) => {
-  // debugger
   if (pageContext.type === 'inbox' && status === 'inbox') {
     return 'inbox'
   }
@@ -27,14 +26,14 @@ export const checkTaskContext = (pageContext, status, date, labels, projectId) =
     dayStart.setHours(0, 0, 0, 0)
 
     const dayEnd = new Date()
-    dayEnd.setHours(23, 59, 59, 999)
+    dayEnd.setHours(23, 59, 59, 0)
 
     const dayAfterWeek = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)
 
     const taskDate = new Date(date)
 
-    const isTodayTask = dayStart < taskDate && taskDate < dayEnd
-    const isNextWeekTask = dayStart < taskDate && taskDate < dayAfterWeek
+    const isTodayTask = dayStart <= taskDate && taskDate <= dayEnd
+    const isNextWeekTask = dayStart <= taskDate && taskDate <= dayAfterWeek
 
     if (pageContext.type === 'today' && isTodayTask) {
       return 'today'
@@ -46,8 +45,11 @@ export const checkTaskContext = (pageContext, status, date, labels, projectId) =
 }
 
 export const getCurrentlyViewedTaskList = (state, payload) => {
+  debugger;
+
   const { pageContext, taskList } = state
-  const { status, date, labels, projectId } = payload
+  const { status, date, labels, project } = payload
+  const projectId = project ? project._id : null
 
   const taskContext = checkTaskContext(pageContext, status, date, labels, projectId)
 
@@ -72,10 +74,10 @@ export const getCurrentlyViewedTaskList = (state, payload) => {
 export const getUpdatedTaskList = (state, payload) => {
   const { pageContext, taskList } = state
 
-  const { status, date, labels, projectId } = payload
+  const { status, date, labels, project} = payload
+  const projectId = project ? project._id : null
+  
   const taskContext = checkTaskContext(pageContext, status, date, labels, projectId)
-
-  console.log(taskContext)
 
   const updatedTaskIndex = taskList.findIndex(task => task._id === payload._id)
 
@@ -106,7 +108,6 @@ export const getUpdatedTaskList = (state, payload) => {
       updatedTaskList.push(payload)
     }
 
-    // updatedTaskList[updatedTaskIndex] = payload
   } else {
     updatedTaskList.splice(updatedTaskIndex, 1)
   }

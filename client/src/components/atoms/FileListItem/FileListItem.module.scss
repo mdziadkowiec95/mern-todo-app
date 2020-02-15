@@ -7,8 +7,8 @@
 
   .fileImg {
     display: block;
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     margin-right: 2rem;
     border-radius: map-get($radius, small);
 
@@ -25,7 +25,10 @@
   }
 
   .name {
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 1.6rem;
     font-weight: 700;
+    margin-right: auto;
   }
 }

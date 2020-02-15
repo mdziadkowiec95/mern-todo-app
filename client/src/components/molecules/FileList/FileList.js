@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './FIleList.module.scss'
 import FileListItem from '../../atoms/FileListItem/FileListItem'
 import PropTypes from 'prop-types'
 
@@ -14,6 +13,7 @@ const FileList = ({ files, extendFilePath }) => {
             mimetype={file.mimetype}
             name={file.name}
             path={extendFilePath ? extendFilePath(file.path) : file.path}
+            onRemove={() => alert('Removing project file will be available soon!')}
           />
         ))
       ) : (

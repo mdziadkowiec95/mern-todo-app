@@ -19,4 +19,6 @@ export const NAMES = [
   'upload',
   'pdf',
   'exclamationMark',
+  'magnifier',
+  'list'
 ]

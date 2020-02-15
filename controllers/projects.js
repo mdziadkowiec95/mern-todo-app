@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator');
-const { convertUploadFileName } = require('../utils/stringFormatting')
+const { convertUploadFileName } = require('../utils/stringFormatting');
 const Project = require('../models/Project');
 const Task = require('../models/Task');
 const multer = require('multer');
@@ -15,15 +15,15 @@ const isValidType = fileType => {
     'image/bmp',
     'application/pdf'
   ];
-  return fileMimetypes.includes(fileType)
-}
+  return fileMimetypes.includes(fileType);
+};
 
-const isValidSize = fileSize => fileSize <= MAX_FILE_SIZE_TOTAL
+const isValidSize = fileSize => fileSize <= MAX_FILE_SIZE_TOTAL;
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     const projectId = req.params.projectId;
-    const directory = `./uploads/projects/${projectId}`
+    const directory = `./uploads/projects/${projectId}`;
 
     fs.exists(directory, exist => {
       if (!exist) {
@@ -31,12 +31,12 @@ const storage = multer.diskStorage({
           cb(error, directory)
         );
       }
-      return cb(null, directory); 
+      return cb(null, directory);
     });
   },
   filename: function(req, file, cb) {
-    const fileName = convertUploadFileName(file.originalname)
-    
+    const fileName = convertUploadFileName(file.originalname);
+
     cb(null, fileName);
   }
 });
@@ -45,15 +45,15 @@ const fileFilter = (req, file, cb) => {
   if (!req.params.projectId) {
     return cb(new Error('Upload failed! Project not found.'), false);
   }
-  
+
   if (req.body.preUploadFileList) {
-    const preUploadFileList = JSON.parse(req.body.preUploadFileList)
+    const preUploadFileList = JSON.parse(req.body.preUploadFileList);
 
     let invalidFileNames = [];
 
-    preUploadFileList.forEach((file) => {
+    preUploadFileList.forEach(file => {
       if (!isValidType(file.fileType) || !isValidSize(file.fileSize)) {
-        invalidFileNames.push(`"${file.fileName}"`)
+        invalidFileNames.push(`"${file.fileName}"`);
       }
     });
 
@@ -62,13 +62,14 @@ const fileFilter = (req, file, cb) => {
     if (invalidFileNames.length > 0) {
       const invalidFileNamesMsg = invalidFileNames.join(', ');
 
-      return cb(new Error(
-        `Validation error in files: ${invalidFileNamesMsg}. Valid file formats: .jpg/jpeg, .png, .bmp, .pdf. Max size: ${MAX_FILE_SIZE_MB}mb`
-      ), false);
-
+      return cb(
+        new Error(
+          `Validation error in files: ${invalidFileNamesMsg}. Valid file formats: .jpg/jpeg, .png, .bmp, .pdf. Max size: ${MAX_FILE_SIZE_MB}mb`
+        ),
+        false
+      );
     }
   }
-  
 
   if (isValidType(file.mimetype)) {
     cb(null, true); // store file
@@ -92,13 +93,19 @@ const uploadProjectFiles = multer({
 
 exports.uploadFiles = async (req, res) => {
   try {
-    const project = await Project.findOne({ _id: req.params.projectId, user: req.user.id });
+    const project = await Project.findOne({
+      _id: req.params.projectId,
+      user: req.user.id
+    });
 
-    if (!project) return res.status(404).json({
-      errors: [{
-        msg: 'Upload failed! Project not found.'
-      }]
-    })
+    if (!project)
+      return res.status(404).json({
+        errors: [
+          {
+            msg: 'Upload failed! Project not found.'
+          }
+        ]
+      });
 
     uploadProjectFiles(req, res, async function(err) {
       if (err instanceof multer.MulterError) {
@@ -149,7 +156,9 @@ exports.uploadFiles = async (req, res) => {
     console.error(error.message);
 
     if (error.kind === 'ObjectId')
-    return res.status(404).json({ errors: [{ msg: 'Upload failed! Project not found.' }] });
+      return res
+        .status(404)
+        .json({ errors: [{ msg: 'Upload failed! Project not found.' }] });
 
     res.status(500).send('Server error!');
   }
@@ -205,7 +214,7 @@ exports.createProject = async (req, res) => {
       return res.status(400).json({
         errors: errors.array()
       });
-    } 
+    }
 
     const userProjects = await Project.find({ user: req.user.id });
 

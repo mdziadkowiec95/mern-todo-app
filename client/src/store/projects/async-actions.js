@@ -107,7 +107,7 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
 
     const promises = chosenFiles.map(async file => {
       const formData = new FormData()
-      formData.append('preUploadFileList', JSON.stringify(preUploadFileList))
+      // formData.append('preUploadFileList', JSON.stringify(preUploadFileList))
       formData.append('projectFile', file.fileData, file.fileData.name)
 
       const uploadId = uuid.v4()
@@ -155,6 +155,8 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
           isError: true,
         }
         dispatch(UIActions.updateUploadList(uploadItem))
+        handleErrorResponse(singleUploadError, dispatch)
+
         // IF err then use uploadId (uuid) to show proper state on progress bar
       }
 

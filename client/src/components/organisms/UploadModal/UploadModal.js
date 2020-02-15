@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import UploadZone from '../../molecules/UploadZone/UploadZone'
 import styles from './UploadModal.module.scss'
 import Button from '../../atoms/Button/Button'
-import IconSVG from '../../atoms/IconSVG/IconSVG'
 import PropTypes from 'prop-types'
-import ProgressBar from '../../atoms/ProgressBar/ProgressBar'
+import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
+import FileListItem from '../../atoms/FileListItem/FileListItem'
 
 const acceptedFileTypes = ['image/jpeg', 'image/png', 'image/bmp', '.pdf']
 
-const UploadModal = ({ onSubmit, progress }) => {
+const UploadModal = ({ onSubmit, onCancel }) => {
   const [chosenFiles, setChosenFiles] = useState([])
 
   const getExtendedFilesData = files => {
@@ -37,48 +37,43 @@ const UploadModal = ({ onSubmit, progress }) => {
     onSubmit(chosenFiles)
   }
 
-  const getFileThumbnailStyles = thumbnail => ({
-    backgroundImage: thumbnail ? `url(${thumbnail})` : 'pdf',
-  })
-
   return (
     <div className={styles.modal}>
-      <form onSubmit={handleUploadSubmit} className={styles.modalWrap}>
-        <UploadZone
-          isDisabled={false}
-          onFilesAdded={handleAddFiles}
-          acceptedFileTypes={acceptedFileTypes}
-        />
-        <ul>
-          {chosenFiles.length > 0 &&
-            chosenFiles.map((file, index) => (
-              <li
-                role="presentation"
-                key={`upload-item-${index}`}
-                onClick={() => handleFileDelete(index)}
-              >
-                <span>{file.fileData.name}</span>
-                {file.thumbnail && file.fileType === 'image' ? (
-                  <div
-                    className={styles.fileThumbnail}
-                    style={getFileThumbnailStyles(file.thumbnail)}
-                  />
-                ) : (
-                  <IconSVG name="pdf" size="50" />
-                )}
-              </li>
-            ))}
-        </ul>
-        <Button isSubmit primary>
-          Upload
-        </Button>
-      </form>
+      <div className={styles.inner}>
+        <form onSubmit={handleUploadSubmit} className={styles.form}>
+          <ButtonIcon name="closeBg" className={styles.closeBtn} onClickFn={onCancel} />
+          <div className={styles.uploadZone}>
+            <UploadZone
+              isDisabled={false}
+              onFilesAdded={handleAddFiles}
+              acceptedFileTypes={acceptedFileTypes}
+            />
+          </div>
+          <ul className={styles.fileList}>
+            {chosenFiles.length > 0 &&
+              chosenFiles.map((file, index) => (
+                <FileListItem
+                  key={`upload-item-${index}`}
+                  name={file.fileData.name}
+                  path={file.thumbnail}
+                  mimetype={file.fileData.type}
+                  onRemove={() => handleFileDelete(index)}
+                  readonly
+                />
+              ))}
+          </ul>
+          <Button isSubmit primary>
+            Upload
+          </Button>
+        </form>
+      </div>
     </div>
   )
 }
 
 UploadModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
 }
 
 export default UploadModal
