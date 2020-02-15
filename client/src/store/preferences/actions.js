@@ -81,6 +81,12 @@ export const removeSingleProject = projectId => ({
   payload: projectId,
 })
 
+/**
+ * @param {Object} project
+ * - @param {string} project._id
+ * - @param {string} project.name
+ * - @param {string} project.color
+ */
 export const addSingleProject = project => ({
   type: types.ADD_SINGLE_PROJECT,
   payload: {

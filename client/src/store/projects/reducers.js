@@ -48,7 +48,6 @@ export const projectsReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
       }
-
     default:
       return state
   }

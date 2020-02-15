@@ -13,7 +13,6 @@ import ProjectTasks from './ProjectTasks/ProjectTasks'
 
 const App = ({ match }) => (
   <AppTemplate>
-    <div className={styles.main}>
       <AppLayoutTemplate match={match}>
         <Switch>
           <Route path={`${match.path}/preferences`} component={Preferences} />
@@ -55,7 +54,6 @@ const App = ({ match }) => (
           <Route path={`${match.path}/create-project`} component={CreateProject} />
         </Switch>
       </AppLayoutTemplate>
-    </div>
   </AppTemplate>
 )
 

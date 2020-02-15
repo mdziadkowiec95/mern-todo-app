@@ -1,0 +1,70 @@
+@import 'utils/utils';
+
+.wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 3000;
+  padding: 0 1rem;
+  min-width: 300px;
+  background-color: map-get($colors, white);
+  border-radius: map-get($radius, small);
+
+  @extend %shadow-100;
+
+  &.isOpen {
+    .btnIconArrow {
+      transform: rotate(0);
+    }
+  }
+
+  .btn {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem;
+
+    &:hover {
+    }
+  }
+
+  .btnIcon {
+    &Upload {
+      &Active {
+        fill: map-get($colors, primary);
+        animation: upload-active 1.6s infinite;
+      }
+
+      &Finished {
+        animation: none;
+        fill: map-get($colors, accent);
+      }
+    }
+
+    &Arrow {
+      transform: rotate(180deg);
+    }
+  }
+
+  .list {
+    padding-bottom: 1rem;
+  }
+
+  .fileName {
+    margin-bottom: 0.4rem;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
+  }
+}
+
+@keyframes upload-active {
+  50% {
+    fill: map-get($colors, accent);
+  }
+
+  100% {
+    fill: map-get($colors, primary);
+  }
+}
