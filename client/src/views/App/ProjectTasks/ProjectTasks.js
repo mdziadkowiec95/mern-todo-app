@@ -10,7 +10,7 @@ const ProjectTasks = ({ match, pageType }) => {
     <>
       <FlexBox center>
         <Button primary asRouterLink goTo={`/app/project/${match.params.id}`}>
-          Back to project details
+          Project management
         </Button>
       </FlexBox>
       <TasksContainer match={match} pageType={pageType} />

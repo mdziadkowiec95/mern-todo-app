@@ -45,7 +45,7 @@ const TaskList = ({ tasks, pageType, isLoading }) => {
       const taskDate = new Date(task.date)
 
       sevenDaysData.some(day => {
-        const isTaskInRange = day.startDate < taskDate && taskDate < day.endDate
+        const isTaskInRange = day.startDate <= taskDate && taskDate <= day.endDate
         if (!isTaskInRange) return false
 
         day.tasks.push(task)

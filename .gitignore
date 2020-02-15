@@ -3,3 +3,4 @@ config/default.js
 .vs-code
 coverage
 client/.env
+uploads

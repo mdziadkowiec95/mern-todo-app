@@ -16,4 +16,9 @@ export const NAMES = [
   'closeBg',
   'edit',
   'arrowFullRight',
+  'upload',
+  'pdf',
+  'exclamationMark',
+  'magnifier',
+  'list'
 ]
