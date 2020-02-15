@@ -1,0 +1,33 @@
+@import 'utils/utils';
+
+.wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+
+  .percent {
+    margin-left: 10px;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .inner {
+    position: relative;
+    width: calc(100% - 40px);
+  }
+
+  .bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 20px;
+    background-color: map-get($colors, tertiary);
+    border-radius: map-get($radius, small);
+    transition: width 0.2s map-get($easings, primary);
+
+    &.isError {
+      background-color: map-get($colors, error-bg);
+    }
+  }
+}

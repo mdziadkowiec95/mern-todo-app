@@ -63,6 +63,17 @@ export const preferencesReducer = (state = initialState, action) => {
         labels: state.labels.filter(label => label._id !== payload),
         isLoading: false,
       }
+    case types.REMOVE_SINGLE_PROJECT:
+      return {
+        ...state,
+        projects: state.projects.filter(project => project._id !== payload),
+        isLoading: false,
+      }
+    case types.ADD_SINGLE_PROJECT:
+      return {
+        ...state,
+        projects: [...state.projects, payload.project],
+      }
     default:
       return state
   }

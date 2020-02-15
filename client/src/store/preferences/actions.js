@@ -74,3 +74,22 @@ export const removeLabelSuccess = removeLabelId => ({
 export const removeLabelError = () => ({
   type: types.REMOVE_LABEL_ERROR,
 })
+
+/** --- Remove single project --- */
+export const removeSingleProject = projectId => ({
+  type: types.REMOVE_SINGLE_PROJECT,
+  payload: projectId,
+})
+
+/**
+ * @param {Object} project
+ * - @param {string} project._id
+ * - @param {string} project.name
+ * - @param {string} project.color
+ */
+export const addSingleProject = project => ({
+  type: types.ADD_SINGLE_PROJECT,
+  payload: {
+    project,
+  },
+})

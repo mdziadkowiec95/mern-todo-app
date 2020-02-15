@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import Button from '../../../components/atoms/Button/Button'
 import config from '../../../config'
 import { setPageContext } from '../../../store/tasks/actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import ProjectContainer from '../../../containers/ProjectContainer/ProjectContainer'
 
 const ProjectMain = ({ match, pageType, setPageContext }) => {
   // TEMPORARY - maybe it would be better to create HOC for setting pageContext
@@ -15,14 +15,11 @@ const ProjectMain = ({ match, pageType, setPageContext }) => {
     }
 
     setPageContext(pageContext)
-  }, [])
+  }, [pageType, match.params.id, setPageContext])
 
   return (
     <div>
-      <h1>Project tasks</h1>
-      <Button primary asRouterLink goTo={`${match.url}/details`}>
-        Preview tasks
-      </Button>
+      <ProjectContainer match={match} />
     </div>
   )
 }

@@ -57,14 +57,6 @@ class TasksContainer extends Component {
       }
 
       await getTasks(reqParams)
-
-      // if (state && state.taskId) {
-      //   window.scrollBy({
-      //     top: 500,
-      //     left: 100,
-      //     behavior: 'smooth',
-      //   })
-      // }
     }
   }
   render() {

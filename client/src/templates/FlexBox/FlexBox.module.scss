@@ -1,0 +1,18 @@
+@import 'utils/utils';
+
+.box {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+
+  @include breakpoint-up(tablet) {
+    flex-direction: row;
+  }
+
+  &.center {
+    @include breakpoint-up(tablet) {
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import styles from './Heading.module.scss'
 import cn from 'classnames'
 
-const Heading = ({ primary, secondary, tertiary, tagSize, center, children }) => {
+const Heading = ({ primary, secondary, tertiary, tagSize, center, className, children }) => {
   const headingClass = cn(styles.heading, {
     [styles.primary]: primary,
     [styles.secondary]: secondary,
     [styles.tertiary]: tertiary,
     [styles.center]: center,
-  })
+  }, className)
 
   const sizeInt = Math.floor(tagSize)
   const Tag = sizeInt >= 1 && sizeInt <= 6 ? `h${tagSize}` : 'h2'
@@ -24,11 +24,13 @@ Heading.propTypes = {
   secondary: PropTypes.bool,
   tertiary: PropTypes.bool,
   center: PropTypes.bool,
+  className: PropTypes.string
 }
 
 Heading.defaultProps = {
   tagSize: 2,
   center: false,
+  className: ''
 }
 
 export default Heading

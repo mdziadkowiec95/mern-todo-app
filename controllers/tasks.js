@@ -1,40 +1,32 @@
-const calcTime = require("../utils/calcTime");
-const Task = require("../models/Task");
-const User = require("../models/User");
-const Dashboard = require("../models/Dashboard");
-const Preferences = require("../models/Preferences");
-const Project = require("../models/Project");
-const { validationResult } = require("express-validator");
+const calcTime = require('../utils/calcTime');
+const Task = require('../models/Task');
+const User = require('../models/User');
+const Dashboard = require('../models/Dashboard');
+const Preferences = require('../models/Preferences');
+const Project = require('../models/Project');
+const { validationResult } = require('express-validator');
 
 exports.searchTask = async (req, res) => {
   try {
     const titleQuery = req.query.searchQuery;
 
-    if (!titleQuery)
-      return res.status(404).json({
-        errors: [
-          {
-            msg: "You have not provided any title!"
-          }
-        ]
-      });
+    if (!titleQuery) return res.status(200).json({ results: [] });
 
-    const regex = new RegExp(`.*${titleQuery}.*`, "i");
+    const regex = new RegExp(`.*${titleQuery}.*`, 'i');
 
-    const titles = await Task.find({
+    const tasks = await Task.find({
       user: req.user.id,
       title: regex
-    }).select("title");
+    }).select('title');
 
-    if (titles.length === 0)
-      return res.status(404).json({ errors: [{ msg: "No tasks found!" }] });
+    if (tasks.length === 0) return res.status(200).json({ results: [] });
 
-    res.json(titles);
+    res.json({ results: tasks });
     return;
   } catch (error) {
     console.error(error.message);
 
-    res.status(500).send("Server erorr!");
+    res.status(500).send('Server error!');
   }
 };
 
@@ -53,7 +45,7 @@ exports.getTasks = async (req, res) => {
       $lte: null
     };
 
-    if (timePeriod === "today") {
+    if (timePeriod === 'today') {
       const dayStart = new Date();
       dayStart.setHours(0, 0, 0, 0);
 
@@ -62,7 +54,7 @@ exports.getTasks = async (req, res) => {
 
       dateRange.$gte = dayStart;
       dateRange.$lte = dayEnd;
-    } else if (timePeriod === "nextWeek") {
+    } else if (timePeriod === 'nextWeek') {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -75,12 +67,12 @@ exports.getTasks = async (req, res) => {
     filters.date = dateRange;
   }
 
-  if (projectId) filters["project._id"] = projectId;
+  if (projectId) filters['project._id'] = projectId;
 
   if (labelId) {
     const userPreferences = await Preferences.findOne({
       user: req.user.id
-    }).select("labels");
+    }).select('labels');
 
     const selectedLabel = userPreferences.labels.find(
       label => label.id === labelId
@@ -89,7 +81,7 @@ exports.getTasks = async (req, res) => {
     if (!selectedLabel) {
       return res
         .status(200)
-        .json({ errors: [{ msg: "No tasks found with provided label!" }] });
+        .json({ errors: [{ msg: 'No tasks found with provided label!' }] });
     }
 
     filters.labels = {
@@ -104,10 +96,10 @@ exports.getTasks = async (req, res) => {
   } catch (error) {
     console.log(error.message);
 
-    if (error.kind === "ObjectId")
-      return res.status(404).json({ errors: [{ msg: "Task not found!" }] });
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
 
-    res.status(500).send("Server error!");
+    res.status(500).send('Server error!');
   }
 };
 
@@ -120,16 +112,16 @@ exports.getSingleTask = async (req, res) => {
     });
 
     if (!task)
-      return res.status(404).json({ errors: [{ msg: "Task not found!" }] });
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
 
     res.json(task);
   } catch (error) {
     console.error(error.message);
 
-    if (error.kind === "ObjectId")
-      return res.status(404).json({ errors: [{ msg: "Task not found!" }] });
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
 
-    res.status(500).send("Server error!");
+    res.status(500).send('Server error!');
   }
 };
 
@@ -152,10 +144,10 @@ exports.createOrUpdateTask = async (req, res) => {
   if (priority) taskFields.priority = priority;
 
   if (date) {
-    taskFields.status = "active";
+    taskFields.status = 'active';
     taskFields.date = date;
   } else {
-    taskFields.status = "inbox";
+    taskFields.status = 'inbox';
   }
 
   try {
@@ -163,7 +155,7 @@ exports.createOrUpdateTask = async (req, res) => {
     if (labelsIDs) {
       const userLabels = await Preferences.findOne({
         user: req.user.id
-      }).select("labels");
+      }).select('labels');
 
       if (userLabels.labels && userLabels.labels.length > 0) {
         const selectedLabels = userLabels.labels.filter(label =>
@@ -176,8 +168,8 @@ exports.createOrUpdateTask = async (req, res) => {
     // Assign user project to the task
     if (projectId) {
       const userProjects = await Project.find({ user: req.user.id }).select([
-        "name",
-        "color"
+        'name',
+        'color'
       ]);
 
       if (userProjects && userProjects.length > 0) {
@@ -223,10 +215,10 @@ exports.createOrUpdateTask = async (req, res) => {
   } catch (error) {
     console.error(error.message);
 
-    if (error.kind === "ObjectId")
-      return res.status(404).json({ errors: [{ msg: "Task not found!" }] });
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
 
-    res.status(500).send("Server error!");
+    res.status(500).send('Server error!');
     return error;
   }
 };
@@ -238,17 +230,17 @@ exports.removeTask = async (req, res) => {
   if (!taskId)
     return res
       .status(400)
-      .json({ errors: [{ msg: "You need to pass task ID to delete it!" }] });
+      .json({ errors: [{ msg: 'You need to pass task ID to delete it!' }] });
 
   try {
     const task = await Task.findById(taskId);
 
     if (!task)
-      return res.status(404).json({ errors: [{ msg: "Task not found!" }] });
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
 
     if (task.user.toString() !== req.user.id)
       return res.status(401).json({
-        errors: [{ msg: "You are NOT authorized to delete this task!" }]
+        errors: [{ msg: 'You are NOT authorized to delete this task!' }]
       });
 
     await task.remove();
@@ -264,15 +256,15 @@ exports.removeTask = async (req, res) => {
       }
     }
 
-    res.status(200).json({ msg: "Task has been removed!" });
+    res.status(200).json({ msg: 'Task has been removed!' });
     return;
   } catch (error) {
     console.error(error.message);
 
-    if (error.kind === "ObjectId")
-      return res.status(404).json({ errors: [{ msg: "Task not found!" }] });
+    if (error.kind === 'ObjectId')
+      return res.status(404).json({ errors: [{ msg: 'Task not found!' }] });
 
-    res.status(500).send("Server error!");
+    res.status(500).send('Server error!');
     return error;
   }
 };

@@ -7,6 +7,16 @@ const Task = require("../models/Task");
 const UsersController = require("../controllers/users");
 const { ResponseWithErrorsArray, generateObjectId } = require("./__utils");
 
+const nodemailer = require('nodemailer');
+const nodemailerSendgrid = require('nodemailer-sendgrid');
+
+const transport = nodemailer.createTransport(
+  nodemailerSendgrid({
+      apiKey: '124124125'
+  })
+);
+
+
 // May require additional time for downloading MongoDB binaries
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 600000;
 
@@ -83,6 +93,12 @@ describe("UserController functions", () => {
           password: "123123123",
           passwordConfirm: "123123123",
           name: "Another Test User"
+        },
+        connection: {
+          encrypted: false
+        },
+        headers: {
+          host: 'fakedomain.com'
         }
       };
 
@@ -101,8 +117,17 @@ describe("UserController functions", () => {
       const mockJwtSign = jest.spyOn(jwt, "sign");
       jwt.sign = function() {
         const fakeToken = "token123";
-        return fakeToken;
+        return fakeToken; 
       };
+
+      const mockTransport = jest.spyOn(transport, 'sendMail');
+      transport.sendMail = function() {
+        return new Promise((resolve, reject) => {
+          resolve();
+        })
+      }
+
+
 
       UsersController.registerUser(req, res).then(() => {
         const { token, statusCode } = res;
@@ -110,6 +135,7 @@ describe("UserController functions", () => {
         expect(token).toBe("token123");
         expect(statusCode).toBe(200);
         mockJwtSign.mockRestore();
+        mockTransport.mockRestore();
         done();
       });
     });

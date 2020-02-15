@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styles from './DropdownMenu.module.scss'
 import cn from 'classnames'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
@@ -9,15 +9,15 @@ import config from '../../../config'
 const DropdownMenu = ({ iconName, iconColor, children }) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleDropdownClose = () => {
+  const handleDropdownClose = useCallback(() => {
     setIsOpen(false)
     document.removeEventListener('click', handleDropdownClose)
-  }
+  }, [setIsOpen])
 
   // useEffect event listener cleanup
   useEffect(() => {
     return () => document.removeEventListener('click', handleDropdownClose)
-  }, [])
+  }, [handleDropdownClose])
 
   const handleDropdownOpen = () => {
     if (!isOpen) {

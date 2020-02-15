@@ -5,66 +5,20 @@ import { NAMES } from './names'
 
 const getViewBox = name => {
   switch (name) {
-    case 'plus':
-      return '0 0 24 24'
-    case 'plusBackground':
-      return '0 0 24 24'
-    case 'plusBorder':
-      return '0 0 24 24'
-    case 'gear':
-      return '0 0 24 24'
-    case 'search':
-      return '0 0 24 24'
-    case 'calendar':
-      return '0 0 24 24'
-    case 'check':
-      return '0 0 24 24'
-    case 'flag':
-      return '0 0 24 24'
-    case 'arrowDown':
-      return '0 0 24 24'
-    case 'edit':
-      return '0 0 24 24'
+    // If you want to change viewBox for specific icon then
+    // add new 'case' statement with icon name and return viewBox value
     default:
       return '0 0 24 24'
   }
 }
 
 const getPath = (name, props) => {
-  switch (name) {
-    case 'plus':
-      return <path {...props} d={PATHS.plus} />
-    case 'plusBackground':
-      return <path {...props} d={PATHS.plusBackground} />
-    case 'plusBorder':
-      return <path {...props} d={PATHS.plusBorder} />
-    case 'minusBorder':
-      return <path {...props} d={PATHS.minusBorder} />
-    case 'serach':
-      return <path {...props} d={PATHS.search} />
-    case 'gear':
-      return <path {...props} d={PATHS.gear} />
-    case 'calendar':
-      return <path {...props} d={PATHS.calendar} />
-    case 'check':
-      return <path {...props} d={PATHS.check} />
-    case 'checkBackground':
-      return <path {...props} d={PATHS.checkBackground} />
-    case 'flag':
-      return <path {...props} d={PATHS.flag} />
-    case 'logout':
-      return <path {...props} d={PATHS.logout} />
-    case 'arrowDown':
-      return <path {...props} d={PATHS.arrowDown} />
-    case 'closeBorder':
-      return <path {...props} d={PATHS.closeBorder} />
-    case 'edit':
-      return <path {...props} d={PATHS.edit} />
-    case 'arrowFullRight':
-      return <path {...props} d={PATHS.arrowFullRight} />
-    default:
-      return <path />
+  const path = PATHS[name]
+
+  if (path) {
+    return <path {...props} d={path} />
   }
+  return <path />
 }
 
 const IconSVG = ({ name, style = {}, viewBox, fill, size, className }) => (

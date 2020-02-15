@@ -27,7 +27,7 @@ const WeekdayDate = ({ date, replaceDayName }) => {
 
 WeekdayDate.propTypes = {
   date: PropTypes.object.isRequired,
-  replaceDayName: PropTypes.string,
+  replaceDayName: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 }
 
 WeekdayDate.defaultProps = {

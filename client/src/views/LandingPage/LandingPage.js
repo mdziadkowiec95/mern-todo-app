@@ -9,7 +9,9 @@ const LandingPage = () => {
     <div className={styles.main}>
       <Container>
         <div className={styles.hero}>
-          <Heading tagSize={1}>Be Productive</Heading>
+          <Heading primary tagSize={1}>
+            Be <span style={{ color: '#3176ad' }}>Pro</span>ductive
+          </Heading>
           <Button asRouterLink goTo="/sign-up" primary>
             Sign Up
           </Button>

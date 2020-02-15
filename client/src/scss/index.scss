@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
 // @import '~normalize.css';
 @import 'utils/utils';
+@import 'helpers/helpers';
 
 * {
   margin: 0;
@@ -96,12 +97,18 @@ h3 {
   font-size: 1.8rem;
 }
 
-// Form elements
-
+img {
+  max-width: 100%;
+}
 // Lists
 
 ul,
+li,
 ol {
   list-style: none;
   padding-left: 0;
+}
+
+p {
+  margin-bottom: 1rem;
 }

@@ -19,21 +19,6 @@ import RadioButtonField from '../../atoms/RadioButtonField/RadioButtonField'
 import { LabelOrProjectType } from '../../../propTypes'
 import PriorityPicker from '../PriorityPicker/PriorityPicker'
 
-const TaskPriorityOptions = [
-  {
-    label: 'Low',
-    value: 'low',
-  },
-  {
-    label: 'Normal',
-    value: 'normal',
-  },
-  {
-    label: 'High',
-    value: 'high',
-  },
-]
-
 const TaskStatusOptions = [
   {
     label: 'Inbox',
@@ -98,7 +83,7 @@ const AddTaskModalBase = props => {
     <div className={FormWrapperClassName}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <ButtonIcon
-          name="closeBorder"
+          name="closeBg"
           className={styles.closeBtn}
           onClickFn={() => toggleAddTaskModal(false)}
         />

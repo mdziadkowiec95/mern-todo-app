@@ -10,6 +10,8 @@ import Loader from '../../atoms/Loader/Loader'
 import cn from 'classnames'
 import { toggleManageLabelsModal } from '../../../store/ui/actions'
 import Heading from '../../atoms/Heading/Heading'
+import ConfirmModal from '../ConfirmModal/ConfirmModal'
+import Modal from '../../../portals/Modal'
 
 const initialLabelState = {
   _id: '',
@@ -19,7 +21,8 @@ const initialLabelState = {
 
 const ManageLabelsModal = ({ userLabels, isLoading, removeLabel, toggleManageLabelsModal }) => {
   const [isEditMode, toggleEditMode] = useState(false)
-
+  const [isConfirmModalOpen, toggleConfirmModal] = useState(false)
+  const [labelToRemove, setLabelToRemove] = useState(null)
   const [existingLabel, setExistingLabel] = useState(initialLabelState)
 
   const handleEditCancel = () => {
@@ -36,11 +39,23 @@ const ManageLabelsModal = ({ userLabels, isLoading, removeLabel, toggleManageLab
     setExistingLabel({ ...label })
   }
 
-  const handleRemoveLabel = labelId => {
-    removeLabel(labelId)
+  // Show confirm modal when user clicks remove button to ensure he is aware what are the consequences
+  const initRemoveLabel = labelId => {
+    toggleConfirmModal(true)
+    setLabelToRemove(labelId)
   }
 
-  const LabelsList = () => (
+  const handleRemoveCancel = () => {
+    toggleConfirmModal(false)
+    setLabelToRemove(null)
+  }
+
+  const handleRemoveLabelConfirm = async labelId => {
+    await removeLabel(labelId)
+    toggleConfirmModal(false)
+  }
+
+  const LabelsList = (
     <>
       <div className={styles.addBtnWrap}>
         <ButtonIcon name="plus" onClickFn={handleAddNewLabel} title="Add new label" />
@@ -55,7 +70,7 @@ const ManageLabelsModal = ({ userLabels, isLoading, removeLabel, toggleManageLab
               <ButtonIcon
                 name="minusBorder"
                 size="tiny"
-                onClickFn={() => handleRemoveLabel(label._id)}
+                onClickFn={() => initRemoveLabel(label._id)}
                 title="Remove label"
               />
               <ButtonIcon
@@ -75,22 +90,33 @@ const ManageLabelsModal = ({ userLabels, isLoading, removeLabel, toggleManageLab
   })
 
   return (
-    <div className={WrapperClassName}>
-      <div className={styles.inner}>
-        {isLoading && <Loader absoluteCenter />}
-        <Heading tagSize="3" center primary>
-          Edit labels
-        </Heading>
-        <ButtonIcon
-          name="closeBorder"
-          className={styles.closeBtn}
-          onClickFn={() => toggleManageLabelsModal(false)}
-        />
-        {isEditMode ? (
-          <AddLabelModal existingLabel={existingLabel} onCancel={handleEditCancel} />
-        ) : (
-          <LabelsList />
-        )}
+    <div>
+      {isConfirmModalOpen && labelToRemove && (
+        <Modal>
+          <ConfirmModal
+            descriptionText="Label will be removed also from all tasks in which it occurs."
+            onConfirm={() => handleRemoveLabelConfirm(labelToRemove)}
+            onCancel={handleRemoveCancel}
+          />
+        </Modal>
+      )}
+      <div className={WrapperClassName}>
+        <div className={styles.inner}>
+          {isLoading && <Loader absoluteCenter />}
+          <Heading tagSize="3" center primary>
+            Edit labels
+          </Heading>
+          <ButtonIcon
+            name="closeBg"
+            className={styles.closeBtn}
+            onClickFn={() => toggleManageLabelsModal(false)}
+          />
+          {isEditMode ? (
+            <AddLabelModal existingLabel={existingLabel} onCancel={handleEditCancel} />
+          ) : (
+            LabelsList
+          )}
+        </div>
       </div>
     </div>
   )

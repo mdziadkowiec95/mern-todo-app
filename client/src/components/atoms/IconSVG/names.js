@@ -3,6 +3,7 @@ export const NAMES = [
   'plusBackground',
   'plusBorder',
   'minusBorder',
+  'minusBg',
   'search',
   'calendar',
   'check',
@@ -12,6 +13,12 @@ export const NAMES = [
   'logout',
   'arrowDown',
   'closeBorder',
+  'closeBg',
   'edit',
   'arrowFullRight',
+  'upload',
+  'pdf',
+  'exclamationMark',
+  'magnifier',
+  'list'
 ]

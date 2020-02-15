@@ -82,7 +82,6 @@ const CreateProjectContainer = withFormik({
   validationSchema: CreateProjectSchema,
 
   async handleSubmit({ name, description, color }, { props, resetForm, setFieldValue }) {
-    // alert(JSON.stringify(projectData, 0, null))
     const projectData = {
       name,
       color,
@@ -92,6 +91,7 @@ const CreateProjectContainer = withFormik({
     const onSuccess = projectId => {
       props.history.push(`/app/project/${projectId}`)
     }
+
     props.createProject(projectData, onSuccess)
   },
 })(CreateProjectInner)

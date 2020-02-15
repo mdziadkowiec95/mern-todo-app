@@ -1,5 +1,5 @@
-const Dashboard = require('../models/Dashboard');
-const compareDates = require('../utils/compareDates');
+const Dashboard = require("../models/Dashboard");
+const compareDates = require("../utils/compareDates");
 
 exports.getStats = async (req, res) => {
   try {
@@ -18,8 +18,8 @@ exports.getStats = async (req, res) => {
     }
 
     userTasks.forEach(task => {
-      if (task.status === 'inbox') stats.inboxTasksCount += 1;
-      if (task.status === 'active') stats.activeTasksCount += 1;
+      if (task.status === "inbox") stats.inboxTasksCount += 1;
+      if (task.status === "active") stats.activeTasksCount += 1;
 
       if (task.date && compareDates.isPastDate(task.date)) {
         const overdueTask = {
@@ -35,6 +35,6 @@ exports.getStats = async (req, res) => {
   } catch (error) {
     console.error(error.message);
 
-    res.status(500).send('Server error!');
+    res.status(500).send("Server error!");
   }
 };
