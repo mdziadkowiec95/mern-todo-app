@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Loader from '../../components/atoms/Loader/Loader'
-import ButtonIcon from '../../components/atoms/ButtonIcon/ButtonIcon'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -16,6 +15,7 @@ import ConfirmModal from '../../components/molecules/ConfirmModal/ConfirmModal'
 import Modal from '../../portals/Modal'
 import Heading from '../../components/atoms/Heading/Heading'
 import Button from '../../components/atoms/Button/Button'
+import IconSVG from '../../components/atoms/IconSVG/IconSVG'
 import FlexBox from '../../templates/FlexBox/FlexBox'
 import UploadModal from '../../components/organisms/UploadModal/UploadModal'
 import FileList from '../../components/molecules/FileList/FileList'
@@ -78,55 +78,62 @@ class ProjectContainer extends Component {
   }
 
   extendProjectFilePath = path => {
-    return path + `?auth=${this.props.authToken}`
+    return `/${path}?auth=${this.props.authToken}`
   }
 
   render() {
-    const { project, removeProject, isLoading, authToken, match } = this.props
+    const { project, removeProject, isLoading, match } = this.props
 
     if (isLoading) return <Loader fullScreen />
     if (!isLoading && (!project || !project._id)) return <p>Project does not exist</p>
 
     return (
       <div>
-        <button onClick={this.handleToggleUploadModal}>Toggle modal</button>
         <Heading primary center>
           {project.name}
         </Heading>
         <FlexBox center>
-          <Button primary asRouterLink goTo={`${match.url}/details`}>
+          <Button
+            primary
+            asRouterLink
+            goTo={`${match.url}/details`}
+            IconComponent={<IconSVG name="list" fill={config.colors.white} size="20px" />}
+          >
             Preview tasks
           </Button>
-          <ButtonIcon
-            name="minusBg"
-            color={config.colors['error-bg']}
+          <Button
+            secondary
+            onClickFn={this.handleToggleUploadModal}
+            IconComponent={<IconSVG name="upload" fill={config.colors.white} size="20px" />}
+          >
+            Upload files
+          </Button>
+          <Button
+            danger
             onClickFn={() => this.toggleConfirmModal(true)}
-          />
+            IconComponent={<IconSVG name="minusBg" fill={config.colors.white} size="20px" />}
+          >
+            Remove project
+          </Button>
         </FlexBox>
         <p>{project.description}</p>
-        {/* <h1>TODO:</h1>
-        <div>
-          <h3>1. Show task data:</h3>
-          <p>- title</p>
-          <p>- description</p>
-          <p>- color label</p>
-          <p>
-            - posibility to add images ??? (with limit up to 4?) (multer npm package)... Gallery
-            component example (https://blog.alexdevero.com/learn-react-practice-create-gallery/)
-          </p>
-          <p>- posibility to add external links</p>
-        </div> */}
 
-        <FileList files={project.files} extendFilePath={this.extendProjectFilePath} />
+        <section>
+          <Heading primary center>
+            Uploaded files
+          </Heading>
+          <FileList files={project.files} extendFilePath={this.extendProjectFilePath} />
+        </section>
 
-        {/* <img
-          src="\uploads\projects\5e39ab2051c737121910a7a5\20200209T202500780ZMicha Dziadkowiec.jpg"
-          alt=""
-        /> */}
         {this.state.isUploadModalOpen && (
-          <UploadModal onSubmit={this.handleOnSubmit} progress={this.props.uploadProgress} />
+          <Modal>
+            <UploadModal
+              onSubmit={this.handleOnSubmit}
+              onCancel={this.handleToggleUploadModal}
+              progress={this.props.uploadProgress}
+            />
+          </Modal>
         )}
-
         {this.state.isConfirmModalOpen && (
           <Modal>
             <ConfirmModal
@@ -155,6 +162,7 @@ ProjectContainer.propTypes = {
   removeProject: PropTypes.func.isRequired,
   uploadProjectFiles: PropTypes.func.isRequired,
   uploadProgress: PropTypes.array,
+  authToken: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
 }
 

@@ -73,6 +73,7 @@ const UploadZone = ({ isDisabled, onFilesAdded, acceptedFileTypes }) => {
 UploadZone.propTypes = {
   isDisabled: PropTypes.bool,
   onFilesAdded: PropTypes.func.isRequired,
+  acceptedFileTypes: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
 }
 
 UploadZone.defaultProps = {
