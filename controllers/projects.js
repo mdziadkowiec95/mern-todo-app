@@ -4,6 +4,8 @@ const Project = require('../models/Project');
 const Task = require('../models/Task');
 const multer = require('multer');
 const fs = require('fs');
+const util = require('util');
+const unLinkAsync = util.promisify(fs.unlink);
 
 const MAX_FILE_SIZE_MB = 1;
 const MAX_FILE_SIZE_TOTAL = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -91,7 +93,7 @@ const uploadProjectFiles = multer({
   fileFilter
 }).single('projectFile');
 
-exports.uploadFiles = async (req, res) => {
+exports.uploadFile = async (req, res) => {
   try {
     const project = await Project.findOne({
       _id: req.params.projectId,
@@ -139,15 +141,15 @@ exports.uploadFiles = async (req, res) => {
         mimetype: uploadedFile.mimetype
       };
 
-      project.files.push(newFile);
+      const filesNewLength = project.files.push(newFile);
 
       await project.save();
 
-      // @todo - store path in project mongoDB document (create an array of upload files)
+      const addedFile = project.files[filesNewLength - 1];
 
       res.json({
         msg: `${uploadedFile.originalname} file uploaded!`,
-        file: newFile,
+        file: addedFile,
         createdDate: Date.now(),
         success: true
       });
@@ -161,6 +163,47 @@ exports.uploadFiles = async (req, res) => {
         .json({ errors: [{ msg: 'Upload failed! Project not found.' }] });
 
     res.status(500).send('Server error!');
+  }
+};
+
+exports.removeFile = async (req, res) => {
+  try {
+    const project = await Project.findOne({
+      _id: req.params.projectId,
+      user: req.user.id
+    });
+
+    if (!project)
+      return res.status(404).json({ errors: [{ msg: 'Project not found!' }] });
+
+    const fileIndex = project.files.findIndex(
+      file => file._id.toString() === req.params.fileId
+    );
+
+    if (fileIndex === -1)
+      return res
+        .status(404)
+        .json({ errors: [{ msg: 'File does not exist!' }] });
+
+    const file = project.files[fileIndex];
+
+    if (!file.path.includes(req.params.projectId))
+      return res.status(401).json({
+        errors: [{ msg: 'You are not authorized to remove this file!' }]
+      });
+
+    project.files.splice(fileIndex, 1);
+
+    await project.save();
+    await unLinkAsync(file.path);
+
+    res.status(201).json({
+      msg: `File "${file.name}" has been deleted successfuly!`
+    });
+    return;
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error');
   }
 };
 

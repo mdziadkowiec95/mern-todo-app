@@ -93,9 +93,6 @@ const handlePromise = promise => {
 
 export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => {
   try {
-    dispatch(ProjectsActions.uploadProjectFilesBegin())
-
-    console.log(chosenFiles)
     // (preUploadFileList) - provide a list of all upload files data ahead of time.
     // This used when you decide to request multiple uploads at once and you want to validate
     // all files before first request to eventually return validation error early enough.
@@ -107,13 +104,13 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
 
     const promises = chosenFiles.map(async file => {
       const formData = new FormData()
-      // formData.append('preUploadFileList', JSON.stringify(preUploadFileList))
+      formData.append('preUploadFileList', JSON.stringify(preUploadFileList))
       formData.append('projectFile', file.fileData, file.fileData.name)
 
       const uploadId = uuid.v4()
 
       const [singleUpload, singleUploadError] = await handlePromise(
-        axios.put(`/api/projects/${projectId}/upload-files`, formData, {
+        axios.put(`/api/projects/${projectId}/upload-file`, formData, {
           onUploadProgress: function(progressEvent) {
             console.log(progressEvent)
             const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -144,6 +141,7 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
           uploaded: true,
           isError: false,
         }
+        dispatch(ProjectsActions.uploadProjectFileSuccess(singleUpload.data.file))
         dispatch(UIActions.updateUploadList(uploadItem))
       } else if (singleUploadError) {
         console.log('singleUploadError', singleUploadError)
@@ -163,14 +161,25 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
       return singleUpload
     })
 
-    // Do I need to run Promsise.all here?? We'll see :-D
     const uploads = await Promise.all(promises)
-
-    console.log('all uploads finished', uploads)
+    // eslint-disable-next-line
+    console.log('All files uploaded', uploads.length)
 
     // dispatch(ProjectsActions.uploadProjectFilesSuccess(formData))
   } catch (error) {
-    dispatch(ProjectsActions.uploadProjectFilesError())
+    handleErrorResponse(error, dispatch)
+  }
+}
+
+export const removeProjectFile = (projectId, fileId) => async dispatch => {
+  try {
+    dispatch(ProjectsActions.removeProjectFileBegin())
+
+    await axios.delete(`/api/projects/${projectId}/${fileId}`)
+
+    dispatch(ProjectsActions.removeProjectFileSuccess(fileId))
+  } catch (error) {
+    dispatch(ProjectsActions.removeProjectFileError())
     handleErrorResponse(error, dispatch)
   }
 }

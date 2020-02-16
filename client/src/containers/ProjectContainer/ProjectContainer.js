@@ -7,6 +7,7 @@ import {
   getSingleProject,
   removeProject,
   uploadProjectFiles,
+  removeProjectFile,
 } from '../../store/projects/async-actions'
 import config from '../../config'
 import { compose } from 'redux'
@@ -67,8 +68,13 @@ class ProjectContainer extends Component {
 
   handleOnSubmit = chosenFiles => {
     const projectId = this.props.match.params.id
-
     this.props.uploadProjectFiles(projectId, chosenFiles)
+    this.handleToggleUploadModal()
+  }
+
+  handleFileRemove = id => {
+    const projectId = this.props.match.params.id
+    this.props.removeProjectFile(projectId, id)
   }
 
   handleToggleUploadModal = () => {
@@ -122,7 +128,11 @@ class ProjectContainer extends Component {
           <Heading primary center>
             Uploaded files
           </Heading>
-          <FileList files={project.files} extendFilePath={this.extendProjectFilePath} />
+          <FileList
+            files={project.files}
+            extendFilePath={this.extendProjectFilePath}
+            onFileRemove={this.handleFileRemove}
+          />
         </section>
 
         {this.state.isUploadModalOpen && (
@@ -161,6 +171,7 @@ ProjectContainer.propTypes = {
   getSingleProject: PropTypes.func.isRequired,
   removeProject: PropTypes.func.isRequired,
   uploadProjectFiles: PropTypes.func.isRequired,
+  removeProjectFile: PropTypes.func.isRequired,
   uploadProgress: PropTypes.array,
   authToken: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
@@ -177,6 +188,9 @@ const mapStateToProps = ({
 })
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ getSingleProject, removeProject, uploadProjectFiles }, dispatch)
+  bindActionCreators(
+    { getSingleProject, removeProject, uploadProjectFiles, removeProjectFile },
+    dispatch,
+  )
 
 export default compose(connect(mapStateToProps, mapDispatchToProps), withRouter)(ProjectContainer)
