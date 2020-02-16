@@ -45,15 +45,17 @@ const FileListItem = ({ id, mimetype, name, path, readonly, onRemove }) => {
 }
 
 FileListItem.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   mimetype: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  path: PropTypes.string.isRequired,
+  path: PropTypes.string,
   readonly: PropTypes.bool,
   onRemove: PropTypes.func.isRequired,
 }
 
 FileListItem.defaultProps = {
+  id: null,
+  path: null,
   readonly: false,
 }
 

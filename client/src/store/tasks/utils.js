@@ -45,8 +45,6 @@ export const checkTaskContext = (pageContext, status, date, labels, projectId) =
 }
 
 export const getCurrentlyViewedTaskList = (state, payload) => {
-  debugger;
-
   const { pageContext, taskList } = state
   const { status, date, labels, project } = payload
   const projectId = project ? project._id : null
@@ -74,9 +72,9 @@ export const getCurrentlyViewedTaskList = (state, payload) => {
 export const getUpdatedTaskList = (state, payload) => {
   const { pageContext, taskList } = state
 
-  const { status, date, labels, project} = payload
+  const { status, date, labels, project } = payload
   const projectId = project ? project._id : null
-  
+
   const taskContext = checkTaskContext(pageContext, status, date, labels, projectId)
 
   const updatedTaskIndex = taskList.findIndex(task => task._id === payload._id)
@@ -107,7 +105,6 @@ export const getUpdatedTaskList = (state, payload) => {
     } else {
       updatedTaskList.push(payload)
     }
-
   } else {
     updatedTaskList.splice(updatedTaskIndex, 1)
   }
