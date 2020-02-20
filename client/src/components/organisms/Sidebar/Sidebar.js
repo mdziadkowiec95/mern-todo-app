@@ -11,6 +11,7 @@ import config from '../../../config'
 import ButtonIcon from '../../atoms/ButtonIcon/ButtonIcon'
 import { getLabelsAndProjects } from '../../../store/preferences/async-actions'
 import ManageLabelsModal from '../../molecules/ManageLabelsModal/ManageLabelsModal'
+import Popover from '../../molecules/Popover/Popover'
 
 const Sidebar = ({
   history,
@@ -76,14 +77,16 @@ const Sidebar = ({
               noItemsPlaceholder="You don't have any labels"
               onItemClick={handleSidebarClose}
               TabActionComponent={
-                <ButtonIcon
-                  name="edit"
-                  size="tiny"
-                  onClickFn={e => {
-                    e.stopPropagation()
-                    toggleManageLabelsModal(true)
-                  }}
-                />
+                <Popover text="Edit labels" position="top" delay={1000}>
+                  <ButtonIcon
+                    name="edit"
+                    size="tiny"
+                    onClickFn={e => {
+                      e.stopPropagation()
+                      toggleManageLabelsModal(true)
+                    }}
+                  />
+                </Popover>
               }
             />
           </div>
@@ -97,14 +100,16 @@ const Sidebar = ({
               noItemsPlaceholder="You don't have any projects"
               onItemClick={handleSidebarClose}
               TabActionComponent={
-                <ButtonIcon
-                  name="plus"
-                  size="tiny"
-                  onClickFn={e => {
-                    e.stopPropagation()
-                    history.push('/app/create-project')
-                  }}
-                />
+                <Popover text="Create project" position="top" delay={1000}>
+                  <ButtonIcon
+                    name="plus"
+                    size="tiny"
+                    onClickFn={e => {
+                      e.stopPropagation()
+                      history.push('/app/create-project')
+                    }}
+                  />
+                </Popover>
               }
             />
           </div>
