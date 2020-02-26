@@ -74,11 +74,27 @@ router.put(
 router.delete('/:projectId', authMiddleware, ProjectsController.removeProject);
 
 /**
- * @route POST api/projects/:projectId/upload-files
- * @desc Upload files for a project
+ * @route PUT api/projects/:projectId/upload-file
+ * @desc Upload file for a project
  * @access Private
  */
 
-router.put('/:projectId/upload-files', authMiddleware, ProjectsController.uploadFiles);
+router.put(
+  '/:projectId/upload-file',
+  authMiddleware,
+  ProjectsController.uploadFile
+);
+
+/**
+ * @route DELETE api/projects/:projectId/:fileId
+ * @desc Delete single file from specific project
+ * @access Private
+ */
+
+router.delete(
+  '/:projectId/:fileId',
+  authMiddleware,
+  ProjectsController.removeFile
+);
 
 module.exports = router;

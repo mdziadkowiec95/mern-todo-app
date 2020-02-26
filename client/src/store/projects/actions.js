@@ -53,17 +53,27 @@ export const removeProjectError = () => ({
   type: types.REMOVE_PROJECT_ERROR,
 })
 
-export const uploadProjectFilesBegin = () => ({
-  type: types.UPLOAD_PROJECT_FILES_BEGIN,
-})
-
-export const uploadProjectFilesSuccess = uploadedFiles => ({
-  type: types.UPLOAD_PROJECT_FILES_SUCCESS,
+export const uploadProjectFileSuccess = uploadedFile => ({
+  type: types.UPLOAD_PROJECT_FILE_SUCCESS,
   payload: {
-    uploadedFiles,
+    uploadedFile,
   },
 })
 
-export const uploadProjectFilesError = () => ({
-  type: types.UPLOAD_PROJECT_FILES_ERROR,
+export const removeProjectFileBegin = () => ({
+  type: types.REMOVE_PROJECT_FILE_BEGIN,
+})
+
+/**
+ * @param {string} fileId DB indentifier of a project file
+ */
+export const removeProjectFileSuccess = fileId => ({
+  type: types.REMOVE_PROJECT_FILE_SUCCESS,
+  payload: {
+    fileId,
+  },
+})
+
+export const removeProjectFileError = () => ({
+  type: types.REMOVE_PROJECT_FILE_ERROR,
 })

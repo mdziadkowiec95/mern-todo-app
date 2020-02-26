@@ -1,6 +1,6 @@
 node_modules
 config/default.js
-.vs-code
+.vscode
 coverage
 client/.env
 uploads
