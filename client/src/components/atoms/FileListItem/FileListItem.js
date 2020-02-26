@@ -5,6 +5,7 @@ import IconSVG from '../IconSVG/IconSVG'
 import config from '../../../config'
 import cn from 'classnames'
 import ButtonIcon from '../ButtonIcon/ButtonIcon'
+import Popover from '../../molecules/Popover/Popover'
 
 const FileListItem = ({ id, mimetype, name, path, readonly, onRemove }) => {
   const isPdfFile = mimetype => mimetype === 'application/pdf'
@@ -29,16 +30,24 @@ const FileListItem = ({ id, mimetype, name, path, readonly, onRemove }) => {
       <span className={styles.name} title={name}>
         {name}
       </span>
-      <ButtonIcon name="minusBg" color={config.colors['error-bg']} onClickFn={() => onRemove(id)} />
+      <Popover text="Remove file" position="top">
+        <ButtonIcon
+          name="minusBg"
+          color={config.colors['error-bg']}
+          onClickFn={() => onRemove(id)}
+        />
+      </Popover>
       {!readonly && (
-        <a
-          href={`${path}`}
-          rel="noopener noreferrer"
-          target="_blank"
-          className={styles.previewLink}
-        >
-          <IconSVG name="magnifier" fill={config.colors.tertiary} />
-        </a>
+        <Popover text="Preview file">
+          <a
+            href={`${path}`}
+            rel="noopener noreferrer"
+            target="_blank"
+            className={styles.previewLink}
+          >
+            <IconSVG name="magnifier" fill={config.colors.tertiary} />
+          </a>
+        </Popover>
       )}
     </div>
   )
