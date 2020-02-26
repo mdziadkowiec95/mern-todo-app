@@ -1,11 +1,13 @@
 const { validationResult } = require('express-validator');
 const { convertUploadFileName } = require('../utils/stringFormatting');
+const { asyncForEach } = require('../utils/arrays');
 const Project = require('../models/Project');
 const Task = require('../models/Task');
 const multer = require('multer');
 const fs = require('fs');
 const util = require('util');
 const unLinkAsync = util.promisify(fs.unlink);
+const accessAsync = util.promisify(fs.access);
 
 const MAX_FILE_SIZE_MB = 1;
 const MAX_FILE_SIZE_TOTAL = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -92,6 +94,31 @@ const uploadProjectFiles = multer({
   },
   fileFilter
 }).single('projectFile');
+
+const cleanNonExistingProjectFiles = async project => {
+  console.log(`[CLEAN NON EXISTING FILES] ${new Date()} ------`);
+  console.log(`>>> project._id:  ${project._id}`);
+
+  if (project.files && project.files.length > 0) {
+    await asyncForEach(project.files, async (file, i) => {
+      // Check if project exists
+      try {
+        await accessAsync(file.path);
+      } catch (error) {
+        console.error(error);
+        // If file does not exits then mark file as 'null'
+        project.files[i] = null;
+      }
+    });
+
+    // Filter null values after all files are checked
+    project.files = project.files.filter(f => f);
+
+    await project.save();
+  }
+};
+
+exports.cleanNonExistedFiles;
 
 exports.uploadFile = async (req, res) => {
   try {
@@ -230,6 +257,15 @@ exports.getSingleProject = async (req, res) => {
 
     if (!project)
       return res.status(404).json({ errors: [{ msg: 'Project not found!' }] });
+
+    // ----------- Workaround for Heroku purposes ------------
+    // This is a function which clears file references stored in database
+    // when associated file is not located under the './uploads' directory
+    // WHY? I use Heroku filesystem in order to store uploaded files and Heroku clears
+    // file storage from time to time. Because it is just my portfolio project I've decided
+    // to create such a function just to avoid the situation when an user have some file
+    // references stored but associated files on Heroku have already been deleted
+    await cleanNonExistingProjectFiles(project);
 
     res.json(project);
     return;
