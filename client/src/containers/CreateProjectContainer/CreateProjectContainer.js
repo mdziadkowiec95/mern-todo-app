@@ -11,6 +11,11 @@ import FormWrapper from '../../templates/FormWrapper/FormWrapper'
 import ColorPicker from '../../components/atoms/ColorPicker/ColorPicker'
 import { createProject } from '../../store/projects/async-actions'
 import { withRouter } from 'react-router'
+import Label from '../../components/atoms/Label/Label'
+import FlexBox from '../../templates/FlexBox/FlexBox'
+import Heading from '../../components/atoms/Heading/Heading'
+
+const DEFAULT_PROJECT_COLOR = '#ff0000'
 
 class CreateProjectInner extends Component {
   handleColorSelect = color => {
@@ -31,7 +36,7 @@ class CreateProjectInner extends Component {
     return (
       <FormWrapper>
         <form onSubmit={handleSubmit}>
-          <h2>Create new project</h2>
+          <Heading primary>Create new project</Heading>
           <TextField
             isError={errors.name && touched.name}
             isSolid
@@ -55,7 +60,10 @@ class CreateProjectInner extends Component {
           {errors.desccription && touched.desccription && (
             <FormErrorMessage errors={errors.desccription} />
           )}
-          <ColorPicker selectedColor={values.color} onSelectColor={this.handleColorSelect} />
+          <FlexBox center>
+            <Label>Pick a color</Label>
+            <ColorPicker selectedColor={values.color} onSelectColor={this.handleColorSelect} />
+          </FlexBox>
           <Button block isSubmit isBlock primary disabled={isSubmitting}>
             Create
           </Button>
@@ -76,12 +84,12 @@ const CreateProjectSchema = Yup.object().shape({
 const CreateProjectContainer = withFormik({
   mapPropsToValues: () => ({
     name: '',
-    color: '',
+    color: DEFAULT_PROJECT_COLOR,
     description: '',
   }),
   validationSchema: CreateProjectSchema,
 
-  async handleSubmit({ name, description, color }, { props, resetForm, setFieldValue }) {
+  async handleSubmit({ name, description, color }, { props }) {
     const projectData = {
       name,
       color,
@@ -100,9 +108,10 @@ CreateProjectInner.propTypes = {
   values: PropTypes.object.isRequired,
   errors: PropTypes.object,
   touched: PropTypes.object,
-  handleChange: PropTypes.func,
-  handleBlur: PropTypes.func,
-  handleSubmit: PropTypes.func,
+  handleChange: PropTypes.func.isRequired,
+  handleBlur: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  setFieldValue: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool.isRequired,
   createProject: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,

@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server");
-const User = require("../models/User");
-const Task = require("../models/Task");
-const Project = require("../models/Project");
-const ProjectsController = require("../controllers/projects");
-const { ResponseWithErrorsArray, generateObjectId } = require("./__utils");
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const User = require('../models/User');
+const Task = require('../models/Task');
+const Project = require('../models/Project');
+const ProjectsController = require('../controllers/projects');
+const { ResponseWithErrorsArray, generateObjectId } = require('./__utils');
 
 // May require additional time for downloading MongoDB binaries
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 600000;
@@ -17,7 +17,7 @@ const opts = {
 };
 
 // Fake user data
-const fakeUserId = "5db48b795dd65f0609cc7e72";
+const fakeUserId = '5db48b795dd65f0609cc7e72';
 
 let taskWithProject, taskWithLabel1, taskWithLabel2;
 
@@ -29,9 +29,9 @@ beforeAll(async () => {
 
     const user = new User({
       _id: fakeUserId,
-      email: "user@test.pl",
-      password: "123123123",
-      name: "Test User"
+      email: 'user@test.pl',
+      password: '123123123',
+      name: 'Test User'
     });
 
     user.save();
@@ -54,7 +54,7 @@ beforeAll(async () => {
           project: {
             _id: generateObjectId(1),
             name: `project_5`,
-            color: "#fff"
+            color: '#fff'
           }
         }).save();
       }
@@ -69,17 +69,17 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
-describe("ProjectsController tests", () => {
-  describe("addProject", () => {
-    it("should return 400 error if user already created project same name", done => {
-      const existingProject = "project_4";
+describe('ProjectsController tests', () => {
+  describe('addProject', () => {
+    it('should return 400 error if user already created project same name', done => {
+      const existingProject = 'project_4';
       const req = {
         user: {
           id: fakeUserId
         },
         body: {
           name: existingProject,
-          color: "#fff"
+          color: '#fff'
         }
       };
       const res = new ResponseWithErrorsArray();
@@ -91,11 +91,11 @@ describe("ProjectsController tests", () => {
         done();
       });
     });
-    it("should return created project if added with success", done => {
+    it('should return created project if added with success', done => {
       const newProject = {
-        name: "project_9",
-        color: "#444",
-        description: "Dummy description"
+        name: 'project_9',
+        color: '#444',
+        description: 'Dummy description'
       };
       const req = {
         user: {
@@ -124,26 +124,26 @@ describe("ProjectsController tests", () => {
       });
     });
 
-    it("should return 400 error when user reaches limit of projects", done => {
+    it('should return 400 error when user reaches limit of projects', done => {
       const req = {
         user: {
           id: fakeUserId
         },
         body: {
-          name: "Some name",
-          color: "#fff"
+          name: 'Some name',
+          color: '#fff'
         }
       };
       const res = new ResponseWithErrorsArray();
       ProjectsController.createProject(req, res).then(() => {
         expect(res.statusCode).toBe(400);
-        expect(res.errors[0].msg).toBe("You can create up to 10 projects!");
+        expect(res.errors[0].msg).toBe('You can create up to 10 projects!');
         done();
       });
     });
   });
-  describe("removeProject", () => {
-    it("should return removed project ID if removed successfully", done => {
+  describe('removeProject', () => {
+    it('should return removed project ID if removed successfully', done => {
       const req = {
         user: {
           id: fakeUserId
@@ -168,12 +168,12 @@ describe("ProjectsController tests", () => {
       ProjectsController.removeProject(req, res).then(() => {
         expect(res.statusCode).toBe(200);
         expect(res.removedProjectId).toBe(generateObjectId(6));
-        expect(res.msg).toBe("Project has been removed!");
+        expect(res.msg).toBe('Project has been removed!');
         done();
       });
     });
 
-    it("should return remove project from also from user Tasks if removed successfully", done => {
+    it('should return remove project from also from user Tasks if removed successfully', done => {
       const req = {
         user: {
           id: fakeUserId
@@ -197,12 +197,12 @@ describe("ProjectsController tests", () => {
     });
   });
 
-  describe("updateProject", () => {
-    it("should return updated project if modifed successfully", done => {
+  describe('updateProject', () => {
+    it('should return updated project if modifed successfully', done => {
       const updatedProject = {
-        name: "project_4 updated",
-        color: "#323232",
-        description: "Updated description"
+        name: 'project_4 updated',
+        color: '#323232',
+        description: 'Updated description'
       };
       const req = {
         user: {
@@ -224,7 +224,7 @@ describe("ProjectsController tests", () => {
           this.updatedProject = data;
         }
       };
-      ProjectsController.updateProject(req, res).then(() => {
+      ProjectsController.updateProjectBaseInfo(req, res).then(() => {
         expect(res.statusCode).toBe(200);
         expect(res.updatedProject).toEqual(
           expect.objectContaining({
@@ -236,7 +236,7 @@ describe("ProjectsController tests", () => {
       });
     });
 
-    it("should return updated project if modifed successfully", done => {
+    it('should return updated project if modifed successfully', done => {
       const req = {
         user: {
           id: fakeUserId
@@ -245,14 +245,14 @@ describe("ProjectsController tests", () => {
           projectId: generateObjectId(6)
         },
         body: {
-          name: "project_6_updated",
-          color: "#323232"
+          name: 'project_6_updated',
+          color: '#323232'
         }
       };
       const res = new ResponseWithErrorsArray();
-      ProjectsController.updateProject(req, res).then(() => {
+      ProjectsController.updateProjectBaseInfo(req, res).then(() => {
         expect(res.statusCode).toBe(404);
-        expect(res.errors[0].msg).toBe("Project not found!");
+        expect(res.errors[0].msg).toBe('Project not found!');
         done();
       });
     });

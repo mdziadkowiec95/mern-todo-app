@@ -113,7 +113,6 @@ const Sidebar = ({
               }
             />
           </div>
-          {/* {isAddLabelModalOpen && <AddLabelModal />} */}
           {isManageLabelsModalOpen && <ManageLabelsModal />}
         </div>
       </aside>

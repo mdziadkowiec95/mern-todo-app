@@ -1,0 +1,19 @@
+@import 'utils/utils';
+
+.color {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  margin: 0 0.5rem 0.5rem 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow 0.1s map-get($easings, primary), opacity 0.1s map-get($easings, primary),
+    transform 0.1s map-get($easings, primary);
+
+  &--active {
+    &:hover {
+      opacity: 0.9;
+      transform: scale(1.05);
+    }
+  }
+}

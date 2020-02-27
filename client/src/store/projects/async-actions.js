@@ -112,7 +112,6 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
       const [singleUpload, singleUploadError] = await handlePromise(
         axios.put(`/api/projects/${projectId}/upload-file`, formData, {
           onUploadProgress: function(progressEvent) {
-            console.log(progressEvent)
             const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
 
             const uploadItem = {
@@ -128,12 +127,7 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
         }),
       )
 
-      // @todo - process each file separately depenging on upload status
-      // IF stored successfuly then dispatch action to add file to Redux stroe
-      //
-
       if (singleUpload) {
-        console.log('singleUpload', singleUpload)
         const uploadItem = {
           id: uploadId,
           fileName: file.fileData.name,
@@ -144,7 +138,6 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
         dispatch(ProjectsActions.uploadProjectFileSuccess(singleUpload.data.file))
         dispatch(UIActions.updateUploadList(uploadItem))
       } else if (singleUploadError) {
-        console.log('singleUploadError', singleUploadError)
         const uploadItem = {
           id: uploadId,
           fileName: file.fileData.name,
@@ -160,12 +153,6 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
 
       return singleUpload
     })
-
-    const uploads = await Promise.all(promises)
-    // eslint-disable-next-line
-    console.log('All files uploaded', uploads.length)
-
-    // dispatch(ProjectsActions.uploadProjectFilesSuccess(formData))
   } catch (error) {
     handleErrorResponse(error, dispatch)
   }
@@ -181,5 +168,31 @@ export const removeProjectFile = (projectId, fileId) => async dispatch => {
   } catch (error) {
     dispatch(ProjectsActions.removeProjectFileError())
     handleErrorResponse(error, dispatch)
+  }
+}
+
+export const updateProjectBaseInfo = ({ _id, name, description, color }) => async dispatch => {
+  try {
+    dispatch(ProjectsActions.updateProjectBaseInfoBegin())
+
+    const res = await axios.put(`/api/projects/${_id}`, {
+      name,
+      description,
+      color,
+    })
+
+    const updatedData = res.data
+
+    return dispatch(
+      ProjectsActions.updateProjectBaseInfoSuccess(
+        updatedData._id,
+        updatedData.name,
+        updatedData.description,
+        updatedData.color,
+      ),
+    )
+  } catch (error) {
+    dispatch(ProjectsActions.updateProjectBaseInfoError())
+    return handleErrorResponse(error, dispatch)
   }
 }

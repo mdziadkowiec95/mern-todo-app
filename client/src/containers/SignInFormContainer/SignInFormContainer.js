@@ -9,6 +9,7 @@ import Button from '../../components/atoms/Button/Button'
 import FormErrorMessage from '../../components/atoms/FormErrorMessage/FormErrorMessage'
 import { loginUser } from '../../store/auth/thunks'
 import FormWrapper from '../../templates/FormWrapper/FormWrapper'
+import Heading from '../../components/atoms/Heading/Heading'
 
 class SignInFormInner extends Component {
   render() {
@@ -25,7 +26,7 @@ class SignInFormInner extends Component {
     return (
       <FormWrapper>
         <form onSubmit={handleSubmit}>
-          <h2>Sign In</h2>
+          <Heading primary>Sign In</Heading>
           <TextField
             isError={errors.userEmail && touched.userEmail}
             isSolid

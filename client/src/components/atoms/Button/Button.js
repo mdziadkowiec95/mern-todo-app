@@ -18,6 +18,7 @@ const Button = ({
   asLink,
   goTo,
   title,
+  small,
   IconComponent,
   onClickFn,
   children,
@@ -32,6 +33,7 @@ const Button = ({
     [styles.danger]: danger,
     [styles.block]: block,
     [styles.blockMobile]: blockMobile,
+    [styles.small]: small,
     [styles.withIcon]: IconComponent,
   })
 
@@ -85,6 +87,7 @@ Button.propTypes = {
   asLink: PropTypes.bool,
   goTo: PropTypes.string,
   title: PropTypes.string,
+  small: PropTypes.bool,
   onClickFn: PropTypes.func,
 }
 
