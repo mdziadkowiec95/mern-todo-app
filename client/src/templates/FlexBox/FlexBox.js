@@ -1,11 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import cn from 'classnames'
+import classNames from 'classnames/bind'
 import styles from './FlexBox.module.scss'
 
-const FlexBox = ({ center, children }) => {
-  const FlexBoxClassName = cn(styles.box, {
-    [styles.center]: center,
+const cn = classNames.bind(styles)
+
+const FlexBox = ({ center, spaceBetween, children }) => {
+  const FlexBoxClassName = cn('box', {
+    'box--center': center,
+    'box--space-between': spaceBetween,
   })
 
   return <div className={FlexBoxClassName}>{children}</div>

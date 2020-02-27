@@ -1,21 +1,28 @@
 @import 'utils/utils';
 
-.palleteWrap {
-  display: flex;
-  flex-wrap: wrap;
-}
+.picker {
+  position: relative;
+  display: inline-block;
 
-.color {
-  width: 28px;
-  height: 28px;
-  margin: 0 0.5rem 0.5rem 0.5rem;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: box-shadow 0.1s map-get($easings, primary), opacity 0.1s map-get($easings, primary),
-    transform 0.1s map-get($easings, primary);
+  &__pallete {
+    position: absolute;
+    top: calc(100% + 1rem);
+    left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    z-index: 20;
+    min-width: 220px;
+    padding: 1.2rem 1rem;
+    background-color: map-get($colors, white);
+    border-radius: map-get($radius, normal);
+    animation: fade-in 0.2s map-get($easings, primary);
 
-  &:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
+    @extend %shadow-100;
+
+    &--rtl {
+      left: auto;
+      right: 0;
+    }
   }
 }

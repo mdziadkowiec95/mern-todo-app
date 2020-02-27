@@ -20,5 +20,6 @@ export const NAMES = [
   'pdf',
   'exclamationMark',
   'magnifier',
-  'list'
+  'list',
+  'save'
 ]

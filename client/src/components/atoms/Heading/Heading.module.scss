@@ -1,19 +1,23 @@
 @import 'utils/utils';
 
-.primary {
-  color: map-get($colors, primary);
-}
+.heading {
+  margin-bottom: 1rem;
 
-.secondary {
-  color: map-get($colors, secondary);
-}
+  &--primary {
+    color: map-get($colors, primary);
+  }
 
-.tertiary {
-  color: map-get($colors, tertiary);
-}
+  &--secondary {
+    color: map-get($colors, secondary);
+  }
 
-.center {
-  text-align: center;
+  &--tertiary {
+    color: map-get($colors, tertiary);
+  }
+
+  &--center {
+    text-align: center;
+  }
 }
 
 // Sizes

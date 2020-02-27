@@ -13,6 +13,8 @@ import { addLabel, editLabel } from '../../../store/preferences/async-actions'
 import PropTypes from 'prop-types'
 import Button from '../../atoms/Button/Button'
 
+const DEFAULT_LABEL_COLOR = '#ff0000'
+
 const AddLabelModalBase = ({
   values,
   touched,
@@ -48,7 +50,7 @@ const AddLabelModalBase = ({
         />
         <div className={styles.addLabelBtnWrap}>
           <Button isSubmit primary>
-            Done
+            Add
           </Button>
         </div>
       </form>
@@ -65,10 +67,18 @@ const AddTaskModalValidationSchema = Yup.object().shape({
 })
 
 const AddLabelModal = withFormik({
-  mapPropsToValues: ({ existingLabel }) => ({
-    name: existingLabel.name,
-    color: existingLabel.color,
-  }),
+  mapPropsToValues: ({ existingLabel }) => {
+    if (existingLabel._id) {
+      return {
+        name: existingLabel.name,
+        color: existingLabel.color,
+      }
+    }
+    return {
+      name: '',
+      color: DEFAULT_LABEL_COLOR,
+    }
+  },
 
   // Custom sync validation
   validationSchema: AddTaskModalValidationSchema,

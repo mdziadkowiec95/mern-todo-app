@@ -62,7 +62,7 @@ router.put(
       (color, { req }) => color && isValidColor(color)
     )
   ],
-  ProjectsController.updateProject
+  ProjectsController.updateProjectBaseInfo
 );
 
 /**

@@ -20,14 +20,24 @@ import IconSVG from '../../components/atoms/IconSVG/IconSVG'
 import FlexBox from '../../templates/FlexBox/FlexBox'
 import UploadModal from '../../components/organisms/UploadModal/UploadModal'
 import FileList from '../../components/molecules/FileList/FileList'
+import ContentWrapper from '../../templates/ContentWrapper/ContentWrapper'
+import ColorPicker from '../../components/atoms/ColorPicker/ColorPicker'
+import Label from '../../components/atoms/Label/Label'
+import ColorDot from '../../components/atoms/ColorDot/ColorDot'
+import ButtonIcon from '../../components/atoms/ButtonIcon/ButtonIcon'
+import TextField from '../../components/atoms/TextField/TextField'
+import { withFormik } from 'formik'
+import * as Yup from 'yup'
+import { updateProjectBaseInfo } from '../../store/projects/async-actions'
 
-class ProjectContainer extends Component {
+class ProjectContainerInner extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       isConfirmModalOpen: false,
       isUploadModalOpen: false,
+      isEditMode: false,
     }
   }
 
@@ -66,6 +76,12 @@ class ProjectContainer extends Component {
     })
   }
 
+  toggleEditMode = () => {
+    this.setState(state => ({
+      isEditMode: !state.isEditMode,
+    }))
+  }
+
   handleOnSubmit = chosenFiles => {
     const projectId = this.props.match.params.id
     this.props.uploadProjectFiles(projectId, chosenFiles)
@@ -83,21 +99,101 @@ class ProjectContainer extends Component {
     }))
   }
 
+  cancelEditMode = () => {
+    const { name, color, description } = this.props.project
+    this.props.setValues({ name, color, description })
+    this.toggleEditMode()
+  }
+
+  handleFormSubmit = e => {
+    this.props.handleSubmit(e)
+    this.toggleEditMode()
+  }
+
   extendProjectFilePath = path => {
     return `/${path}?auth=${this.props.authToken}`
   }
 
   render() {
-    const { project, removeProject, isLoading, match } = this.props
+    const {
+      project,
+      removeProject,
+      isLoading,
+      match,
+      values,
+      errors,
+      touched,
+      handleChange,
+      handleBlur,
+      isSubmitting,
+      setFieldValue,
+    } = this.props
+    const { isEditMode } = this.state
 
     if (isLoading) return <Loader fullScreen />
     if (!isLoading && (!project || !project._id)) return <p>Project does not exist</p>
 
     return (
-      <div>
-        <Heading primary center>
-          {project.name}
-        </Heading>
+      <ContentWrapper>
+        <form onSubmit={this.handleFormSubmit}>
+          {!isEditMode && !isSubmitting ? (
+            <FlexBox spaceBetween>
+              <ButtonIcon name="edit" size="small" onClickFn={this.toggleEditMode} />
+              <ColorDot color={project.color} />
+            </FlexBox>
+          ) : (
+            <FlexBox spaceBetween>
+              <FlexBox>
+                <Button secondary small onClickFn={this.cancelEditMode}>
+                  Cancel
+                </Button>
+                <Button isSubmit primary small disabled={isSubmitting}>
+                  Save
+                </Button>
+              </FlexBox>
+              <FlexBox centerMd>
+                <Label>Pick a color</Label>
+                <ColorPicker
+                  selectedColor={values.color}
+                  onSelectColor={color => setFieldValue('color', color)}
+                  direction="rtl"
+                />
+              </FlexBox>
+            </FlexBox>
+          )}
+
+          {!isEditMode && !isSubmitting ? (
+            <>
+              <Heading primary center>
+                {project.name}
+              </Heading>
+              <p>{project.description}</p>
+            </>
+          ) : (
+            <>
+              <TextField
+                isError={errors.name && touched.name}
+                isSolid
+                onChangeFn={handleChange}
+                onBlurFn={handleBlur}
+                inputValue={values.name}
+                name="name"
+                placeholder="Enter project name"
+              />
+              <TextField
+                isError={errors.description && touched.description}
+                isSolid
+                type="textarea"
+                onChangeFn={handleChange}
+                onBlurFn={handleBlur}
+                inputValue={values.description}
+                name="description"
+                placeholder="Enter project description"
+              />
+            </>
+          )}
+        </form>
+
         <FlexBox center>
           <Button
             primary
@@ -122,7 +218,6 @@ class ProjectContainer extends Component {
             Remove project
           </Button>
         </FlexBox>
-        <p>{project.description}</p>
 
         <section>
           <Heading primary center>
@@ -153,12 +248,40 @@ class ProjectContainer extends Component {
             />
           </Modal>
         )}
-      </div>
+      </ContentWrapper>
     )
   }
 }
 
-ProjectContainer.propTypes = {
+const ProjectBaseInfoSchema = Yup.object().shape({
+  name: Yup.string().required('Project name is required'),
+  color: Yup.string().required('Project color is required'),
+})
+
+const ProjectContainer = withFormik({
+  mapPropsToValues: ({ project }) => {
+    if (project) {
+      return {
+        name: project.name,
+        color: project.color,
+        description: project.description,
+      }
+    }
+  },
+  enableReinitialize: true,
+  validationSchema: ProjectBaseInfoSchema,
+
+  handleSubmit: async ({ name, color, description }, { props }) => {
+    await props.updateProjectBaseInfo({
+      _id: props.project._id,
+      name,
+      description,
+      color,
+    })
+  },
+})(ProjectContainerInner)
+
+ProjectContainerInner.propTypes = {
   history: PropTypes.object.isRequired,
   project: PropTypes.shape({
     _id: PropTypes.string,
@@ -167,14 +290,32 @@ ProjectContainer.propTypes = {
     description: PropTypes.string,
     files: PropTypes.array,
   }),
+  values: PropTypes.object,
+  errors: PropTypes.object,
+  touched: PropTypes.object,
+  handleChange: PropTypes.func,
+  handleBlur: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  isSubmitting: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   getSingleProject: PropTypes.func.isRequired,
   removeProject: PropTypes.func.isRequired,
   uploadProjectFiles: PropTypes.func.isRequired,
+  setFieldValue: PropTypes.func.isRequired,
   removeProjectFile: PropTypes.func.isRequired,
   uploadProgress: PropTypes.array,
   authToken: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
+}
+
+ProjectContainerInner.defaultProps = {
+  project: {
+    _id: null,
+    name: '',
+    color: '#ff0000',
+    description: '',
+    files: [],
+  },
 }
 
 const mapStateToProps = ({
@@ -189,7 +330,13 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
-    { getSingleProject, removeProject, uploadProjectFiles, removeProjectFile },
+    {
+      getSingleProject,
+      removeProject,
+      uploadProjectFiles,
+      removeProjectFile,
+      updateProjectBaseInfo,
+    },
     dispatch,
   )
 
