@@ -9,8 +9,6 @@ import TaskList from '../../components/molecules/TaskList/TaskList'
 
 class TasksContainer extends Component {
   componentDidMount() {
-    // eslint-disable-next-line
-    console.log(`TaskContainer mounted ${this.props.pageType}`)
     this.fetchTasks()
   }
   componentDidUpdate(prevProps) {
@@ -63,9 +61,9 @@ class TasksContainer extends Component {
     const { tasks, pageType, isLoading } = this.props
 
     return (
-      <div>
+      <>
         <TaskList pageType={pageType} tasks={tasks} isLoading={isLoading} />
-      </div>
+      </>
     )
   }
 }

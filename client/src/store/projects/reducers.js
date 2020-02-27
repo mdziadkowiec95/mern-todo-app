@@ -13,6 +13,7 @@ export const projectsReducer = (state = initialState, action) => {
     case types.CREATE_PROJECT_BEGIN:
     case types.REMOVE_PROJECT_BEGIN:
     case types.REMOVE_PROJECT_FILE_BEGIN:
+    case types.UPDATE_PROJECT_BASE_INFO_BEGIN:
       return {
         ...state,
         isLoading: true,
@@ -60,9 +61,25 @@ export const projectsReducer = (state = initialState, action) => {
         },
         isLoading: false,
       }
+    case types.UPDATE_PROJECT_BASE_INFO_SUCCESS:
+      if (!state.project || state.project._id !== payload._id) return state
+
+      const { name, description, color } = payload
+
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          name,
+          description,
+          color,
+        },
+        isLoading: false,
+      }
     case types.CREATE_PROJECT_ERROR:
     case types.REMOVE_PROJECT_ERROR:
     case types.REMOVE_PROJECT_FILE_ERROR:
+    case types.UPDATE_PROJECT_BASE_INFO_ERROR:
       return {
         ...state,
         isLoading: false,

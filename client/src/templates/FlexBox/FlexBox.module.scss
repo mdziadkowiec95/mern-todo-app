@@ -4,15 +4,19 @@
   display: flex;
   flex-direction: column;
   padding: 1rem 0;
+  align-items: center;
 
   @include breakpoint-up(tablet) {
     flex-direction: row;
   }
 
-  &.center {
+  &--center {
     @include breakpoint-up(tablet) {
       justify-content: center;
-      align-items: center;
     }
+  }
+
+  &--space-between {
+    justify-content: space-between;
   }
 }

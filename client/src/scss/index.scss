@@ -41,7 +41,8 @@ input:focus {
 }
 
 input,
-select {
+select,
+textarea {
   border: 1px solid map-get($colors, secondary);
   color: map-get($colors, dark);
   outline: none;

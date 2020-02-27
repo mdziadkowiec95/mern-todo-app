@@ -1,20 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styles from './Heading.module.scss'
-import cn from 'classnames'
+import classNames from 'classnames/bind'
+
+const cn = classNames.bind(styles)
 
 const Heading = ({ primary, secondary, tertiary, tagSize, center, className, children }) => {
-  const headingClass = cn(styles.heading, {
-    [styles.primary]: primary,
-    [styles.secondary]: secondary,
-    [styles.tertiary]: tertiary,
-    [styles.center]: center,
-  }, className)
+  const HeadingClassName = cn(
+    'heading',
+    {
+      'heading--primary': primary,
+      'heading--secondary': secondary,
+      'heading--tertiary': tertiary,
+      'heading--center': center,
+    },
+    className,
+  )
 
   const sizeInt = Math.floor(tagSize)
   const Tag = sizeInt >= 1 && sizeInt <= 6 ? `h${tagSize}` : 'h2'
 
-  return <Tag className={headingClass}>{children}</Tag>
+  return <Tag className={HeadingClassName}>{children}</Tag>
 }
 
 Heading.propTypes = {
@@ -24,13 +30,13 @@ Heading.propTypes = {
   secondary: PropTypes.bool,
   tertiary: PropTypes.bool,
   center: PropTypes.bool,
-  className: PropTypes.string
+  className: PropTypes.string,
 }
 
 Heading.defaultProps = {
   tagSize: 2,
   center: false,
-  className: ''
+  className: '',
 }
 
 export default Heading

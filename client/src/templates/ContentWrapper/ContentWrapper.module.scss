@@ -1,0 +1,10 @@
+@import 'utils/utils';
+
+.wrapper {
+  padding: 2rem;
+  background: map-get($colors, white);
+  border-radius: map-get($radius, normal);
+  min-height: 100vh;
+
+  @extend %shadow-100;
+}

@@ -328,7 +328,7 @@ exports.createProject = async (req, res) => {
   }
 };
 
-exports.updateProject = async (req, res) => {
+exports.updateProjectBaseInfo = async (req, res) => {
   const projectId = req.params.projectId;
   const { name, color, description } = req.body;
 

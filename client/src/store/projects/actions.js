@@ -77,3 +77,24 @@ export const removeProjectFileSuccess = fileId => ({
 export const removeProjectFileError = () => ({
   type: types.REMOVE_PROJECT_FILE_ERROR,
 })
+
+export const updateProjectBaseInfoBegin = () => ({
+  type: types.UPDATE_PROJECT_BASE_INFO_BEGIN,
+})
+
+/**
+ * @param {Object} projectData updated project data
+ */
+export const updateProjectBaseInfoSuccess = (_id, name, description, color) => ({
+  type: types.UPDATE_PROJECT_BASE_INFO_SUCCESS,
+  payload: {
+    _id,
+    name,
+    description,
+    color,
+  },
+})
+
+export const updateProjectBaseInfoError = () => ({
+  type: types.UPDATE_PROJECT_BASE_INFO_ERROR,
+})
