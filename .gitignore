@@ -5,3 +5,4 @@ coverage
 client/.env
 uploads
 .env
+.DS_Store

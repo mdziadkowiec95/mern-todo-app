@@ -32,11 +32,6 @@ const ColorPicker = ({ colors, onSelectColor, selectedColor, direction }) => {
 
   const colorPallete = Object.values(colors)
 
-  const createSingleColorStyles = color => ({
-    backgroundColor: color,
-    boxShadow: `${color} 0px 0px 0px 14px inset`,
-  })
-
   const handleColorSelect = color => {
     onSelectColor(color)
     setIsOpen(false)

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import Moment from 'react-moment'
 import PropTypes from 'prop-types'
 import styles from './TaskCard.module.scss'

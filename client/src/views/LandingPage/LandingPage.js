@@ -3,10 +3,12 @@ import styles from './LandingPage.module.scss'
 import Heading from '../../components/atoms/Heading/Heading'
 import Button from '../../components/atoms/Button/Button'
 import Container from '../../templates/Container/Container'
+import appLogo from '../../assets/app-logo-192.png'
 
 const LandingPage = () => {
   return (
     <div className={styles.main}>
+      <img src={appLogo} alt="Productive App - brand logo" className={styles.appLogo} />
       <Container>
         <div className={styles.hero}>
           <Heading primary tagSize={1}>

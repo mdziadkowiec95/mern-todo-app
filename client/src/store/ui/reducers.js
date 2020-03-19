@@ -1,14 +1,14 @@
 import { types } from './types'
 
-const MOCK_UPLOAD_LIST = [
-  ...new Array(3).fill().map((item, i) => ({
-    id: `${i}124124`,
-    fileName: 'Michał Dziadkowiec.jpg' + i,
-    percentCompleted: parseInt(100 / (i + 1)),
-    uploaded: 100 / (i + 1) === 100 ? true : false,
-    isError: i === 0,
-  })),
-]
+// const MOCK_UPLOAD_LIST = [
+//   ...new Array(3).fill().map((item, i) => ({
+//     id: `${i}124124`,
+//     fileName: 'Test uplad file.jpg' + i,
+//     percentCompleted: parseInt(100 / (i + 1)),
+//     uploaded: 100 / (i + 1) === 100 ? true : false,
+//     isError: i === 0,
+//   })),
+// ]
 
 export const initialState = {
   isSidebarOpen: false,
