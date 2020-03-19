@@ -49,16 +49,13 @@ exports.signIn = async (req, res) => {
     }
 
     if (!user.isVerified) {
-      return res
-        .status(401)
-        .json({
-          errors: [
-            {
-              msg:
-                'Your account has not been verified. Please check your email!'
-            }
-          ]
-        });
+      return res.status(401).json({
+        errors: [
+          {
+            msg: 'Your account has not been verified. Please check your email!'
+          }
+        ]
+      });
     }
 
     const payload = {
@@ -150,8 +147,6 @@ exports.emailConfirmationResend = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    return res.status(202).json({ msg: 'Confirmation email has been sent!' });
-
     const userEmail = req.body.email;
 
     const user = await User.findOne({ email: userEmail });
@@ -161,13 +156,11 @@ exports.emailConfirmationResend = async (req, res) => {
     }
 
     if (user.isVerified) {
-      return res
-        .status(404)
-        .json({
-          errors: [
-            { msg: 'This account has already been verified. Please log in!' }
-          ]
-        });
+      return res.status(404).json({
+        errors: [
+          { msg: 'This account has already been verified. Please log in!' }
+        ]
+      });
     }
 
     const verificationToken = new Token({

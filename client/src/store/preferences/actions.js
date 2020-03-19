@@ -93,3 +93,18 @@ export const addSingleProject = project => ({
     project,
   },
 })
+
+/**
+ * @param {Object} project
+ * - @param {string} project._id
+ * - @param {string} project.name
+ * - @param {string} project.color
+ */
+export const updateSingleProject = ({ _id, name, color }) => ({
+  type: types.UPDATE_SINGLE_PROJECT,
+  payload: {
+    _id,
+    name,
+    color,
+  },
+})
