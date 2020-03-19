@@ -9,31 +9,37 @@ import Container from '../../../templates/Container/Container'
 import BurgerButton from '../../atoms/BurgerButton/BurgerButton'
 import DropdownMenu from '../../molecules/DropdownMenu/DropdownMenu'
 import { toggleSidebar } from '../../../store/ui/actions'
-import SearchFormContainer from '../../../containers/SerachFormContainer/SearchFormContainer'
 import NavbarTemplate from '../../../templates/NavbarTemplate/NavbarTemplate'
 import DropdownMenuItem from '../../atoms/DropdownMenuItem/DropdownMenuItem'
 
-const Navbar = ({ auth: { isAuth }, logoutUser, openSidebar, history }) => {
-  const redirectToPath = path => {
-    history.push(path)
-  }
+const Navbar = ({ auth: { isAuth, user }, logoutUser, openSidebar }) => {
+  // const redirectToPath = path => {
+  //   history.push(path)
+  // }
   return (
     <NavbarTemplate>
       <Container>
         {!isAuth && <NavLink to="/">iDO</NavLink>}
         <BurgerButton onClick={openSidebar} />
         <div className={styles.navItems}>
-          <SearchFormContainer />
+          {/* Hide Serach task from - (it is going to be implemented in the future) */}
+          {/* <SearchFormContainer /> */}
           <div className={styles.navActionIcons}>
             <DropdownMenu iconName="gear">
-              <DropdownMenuItem
+              <p className="text-center">
+                <strong>Logged as:</strong>
+                <br />
+                {user && user.name}
+              </p>
+              {/* Hide settings button - it is going to be implemented in the future */}
+              {/* <DropdownMenuItem
                 iconName="gear"
                 href="/app/preferences"
                 onClickFn={() => redirectToPath('/app/preferences')}
               >
                 Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem iconName="logout" href="/preferences" onClickFn={logoutUser}>
+              </DropdownMenuItem> */}
+              <DropdownMenuItem iconName="logout" onClickFn={logoutUser}>
                 Logout
               </DropdownMenuItem>
             </DropdownMenu>

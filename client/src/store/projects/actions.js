@@ -85,7 +85,7 @@ export const updateProjectBaseInfoBegin = () => ({
 /**
  * @param {Object} projectData updated project data
  */
-export const updateProjectBaseInfoSuccess = (_id, name, description, color) => ({
+export const updateProjectBaseInfoSuccess = ({ _id, name, description, color }) => ({
   type: types.UPDATE_PROJECT_BASE_INFO_SUCCESS,
   payload: {
     _id,

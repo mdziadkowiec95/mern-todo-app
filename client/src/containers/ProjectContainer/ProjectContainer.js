@@ -101,13 +101,17 @@ class ProjectContainerInner extends Component {
 
   cancelEditMode = () => {
     const { name, color, description } = this.props.project
-    this.props.setValues({ name, color, description })
+    this.props.resetForm({ name, color, description })
     this.toggleEditMode()
   }
 
   handleFormSubmit = e => {
-    this.props.handleSubmit(e)
-    this.toggleEditMode()
+    e.preventDefault()
+
+    if (!Object.keys(this.props.errors).length) {
+      this.props.handleSubmit(e)
+      this.toggleEditMode()
+    }
   }
 
   extendProjectFilePath = path => {

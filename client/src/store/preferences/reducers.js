@@ -74,6 +74,19 @@ export const preferencesReducer = (state = initialState, action) => {
         ...state,
         projects: [...state.projects, payload.project],
       }
+    case types.UPDATE_SINGLE_PROJECT:
+      return {
+        ...state,
+        projects: state.projects.map(project =>
+          project._id === payload._id
+            ? {
+                ...project,
+                name: payload.name,
+                color: payload.color,
+              }
+            : project,
+        ),
+      }
     default:
       return state
   }

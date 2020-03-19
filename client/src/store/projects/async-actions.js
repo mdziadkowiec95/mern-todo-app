@@ -102,7 +102,7 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
       fileSize: file.fileData.size,
     }))
 
-    const promises = chosenFiles.map(async file => {
+    chosenFiles.forEach(async file => {
       const formData = new FormData()
       formData.append('preUploadFileList', JSON.stringify(preUploadFileList))
       formData.append('projectFile', file.fileData, file.fileData.name)
@@ -147,11 +147,7 @@ export const uploadProjectFiles = (projectId, chosenFiles) => async dispatch => 
         }
         dispatch(UIActions.updateUploadList(uploadItem))
         handleErrorResponse(singleUploadError, dispatch)
-
-        // IF err then use uploadId (uuid) to show proper state on progress bar
       }
-
-      return singleUpload
     })
   } catch (error) {
     handleErrorResponse(error, dispatch)
@@ -183,13 +179,20 @@ export const updateProjectBaseInfo = ({ _id, name, description, color }) => asyn
 
     const updatedData = res.data
 
-    return dispatch(
-      ProjectsActions.updateProjectBaseInfoSuccess(
-        updatedData._id,
-        updatedData.name,
-        updatedData.description,
-        updatedData.color,
-      ),
+    dispatch(
+      ProjectsActions.updateProjectBaseInfoSuccess({
+        _id: updatedData._id,
+        name: updatedData.name,
+        description: updatedData.description,
+        color: updatedData.color,
+      }),
+    )
+    dispatch(
+      PreferencesActions.updateSingleProject({
+        _id: updatedData._id,
+        name: updatedData.name,
+        color: updatedData.color,
+      }),
     )
   } catch (error) {
     dispatch(ProjectsActions.updateProjectBaseInfoError())

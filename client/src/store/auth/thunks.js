@@ -6,8 +6,8 @@ import { handleErrorResponse } from '../../helpers'
 export const authenticateUser = () => async dispatch => {
   const authToken = localStorage.getItem('token')
 
-  if (!authToken) return;
-  
+  if (!authToken) return
+
   setAuthTokenHeader(authToken)
 
   try {
@@ -53,7 +53,7 @@ export const loginUser = (userData, onSuccess, onError) => async dispatch => {
   }
 }
 
-export const confirmEmail = (token) => async dispatch => {
+export const confirmEmail = token => async dispatch => {
   try {
     dispatch(AuthActions.confirmEmailBegin())
 
@@ -62,28 +62,26 @@ export const confirmEmail = (token) => async dispatch => {
     if (res.data.userVerified) {
       dispatch(AuthActions.confirmEmailSuccess())
     }
-    
   } catch (error) {
-    const errors = error.response.data.errors;
-    const tokenExpired = errors && errors.length > 0 && errors[0].tokenExpired ? true : false;
+    const errors = error.response.data.errors
+    const tokenExpired = errors && errors.length > 0 && errors[0].tokenExpired ? true : false
 
     handleErrorResponse(error, dispatch)
     dispatch(AuthActions.confirmEmailError(tokenExpired))
   }
 }
 
-
-export const resendConfirmEmail = (userEmail) => async dispatch => {
+export const resendConfirmEmail = userEmail => async dispatch => {
   try {
     dispatch(AuthActions.resendConfirmEmailBegin())
+
     const res = await axios.post(`/api/auth/confirmation/resend`, {
-      email: userEmail
+      email: userEmail,
     })
 
-    if (res.data.userVerified) {
+    if (res.data) {
       dispatch(AuthActions.resendConfirmEmailSuccess())
     }
-    
   } catch (error) {
     handleErrorResponse(error, dispatch)
     dispatch(AuthActions.resendConfirmEmailError())
