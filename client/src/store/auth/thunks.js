@@ -74,6 +74,7 @@ export const confirmEmail = token => async dispatch => {
 export const resendConfirmEmail = userEmail => async dispatch => {
   try {
     dispatch(AuthActions.resendConfirmEmailBegin())
+
     const res = await axios.post(`/api/auth/confirmation/resend`, {
       email: userEmail,
     })

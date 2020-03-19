@@ -23,12 +23,12 @@ class SignUpFormInner extends Component {
       <FormWrapper>
         {!status.confirmationSent ? (
           <form onSubmit={handleSubmit}>
-            <h2>Sign Up</h2>
+            <Heading>Sign Up</Heading>
             <TextField
               isError={errors.userName && touched.userName}
               isSolid
               onChangeFn={handleChange}
-              onBlurFn={handleBlur} 
+              onBlurFn={handleBlur}
               inputValue={values.userName}
               name="userName"
               placeholder="Your name"
@@ -43,7 +43,9 @@ class SignUpFormInner extends Component {
               name="userEmail"
               placeholder="Your email"
             />
-            {errors.userEmail && touched.userEmail && <FormErrorMessage errors={errors.userEmail} />}
+            {errors.userEmail && touched.userEmail && (
+              <FormErrorMessage errors={errors.userEmail} />
+            )}
             <TextField
               isError={errors.password && touched.password}
               isSolid
@@ -71,10 +73,13 @@ class SignUpFormInner extends Component {
             <Button isSubmit isBlock primary>
               Sign Up
             </Button>
-          </form>) : (
+          </form>
+        ) : (
           <div className="text-center">
-            <IconSVG name="check" size="40px" fill={config.colors['success-bg']}/>
-            <Heading primary tagSize={2}>Your account has been created!</Heading>
+            <IconSVG name="check" size="40px" fill={config.colors['success-bg']} />
+            <Heading primary tagSize={2}>
+              Your account has been created!
+            </Heading>
             <p>Please check your email and confirm your account.</p>
             <p>After that you can sign in.</p>
             <Button asRouterLink goTo="/sign-in" isBlock primary>
@@ -105,7 +110,7 @@ const SignUpSchema = Yup.object().shape({
 
 const SignUpFormContainer = withFormik({
   mapPropsToStatus: () => ({
-    confirmationSent: false
+    confirmationSent: false,
   }),
   mapPropsToValues: () => ({
     userName: '',
@@ -131,7 +136,7 @@ const SignUpFormContainer = withFormik({
       resetForm()
       setSubmitting(false)
       setStatus({
-        confirmationSent: true
+        confirmationSent: true,
       })
     }
 
@@ -139,19 +144,15 @@ const SignUpFormContainer = withFormik({
       setFieldValue('password', '')
       setFieldValue('passwordConfirm', '')
       setSubmitting(false)
-    };
+    }
 
-    props.registerUser(
-      userData,
-      onSuccess,
-      onError
-    )
+    props.registerUser(userData, onSuccess, onError)
   },
 })(SignUpFormInner)
 
 SignUpFormInner.propTypes = {
   status: PropTypes.shape({
-    confirmationSent: PropTypes.bool.isRequired
+    confirmationSent: PropTypes.bool.isRequired,
   }),
   values: PropTypes.object.isRequired,
   errors: PropTypes.object,
@@ -168,4 +169,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({ registerUser }, dispatch)
 
-export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(SignUpFormContainer)
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
+)(SignUpFormContainer)
