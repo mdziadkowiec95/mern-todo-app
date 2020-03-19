@@ -24,7 +24,7 @@ const Heading = ({ primary, secondary, tertiary, tagSize, center, className, chi
 }
 
 Heading.propTypes = {
-  children: PropTypes.string.isRequired,
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   tagSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   primary: PropTypes.bool,
   secondary: PropTypes.bool,
