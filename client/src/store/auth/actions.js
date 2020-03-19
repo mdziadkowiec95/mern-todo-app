@@ -47,28 +47,28 @@ export const logoutUser = () => ({
 })
 
 export const confirmEmailBegin = () => ({
-  type: AuthActionTypes.CONFIRM_EMAIL_BEGIN
+  type: AuthActionTypes.CONFIRM_EMAIL_BEGIN,
 })
 
 export const confirmEmailSuccess = () => ({
-  type: AuthActionTypes.CONFIRM_EMAIL_SUCCESS
+  type: AuthActionTypes.CONFIRM_EMAIL_SUCCESS,
 })
 
-export const confirmEmailError = (tokenExpired) => ({
+export const confirmEmailError = tokenExpired => ({
   type: AuthActionTypes.CONFIRM_EMAIL_ERROR,
   payload: {
-    tokenExpired
-  }
+    tokenExpired,
+  },
 })
 
 export const resendConfirmEmailBegin = () => ({
-  type: AuthActionTypes.RESEND_CONFIRM_EMAIL_BEGIN
+  type: AuthActionTypes.RESEND_CONFIRM_EMAIL_BEGIN,
 })
 
 export const resendConfirmEmailSuccess = () => ({
-  type: AuthActionTypes.RESEND_CONFIRM_EMAIL_SUCCESS
+  type: AuthActionTypes.RESEND_CONFIRM_EMAIL_SUCCESS,
 })
 
 export const resendConfirmEmailError = () => ({
-  type: AuthActionTypes.RESEND_CONFIRM_EMAIL_ERROR
+  type: AuthActionTypes.RESEND_CONFIRM_EMAIL_ERROR,
 })

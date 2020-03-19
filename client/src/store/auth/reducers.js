@@ -7,8 +7,9 @@ const initialState = {
   user: null,
   verification: {
     isVerified: false,
-    tokenExpired: false
-  }
+    tokenExpired: false,
+    tokenResend: false,
+  },
 }
 
 export default function(state = initialState, action) {
@@ -24,12 +25,21 @@ export default function(state = initialState, action) {
         ...state,
         isLoading: true,
       }
-      case AuthActionTypes.REGISTER_USER_SUCCESS:
-      case AuthActionTypes.RESEND_CONFIRM_EMAIL_ERROR:
-        return {
-          ...state,
-          isLoading: false,
-        }
+    case AuthActionTypes.REGISTER_USER_SUCCESS:
+    case AuthActionTypes.RESEND_CONFIRM_EMAIL_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+      }
+    case AuthActionTypes.RESEND_CONFIRM_EMAIL_SUCCESS:
+      return {
+        ...state,
+        verification: {
+          ...state.verification,
+          tokenResend: true,
+        },
+        isLoading: false,
+      }
     case AuthActionTypes.LOGIN_USER_SUCCESS:
       localStorage.setItem('token', payload.authToken)
 
@@ -41,15 +51,15 @@ export default function(state = initialState, action) {
         isAuth: true,
         isLoading: false,
       }
-      case AuthActionTypes.CONFIRM_EMAIL_SUCCESS:
-        return {
-          ...state,
-          isLoading: false,
-          verification: {
-            isVerified: true,
-            tokenExpired: false,
-          }
-        }
+    case AuthActionTypes.CONFIRM_EMAIL_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        verification: {
+          isVerified: true,
+          tokenExpired: false,
+        },
+      }
     case AuthActionTypes.REGISTER_USER_ERROR:
     case AuthActionTypes.LOGIN_USER_ERROR:
     case AuthActionTypes.AUTHENTICATE_USER_ERROR:
@@ -63,15 +73,15 @@ export default function(state = initialState, action) {
         user: null,
         isLoading: false,
       }
-      case AuthActionTypes.CONFIRM_EMAIL_ERROR:
-        return {
-          ...state,
-          isLoading: false,
-          verification: {
-            isVerified: false,
-            tokenExpired: payload.tokenExpired,
-          }
-        }
+    case AuthActionTypes.CONFIRM_EMAIL_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        verification: {
+          isVerified: false,
+          tokenExpired: payload.tokenExpired,
+        },
+      }
     default:
       return state
   }
