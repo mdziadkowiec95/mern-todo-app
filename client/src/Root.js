@@ -38,7 +38,6 @@ const Root = () => {
           <Suspense fallback={<Loader fullScreen inWrapper />}>
             <AuthRoute path="/app" component={LazyApp} />
           </Suspense>
-          <AuthRoute path="/preferences" component={Preferences} />
           <NotificationListContainer />
         </BrowserRouter>
       </Provider>
