@@ -1,8 +1,31 @@
-# TO-DO App
+# Productive App
 
-Status: **IN PROGRESS** (develop branch)
+Full-stack TODO app built with MERN stack.
 
-CRUD Full-stack TODO app built with MERN stack.
+Status: **STILL IN PROGRESS** (develop branch)
+
+Preview the progress under the [Application URL](https://productive-mern-app.herokuapp.com/)
+
+## How to use?
+
+This application is authenticated. You have 2 options to preview it.
+
+1. Follow standard process of registration, account verification (by token send to email)
+2. Sign in by using the test account I've created for public usage.
+
+**Credentials:**
+
+Email: testaccount@mailinator.com
+
+Passoword: test1234
+
+**NOTE**
+
+I use [Sengrid](https://sendgrid.com/) free plan in order to handle sending emails. As it is likely that limit will be reached using the **testaccount@mailinator.com** can be useful in order to use and test my application. Just keep that in mind.
+
+## Do you see any bug?
+
+I'm creating this project to learn new technologies so if you notice any bug I'll be glad if you inform me. Feel free to create new issue in this repo :-)
 
 ## Built With
 

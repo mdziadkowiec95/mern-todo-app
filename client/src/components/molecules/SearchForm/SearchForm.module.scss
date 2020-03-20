@@ -1,17 +1,37 @@
 @import 'utils/utils';
 
-.wrapper {
+.form {
   position: relative;
 
-  .field {
+  &__field {
     margin-left: auto;
   }
 
-  .suggestions {
+  &__suggestion-list {
     position: absolute;
-    top: 100%;
+    top: 105%;
+    width: 200px;
+    overflow: hidden;
     background-color: map-get($colors, white);
     border-radius: map-get($radius, normal);
+
+    @extend %shadow-100;
+  }
+
+  &__suggestion-no-items,
+  &__suggestion-link {
+    display: block;
+    width: 100%;
     padding: 1rem;
+    font-weight: 600;
+    color: map-get($colors, dark);
+  }
+
+  &__suggestion-link {
+    transition: background-color 0.25s map-get($easings, primary);
+
+    &:hover {
+      background-color: rgba(map-get($colors, tertiary), 0.3);
+    }
   }
 }

@@ -10,6 +10,7 @@ const TextField = ({
   noMargin,
   onChangeFn,
   onBlurFn,
+  onFocusFn,
   inputValue,
   name,
   type,
@@ -52,6 +53,7 @@ const TextField = ({
         placeholder={placeholder}
         onChange={e => onChangeFn(e)}
         onBlur={e => onBlurFn(e)}
+        onFocus={onFocusFn ? onFocusFn : null}
       />
     </div>
   )
@@ -60,6 +62,7 @@ const TextField = ({
 TextField.propTypes = {
   onChangeFn: PropTypes.func.isRequired,
   onBlurFn: PropTypes.func.isRequired,
+  onFocusFn: PropTypes.func,
   inputValue: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   type: PropTypes.string,
@@ -73,6 +76,7 @@ TextField.propTypes = {
 TextField.defaultProps = {
   type: 'text',
   placeholder: 'Enter some text...',
+  onFocusFn: null,
   isError: false,
   isSolid: false,
   isFlex: false,

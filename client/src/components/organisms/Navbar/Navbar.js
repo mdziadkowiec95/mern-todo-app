@@ -11,6 +11,7 @@ import DropdownMenu from '../../molecules/DropdownMenu/DropdownMenu'
 import { toggleSidebar } from '../../../store/ui/actions'
 import NavbarTemplate from '../../../templates/NavbarTemplate/NavbarTemplate'
 import DropdownMenuItem from '../../atoms/DropdownMenuItem/DropdownMenuItem'
+import SearchFormContainer from '../../../containers/SerachFormContainer/SearchFormContainer';
 
 const Navbar = ({ auth: { isAuth, user }, logoutUser, openSidebar }) => {
   // const redirectToPath = path => {
@@ -23,7 +24,7 @@ const Navbar = ({ auth: { isAuth, user }, logoutUser, openSidebar }) => {
         <BurgerButton onClick={openSidebar} />
         <div className={styles.navItems}>
           {/* Hide Serach task from - (it is going to be implemented in the future) */}
-          {/* <SearchFormContainer /> */}
+          <SearchFormContainer />
           <div className={styles.navActionIcons}>
             <DropdownMenu iconName="gear">
               <p className="text-center">

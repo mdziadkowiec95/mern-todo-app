@@ -18,53 +18,58 @@ class TasksContainer extends Component {
 
     if (pageTypeChanged || idChanged) {
       // eslint-disable-next-line
-      console.log(`TaskContainer updated ${pageType}`)
-      this.fetchTasks()
+      console.log(`Current page type: ${pageType}`)
+      if (pageType) this.fetchTasks()
     }
+  }
+
+  getTasksRequestFilters(pageType, routeId) {
+    // Construct query param filters to pass to tasks GET request
+    const filters = {}
+
+    switch (pageType) {
+      case 'inbox':
+        if (routeId) filters.taskId = routeId
+        break
+      case 'today':
+        filters.timePeriod = 'today'
+        break
+      case 'next-week':
+        filters.timePeriod = 'nextWeek'
+        break
+      case 'label':
+        filters.labelId = routeId
+        break
+      case 'project':
+        filters.projectId = routeId
+        break
+      default:
+    }
+
+    return filters
   }
 
   async fetchTasks() {
     const {
       pageType,
       match: { params },
-      // eslint-disable-next-line
-      state,
       setPageContext,
       getTasks,
     } = this.props
 
-    if (pageType) {
-      const pageContext = {
-        type: pageType,
-        id: params.id,
-      }
-      setPageContext(pageContext)
-
-      const reqParams = {}
-
-      if (pageType === 'inbox') {
-        reqParams.status = 'inbox'
-      } else if (pageType === 'today') {
-        reqParams.timePeriod = 'today'
-      } else if (pageType === 'next-week') {
-        reqParams.timePeriod = 'nextWeek'
-      } else if (pageType === 'label') {
-        reqParams.labelId = params.id
-      } else if (pageType === 'project') {
-        reqParams.projectId = params.id
-      }
-
-      await getTasks(reqParams)
+    const pageContext = {
+      type: pageType,
+      id: params.id,
     }
+
+    setPageContext(pageContext)
+    const reqParams = this.getTasksRequestFilters(pageType, params.id)
+    await getTasks(reqParams)
   }
   render() {
     const { tasks, pageType, isLoading } = this.props
 
-    return (
-      <>
-        <TaskList pageType={pageType} tasks={tasks} isLoading={isLoading} />
-      </>
-    )
+    return <TaskList pageType={pageType} tasks={tasks} isLoading={isLoading} />
   }
 }
 

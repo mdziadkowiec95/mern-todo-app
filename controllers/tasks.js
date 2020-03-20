@@ -32,13 +32,16 @@ exports.searchTask = async (req, res) => {
 
 exports.getTasks = async (req, res) => {
   // Status won't be necessary
-  const { status, timePeriod, projectId, labelId } = req.query;
+  const { taskId, timePeriod, projectId, labelId } = req.query;
 
   const filters = {
     user: req.user.id
   };
 
-  // if (status !== "inbox") {
+  if (taskId) {
+    filters._id = taskId;
+  }
+  
   if (timePeriod) {
     const dateRange = {
       $gte: null,

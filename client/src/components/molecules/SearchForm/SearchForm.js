@@ -1,55 +1,79 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
+import { Link } from 'react-router-dom'
+import { useDebouncedCallback } from 'use-debounce'
 import styles from './SearchForm.module.scss'
 import TextField from '../../atoms/TextField/TextField'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { quickSearch } from '../../../store/search/thunks'
-import { useDebouncedCallback } from 'use-debounce'
+import useClickOutside from '../../../hooks/useClickOutside'
+import classNames from 'classnames/bind'
+
+const cn = classNames.bind(styles)
 
 const SearchForm = ({ quickSearch, suggestions, isLoading }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchActive, setIsSearchActive] = useState(false)
 
+  const close = useCallback(() => setIsSearchActive(false), [setIsSearchActive])
+  const containerRef = useClickOutside(close)
+
   const [debouncedQuickSerach] = useDebouncedCallback(query => {
     quickSearch(query)
-  }, 1000)
+  }, 500)
 
   const handleQueryChange = e => {
-    setSearchQuery(e.target.value)
-    debouncedQuickSerach(e.target.value)
+    if (searchQuery !== e.target.value) {
+      setSearchQuery(e.target.value)
+      debouncedQuickSerach(e.target.value)
+    }
   }
 
   const handleOnChange = e => {
-    setIsSearchActive(true)
     handleQueryChange(e)
+    setIsSearchActive(true)
   }
 
   const handleOnBlur = e => {
-    setIsSearchActive(false)
     handleQueryChange(e)
   }
 
+  const handleSuggestionClick = () => {
+    setIsSearchActive(false)
+    setSearchQuery('')
+  }
+
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.field}>
+    <div className={cn('form')} ref={containerRef}>
+      <div className={cn('form__field')}>
         <TextField
           inputValue={searchQuery}
           onChangeFn={handleOnChange}
           onBlurFn={handleOnBlur}
+          onFocusFn={() => setIsSearchActive(true)}
           name="searchQuery"
-          placeholder="Search for task..."
+          placeholder="Serach by title..."
           isFlex
           noMargin
         />
       </div>
-      {!isLoading && isSearchActive && (
-        <div className={styles.suggestions}>
+      {isSearchActive && searchQuery && (
+        <ul className={cn('form__suggestion-list')}>
           {suggestions.length > 0 ? (
-            suggestions.map(suggestion => <li key={suggestion._id}>{suggestion.title}</li>)
+            suggestions.map(suggestion => (
+              <li key={suggestion._id} className={cn('form__suggestion-item')}>
+                <Link
+                  to={`/app/inbox/${suggestion._id}`}
+                  onClick={handleSuggestionClick}
+                  className={cn('form__suggestion-link')}
+                >
+                  {suggestion.title}
+                </Link>
+              </li>
+            ))
           ) : (
-            <li>No tasks found...</li>
+            <li className={cn('form__suggestion-no-items')}>
+              {!isLoading ? 'No tasks found...' : 'Loading...'}
+            </li>
           )}
-        </div>
+        </ul>
       )}
     </div>
   )
@@ -57,10 +81,4 @@ const SearchForm = ({ quickSearch, suggestions, isLoading }) => {
 
 SearchForm.propTypes = {}
 
-const mapDispatchToProps = dispatch => bindActionCreators({ quickSearch }, dispatch)
-const mapStateToProps = ({ search }) => ({
-  suggestions: search.searchResults,
-  isLoading: search.isLoading,
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchForm)
+export default SearchForm
