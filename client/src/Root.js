@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Route } from 'react-router-dom'
 import NotificationListContainer from './containers/NotificationListContainer/NotificationListContainer'
@@ -7,18 +7,20 @@ import RedirectAuthToApp from './hoc/RedirectAuthToApp'
 import store from './store'
 import { authenticateUser } from './store/auth/thunks'
 import { setAuthTokenHeader } from './utils/API'
-import App from './views/App/App'
 import LandingPage from './views/LandingPage/LandingPage'
 import Preferences from './views/Preferences/Preferences'
 import SignIn from './views/SignIn/SignIn'
 import SignUp from './views/SignUp/SignUp'
 import EmailConfirmation from './views/EmailConfirmation/EmailConfirmation'
+import Loader from './components/atoms/Loader/Loader'
 
 const authToken = localStorage.getItem('token')
 
 if (authToken) {
   setAuthTokenHeader(authToken)
 }
+
+const LazyApp = React.lazy(() => import('./views/App/App'))
 
 const Root = () => {
   useEffect(() => {
@@ -33,7 +35,9 @@ const Root = () => {
           <RedirectAuthToApp exact path="/sign-in" component={SignIn} />
           <RedirectAuthToApp exact path="/sign-up" component={SignUp} />
           <Route exact path="/email-confirmation/:token" component={EmailConfirmation} />
-          <AuthRoute path="/app" component={App} />
+          <Suspense fallback={<Loader fullScreen inWrapper />}>
+            <AuthRoute path="/app" component={LazyApp} />
+          </Suspense>
           <AuthRoute path="/preferences" component={Preferences} />
           <NotificationListContainer />
         </BrowserRouter>
