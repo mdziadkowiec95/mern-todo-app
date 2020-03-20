@@ -22,13 +22,13 @@
   &__suggestion-link {
     display: block;
     width: 100%;
-    padding: 0.7rem 1rem;
+    padding: 1rem;
     font-weight: 600;
     color: map-get($colors, dark);
   }
 
   &__suggestion-link {
-    transition: color 0.25s map-get($easings, primary);
+    transition: background-color 0.25s map-get($easings, primary);
 
     &:hover {
       background-color: rgba(map-get($colors, tertiary), 0.3);

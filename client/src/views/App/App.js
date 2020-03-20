@@ -23,6 +23,11 @@ const App = ({ match }) => (
         />
         <Route
           exact
+          path={`${match.path}/inbox/:id`}
+          render={props => <TaskBoard {...props} pageType="inbox" />}
+        />
+        <Route
+          exact
           path={`${match.path}/today`}
           render={props => <TaskBoard {...props} pageType="today" />}
         />

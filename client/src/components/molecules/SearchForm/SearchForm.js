@@ -35,6 +35,11 @@ const SearchForm = ({ quickSearch, suggestions, isLoading }) => {
     handleQueryChange(e)
   }
 
+  const handleSuggestionClick = () => {
+    setIsSearchActive(false)
+    setSearchQuery('')
+  }
+
   return (
     <div className={cn('form')} ref={containerRef}>
       <div className={cn('form__field')}>
@@ -44,7 +49,7 @@ const SearchForm = ({ quickSearch, suggestions, isLoading }) => {
           onBlurFn={handleOnBlur}
           onFocusFn={() => setIsSearchActive(true)}
           name="searchQuery"
-          placeholder="Task by title"
+          placeholder="Serach by title..."
           isFlex
           noMargin
         />
@@ -54,7 +59,11 @@ const SearchForm = ({ quickSearch, suggestions, isLoading }) => {
           {suggestions.length > 0 ? (
             suggestions.map(suggestion => (
               <li key={suggestion._id} className={cn('form__suggestion-item')}>
-                <Link to={`/app/task/${suggestion._id}`} className={cn('form__suggestion-link')}>
+                <Link
+                  to={`/app/inbox/${suggestion._id}`}
+                  onClick={handleSuggestionClick}
+                  className={cn('form__suggestion-link')}
+                >
                   {suggestion.title}
                 </Link>
               </li>

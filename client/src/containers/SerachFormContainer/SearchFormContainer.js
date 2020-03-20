@@ -8,11 +8,7 @@ class SearchFormContainer extends Component {
   render() {
     const { quickSearch, suggestions, isLoading } = this.props
 
-    return (
-      <>
-        <SearchForm quickSearch={quickSearch} suggestions={suggestions} isLoading={isLoading} />
-      </>
-    )
+    return <SearchForm quickSearch={quickSearch} suggestions={suggestions} isLoading={isLoading} />
   }
 }
 
