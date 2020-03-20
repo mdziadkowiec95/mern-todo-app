@@ -10,6 +10,7 @@ import FormErrorMessage from '../../components/atoms/FormErrorMessage/FormErrorM
 import { loginUser } from '../../store/auth/thunks'
 import FormWrapper from '../../templates/FormWrapper/FormWrapper'
 import Heading from '../../components/atoms/Heading/Heading'
+import FlexBox from '../../templates/FlexBox/FlexBox'
 
 class SignInFormInner extends Component {
   render() {
@@ -21,12 +22,25 @@ class SignInFormInner extends Component {
       handleBlur,
       handleSubmit,
       isSubmitting,
+      setFieldValue,
     } = this.props
 
     return (
       <FormWrapper>
         <form onSubmit={handleSubmit}>
-          <Heading primary>Sign In</Heading>
+          <FlexBox spaceBetween>
+            <Heading primary>Sign In</Heading>
+            <Button
+              secondary
+              small
+              onClickFn={() => {
+                setFieldValue('userEmail', 'testaccount@mailinator.com')
+                setFieldValue('password', 'test1234')
+              }}
+            >
+              Use test account
+            </Button>
+          </FlexBox>
           <TextField
             isError={errors.userEmail && touched.userEmail}
             isSolid
